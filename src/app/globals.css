@@ -4,18 +4,21 @@
 
 @layer base {
   :root {
-    --background: 220 13% 13%;
-    --foreground: 220 9% 89%;
-    --primary: 200 98% 39%;
+    /* Darker, more professional theme matching your prototype */
+    --background: 210 11% 15%;           /* Very dark gray background */
+    --foreground: 213 31% 91%;           /* Light gray text */
+    --primary: 200 100% 50%;             /* Bright blue */
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 13% 18%;
-    --secondary-foreground: 220 9% 89%;
-    --muted: 220 13% 16%;
-    --muted-foreground: 220 9% 60%;
-    --border: 220 13% 20%;
-    --input: 220 13% 18%;
-    --card: 220 13% 16%;
-    --card-foreground: 220 9% 89%;
+    --secondary: 210 11% 20%;            /* Slightly lighter gray */
+    --secondary-foreground: 213 31% 91%;
+    --muted: 210 11% 12%;                /* Even darker */
+    --muted-foreground: 213 31% 70%;     /* Muted text */
+    --border: 210 11% 25%;               /* Subtle borders */
+    --input: 210 11% 18%;                /* Dark input backgrounds */
+    --card: 210 11% 17%;                 /* Card backgrounds */
+    --card-foreground: 213 31% 91%;
+    --accent: 210 11% 22%;               /* Accent elements */
+    --accent-foreground: 213 31% 91%;
   }
 }
 
@@ -32,5 +35,17 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+}
+
+/* Additional dark theme enhancements */
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
