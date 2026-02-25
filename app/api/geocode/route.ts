@@ -1,32 +1,42 @@
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const q = searchParams.get("search");
-  const lat = searchParams.get("lat");
-  const lng = searchParams.get("lng");
+import { NextResponse } from "next/server";
 
-  const UA = { "User-Agent": "StyleHub/0.1 (dev)" };
+// GET /api/geocode?lat=...&lon=... (reverse geocode)
+// GET /api/geocode?q=... (forward geocode)
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const lat = searchParams.get("lat");
+    const lon = searchParams.get("lon");
+    const q = searchParams.get("q");
 
-  // Forward geocode (text search)
-  if (q) {
-    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(q)}`;
-    const res = await fetch(url, { headers: UA, cache: "no-store" });
+    let url: string;
+
+    if (lat && lon) {
+      // Reverse geocode
+      url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`;
+    } else if (q) {
+      // Forward geocode
+      url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1&addressdetails=1`;
+    } else {
+      return NextResponse.json(
+        { error: "Provide lat/lon or q parameter" },
+        { status: 400 }
+      );
+    }
+
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": "Listify/1.0 (beauty marketplace)",
+        "Accept": "application/json",
+      },
+    });
+
     const data = await res.json();
-    return Response.json(data);
+    return NextResponse.json(data);
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message || "Geocoding failed" },
+      { status: 500 }
+    );
   }
-
-  // Reverse geocode (lat/lng -> city/state/postcode)
-  if (lat && lng) {
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(
-      lat
-    )}&lon=${encodeURIComponent(lng)}&zoom=10&addressdetails=1`;
-    const res = await fetch(url, { headers: UA, cache: "no-store" });
-    const data = await res.json();
-    const addr = data?.address ?? {};
-    const city = addr.city || addr.town || addr.village || addr.county || "San Diego";
-    const state = addr.state || "CA";
-    const postalCode = addr.postcode || "";
-    return Response.json({ city, state, postalCode });
-  }
-
-  return new Response("Missing params", { status: 400 });
 }

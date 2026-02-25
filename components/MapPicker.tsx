@@ -79,8 +79,7 @@ export default function MapPicker({
     // Reverse geocode
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=16&addressdetails=1`,
-        { headers: { "User-Agent": "Listify/1.0" } }
+        `/api/geocode?lat=${lat}&lon=${lng}`
       );
       const data = await res.json();
       const addr = data.address || {};
@@ -116,10 +115,9 @@ export default function MapPicker({
       setGeocoding(true);
 
       try {
-        const query = encodeURIComponent(`${address}, San Diego County, CA`);
+        const query = `${address}, San Diego County, CA`;
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`,
-          { headers: { "User-Agent": "Listify/1.0" } }
+          `/api/geocode?q=${encodeURIComponent(query)}`
         );
         const results = await res.json();
 
@@ -130,8 +128,7 @@ export default function MapPicker({
 
           // Also reverse geocode for city/state
           const revRes = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=16&addressdetails=1`,
-            { headers: { "User-Agent": "Listify/1.0" } }
+            `/api/geocode?lat=${lat}&lon=${lng}`
           );
           const revData = await revRes.json();
           const addr = revData.address || {};

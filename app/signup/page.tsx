@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { UserPlus, Users, Building2, Eye, EyeOff, Check } from "lucide-react";
@@ -19,6 +19,16 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Redirect if already logged in (verified against DB)
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.user) router.replace("/jobs");
+      })
+      .catch(() => {});
+  }, [router]);
 
   const formatPhone = (value: string) => {
     const digits = value.replace(/\D/g, "").slice(0, 10);

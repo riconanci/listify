@@ -42,6 +42,9 @@ function formatCompensation(
   payMax?: number | null,
   payUnit?: string | null
 ): string {
+  // Strip leading $ from unit (e.g. "$/wk" → "/wk")
+  const unit = payUnit?.replace(/^\$/, "") || "";
+
   if (compModel === "commission") {
     if (payMin && payMax && payMin !== payMax) return `${payMin}-${payMax}% Commission`;
     if (payMin) return `${payMin}% Commission`;
@@ -49,8 +52,8 @@ function formatCompensation(
   }
   if (compModel === "booth_rent") {
     if (payMin && payMax && payMin !== payMax)
-      return `$${payMin}-$${payMax}${payUnit || "/wk"}`;
-    if (payMin) return `$${payMin}${payUnit || "/wk"}`;
+      return `$${payMin}-$${payMax}${unit || "/wk"}`;
+    if (payMin) return `$${payMin}${unit || "/wk"}`;
     return "Booth Rent";
   }
   if (compModel === "hybrid") {

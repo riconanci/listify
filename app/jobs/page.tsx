@@ -104,7 +104,7 @@ export default function BrowseListingsPage() {
 
         try {
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+            `/api/geocode?lat=${latitude}&lon=${longitude}`
           );
           const data = await res.json();
           if (data.address) {

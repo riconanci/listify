@@ -34,6 +34,8 @@ function formatSchedule(schedule?: string | null): string | null {
 
 function formatCompensation(job: any): string {
   const { compModel, payMin, payMax, payUnit } = job;
+  const unit = payUnit?.replace(/^\$/, "") || "";
+
   if (compModel === "commission") {
     if (payMin && payMax && Number(payMin) !== Number(payMax))
       return `${payMin}-${payMax}%`;
@@ -41,9 +43,10 @@ function formatCompensation(job: any): string {
     return "Commission";
   }
   if (compModel === "booth_rent") {
+    const suffix = unit || "/wk";
     if (payMin && payMax && Number(payMin) !== Number(payMax))
-      return `$${payMin}-$${payMax}`;
-    if (payMin) return `$${payMin}`;
+      return `$${payMin}-$${payMax}${suffix}`;
+    if (payMin) return `$${payMin}${suffix}`;
     return "Booth Rent";
   }
   if (compModel === "hybrid") {

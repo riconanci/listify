@@ -35,9 +35,14 @@ export async function GET(request: Request) {
     // Build where clause
     const where: any = {
       status: "active",
-      OR: [
-        { expiresAt: null },
-        { expiresAt: { gt: new Date() } },
+      AND: [
+        // Only show non-expired listings
+        {
+          OR: [
+            { expiresAt: null },
+            { expiresAt: { gt: new Date() } },
+          ],
+        },
       ],
     };
 
@@ -51,10 +56,12 @@ export async function GET(request: Request) {
       where.compModel = filters.compModel;
     }
     if (filters.search) {
-      where.OR = [
-        { businessName: { contains: filters.search, mode: "insensitive" } },
-        { title: { contains: filters.search, mode: "insensitive" } },
-      ];
+      where.AND.push({
+        OR: [
+          { businessName: { contains: filters.search, mode: "insensitive" } },
+          { title: { contains: filters.search, mode: "insensitive" } },
+        ],
+      });
     }
     if (filters.city) {
       where.location = {

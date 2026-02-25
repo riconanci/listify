@@ -49,12 +49,14 @@ function formatComp(
   payMax?: number | null,
   payUnit?: string | null
 ): string {
+  const unit = payUnit?.replace(/^\$/, "") || "";
+
   if (compModel === "commission") {
     if (payMin) return `${payMin}%`;
     return "Commission";
   }
   if (compModel === "booth_rent") {
-    if (payMin) return `$${payMin}${payUnit || "/wk"}`;
+    if (payMin) return `$${payMin}${unit || "/wk"}`;
     return "Booth Rent";
   }
   if (compModel === "hybrid") {

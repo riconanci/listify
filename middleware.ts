@@ -18,8 +18,7 @@ const PROTECTED_ROUTES = [
   "/saved",
 ];
 
-// Routes only for unauthenticated users
-const AUTH_ROUTES = ["/signin", "/signup"];
+// Routes only for unauthenticated users (handled in-page, not middleware)
 
 async function getSessionFromRequest(request: NextRequest) {
   const token = request.cookies.get(COOKIE_NAME)?.value;
@@ -49,14 +48,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Auth routes — redirect to /jobs if already logged in
-  const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
-
-  if (isAuthRoute && session) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/jobs";
-    return NextResponse.redirect(url);
-  }
+  // Auth routes — no middleware redirect. Pages handle their own
+  // logged-in checks via /api/auth/me (which verifies user exists in DB).
+  // This prevents stale cookies from blocking access to signin/signup.
 
   // Scout-only routes — redirect talent away from post/manage
   const SCOUT_ONLY = ["/post", "/jobs/manage"];
@@ -80,7 +74,5 @@ export const config = {
     "/onboarding/:path*",
     "/notifications/:path*",
     "/saved/:path*",
-    "/signin",
-    "/signup",
   ],
 };
