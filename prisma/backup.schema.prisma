@@ -1,0 +1,346 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(cuid())
+  email            String?           @unique
+  username         String?           @unique
+  name             String?
+  passwordHash     String
+  roles            UserRole[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  Account          Account[]
+  Application      Application[]
+  AuditLog         AuditLog[]
+  employerProfiles EmployerProfile[]
+  favorites        Favorite[]
+  Message          Message[]
+  Report           Report[]
+  Session          Session[]
+  talentProfiles   TalentProfile?
+  role             UserRole          @default(talent)
+  inquiriesSent    Inquiry[]         @relation("InquirySender")
+}
+
+model EmployerProfile {
+  id         String    @id @default(cuid())
+  userId     String
+  shopName   String
+  about      String?
+  phone      String?
+  hoursJson  Json?
+  locationId String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  location   Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobs       Job[]
+
+  @@unique([userId, shopName])
+}
+
+model TalentProfile {
+  id                String        @id @default(cuid())
+  userId            String        @unique
+  roles             JobRole[]
+  yearsExp          Int?
+  licenses          LicenseType[]
+  preferredComp     CompModel[]
+  availabilityDays  Boolean[]
+  languages         String[]
+  zipCode           String?
+  travelRadiusMiles Int?
+  igHandle          String?
+  portfolioCount    Int           @default(0)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime
+  Application       Application[]
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Location {
+  id           String            @id @default(cuid())
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  state        String?
+  postalCode   String?
+  country      String?           @default("US")
+  county       String?
+  lat          Float?
+  lng          Float?
+  createdAt    DateTime          @default(now())
+  employers    EmployerProfile[]
+  jobs         Job[]
+}
+
+model Job {
+  id                 String           @id @default(cuid())
+  employerProfileId  String
+  businessName       String?
+  locationId         String?
+  title              String
+  role               JobRole
+  compModel          CompModel
+  payMin             Decimal?
+  payMax             Decimal?
+  payUnit            String
+  payVisible         Boolean          @default(true)
+  employmentType     EmploymentType?
+  schedule           ScheduleType?
+  shiftDays          Boolean[]
+  experience         ExperienceLevel?
+  licenses           LicenseType[]
+  startDate          DateTime?
+  apprenticeFriendly Boolean          @default(false)
+  perks              String[]
+  description        String?
+  imagesCount        Int              @default(0)
+  status             String           @default("active")
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  experienceText     String?
+  applications       Application[]
+  Boost              Boost[]
+  favorites          Favorite[]
+  employerProfile    EmployerProfile  @relation(fields: [employerProfileId], references: [id], onDelete: Cascade)
+  location           Location?        @relation(fields: [locationId], references: [id])
+  photos             JobPhoto[]
+  inquiries          Inquiry[]
+  viewsCount         Int              @default(0)
+  inquiriesCount     Int              @default(0)
+  expiresAt          DateTime?        @map("expires_at")
+
+  @@index([role])
+  @@index([status])
+}
+
+model JobPhoto {
+  id        String   @id @default(cuid())
+  jobId     String
+  url       String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId, sortOrder])
+}
+
+model Application {
+  id              String        @id @default(cuid())
+  jobId           String
+  talentProfileId String
+  applicantUserId String
+  status          AppStatus     @default(submitted)
+  note            String?
+  profileSnapshot Json?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime
+  User            User          @relation(fields: [applicantUserId], references: [id], onDelete: Cascade)
+  job             Job           @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  TalentProfile   TalentProfile @relation(fields: [talentProfileId], references: [id], onDelete: Cascade)
+  Message         Message[]
+
+  @@unique([jobId, talentProfileId])
+}
+
+model Message {
+  id             String      @id @default(cuid())
+  applicationId  String
+  senderUserId   String
+  body           String
+  via            MessageVia  @default(in_app)
+  relayMessageId String?
+  readAt         DateTime?
+  createdAt      DateTime    @default(now())
+  Application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  User           User        @relation(fields: [senderUserId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId, createdAt])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  jobId     String
+  createdAt DateTime @default(now())
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+}
+
+model Report {
+  id             String    @id @default(cuid())
+  reporterUserId String
+  targetType     String
+  targetId       String
+  reason         String
+  status         String    @default("open")
+  createdAt      DateTime  @default(now())
+  resolvedAt     DateTime?
+  User           User      @relation(fields: [reporterUserId], references: [id], onDelete: Cascade)
+
+  @@index([targetType, targetId])
+}
+
+model Boost {
+  id        String   @id @default(cuid())
+  jobId     String
+  type      String
+  startsAt  DateTime
+  endsAt    DateTime
+  status    String   @default("scheduled")
+  createdAt DateTime @default(now())
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([status, startsAt, endsAt])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  action      String
+  targetType  String
+  targetId    String?
+  data        Json?
+  createdAt   DateTime @default(now())
+  User        User?    @relation(fields: [actorUserId], references: [id])
+}
+
+model Account {
+  id                 String  @id
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  oauth_token_secret String?
+  oauth_token        String?
+  User               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Inquiry {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // who sent the inquiry (talent)
+  senderId String
+  sender   User   @relation("InquirySender", fields: [senderId], references: [id], onDelete: Cascade)
+
+  // which job they inquired about
+  jobId String
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  // payload (what talent typed)
+  name  String?
+  phone String?
+  note  String?
+
+  @@unique([senderId, jobId])
+  @@index([senderId])
+  @@index([jobId])
+}
+
+enum UserRole {
+  employer
+  talent
+  admin
+}
+
+enum JobRole {
+  barber
+  cosmetologist
+  esthetician
+  nail_tech
+  lash_tech
+  tattoo_artist
+  piercer
+}
+
+enum CompModel {
+  booth_rent
+  commission
+  hourly
+  daily
+  hybrid
+}
+
+enum EmploymentType {
+  w2
+  c1099
+}
+
+enum ScheduleType {
+  full_time
+  part_time
+}
+
+enum AppStatus {
+  submitted
+  viewed
+  replied
+  rejected
+  hired
+  withdrawn
+}
+
+enum ExperienceLevel {
+  entry
+  y1_2
+  y3_5
+  y5_plus
+}
+
+enum LicenseType {
+  barbering
+  cosmetology
+  esthetics
+  nail_care
+  tattoo_license
+  piercing_permit
+  apprentice_student
+}
+
+enum MessageVia {
+  in_app
+  email
+  sms
+}
+
+enum JobStatus {
+  ACTIVE
+  PAUSED
+  CLOSED
+}

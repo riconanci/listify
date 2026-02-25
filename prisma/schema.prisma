@@ -1,0 +1,268 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────
+
+enum UserRole {
+  talent
+  employer
+  admin
+}
+
+enum JobRole {
+  barber
+  cosmetologist
+  tattoo_artist
+  esthetician
+  nail_tech
+  lash_tech
+  piercer
+}
+
+enum CompModel {
+  hourly
+  commission
+  booth_rent
+  hybrid
+  daily
+}
+
+enum EmploymentType {
+  w2
+  c1099
+}
+
+enum ScheduleType {
+  full_time
+  part_time
+}
+
+// ─── User ────────────────────────────────────────────
+
+model User {
+  id               String            @id @default(cuid())
+  email            String?           @unique
+  username         String?           @unique
+  name             String?
+  phone            String?
+  passwordHash     String
+  role             UserRole          @default(talent)
+  onboarded        Boolean           @default(false)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  employerProfiles EmployerProfile[]
+  talentProfile    TalentProfile?
+  inquiriesSent    Inquiry[]         @relation("InquirySender")
+  blocking         BlockedUser[]     @relation("UserBlocking")
+  blockedBy        BlockedUser[]     @relation("UserBlocked")
+  starredInquiries StarredInquiry[]
+  notifications    Notification[]
+  shopFollows      ShopFollow[]
+
+}
+
+// ─── Talent Profile ──────────────────────────────────
+
+model TalentProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  headline        String?
+  bio             String?
+  yearsExperience Int?
+  verified        Boolean  @default(false)
+  website         String?
+  instagram       String?
+  avatarUrl       String?
+  specialties     String[]    @default([])
+  preferredComp   CompModel[] @default([])
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  portfolio       PortfolioPhoto[]
+
+}
+
+model PortfolioPhoto {
+  id              String        @id @default(cuid())
+  talentProfileId String
+  url             String
+  caption         String?
+  sortOrder       Int           @default(0)
+  createdAt       DateTime      @default(now())
+
+  talentProfile   TalentProfile @relation(fields: [talentProfileId], references: [id], onDelete: Cascade)
+
+}
+
+// ─── Employer Profile ────────────────────────────────
+
+model EmployerProfile {
+  id         String    @id @default(cuid())
+  userId     String
+  shopName   String
+  about      String?
+  phone      String?
+  website    String?
+  instagram  String?
+  coverUrl   String?
+  logoUrl    String?
+  teamSize   Int?
+  verified   Boolean   @default(false)
+  services   String[]  @default([])
+  hoursJson  Json?
+  locationId String?
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  location   Location? @relation(fields: [locationId], references: [id])
+  jobs       Job[]
+  followers  ShopFollow[]
+
+}
+
+// ─── Job (Listing) ───────────────────────────────────
+
+model Job {
+  id                 String          @id @default(cuid())
+  employerProfileId  String
+  businessName       String?
+  title              String
+  role               JobRole
+  compModel          CompModel
+  payMin             Decimal?
+  payMax             Decimal?
+  payUnit            String?         // $/hr | % | $/d | $/wk | $/m
+  payVisible         Boolean         @default(true)
+  employmentType     EmploymentType?
+  schedule           ScheduleType?
+  experienceText     String?
+  description        String?
+  locationId         String?
+  status             String          @default("active")
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  viewsCount         Int             @default(0)
+  inquiriesCount     Int             @default(0)
+  expiresAt          DateTime?
+
+  employerProfile    EmployerProfile @relation(fields: [employerProfileId], references: [id])
+  location           Location?       @relation(fields: [locationId], references: [id])
+  photos             JobPhoto[]
+  inquiries          Inquiry[]
+
+}
+
+model JobPhoto {
+  id        String   @id @default(cuid())
+  jobId     String
+  url       String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+}
+
+// ─── Location ────────────────────────────────────────
+
+model Location {
+  id           String            @id @default(cuid())
+  lat          Float?
+  lng          Float?
+  addressLine1 String?
+  city         String?
+  state        String?
+  postalCode   String?
+  country      String?           @default("US")
+  county       String?
+
+  employers    EmployerProfile[]
+  jobs         Job[]
+
+}
+
+// ─── Inquiry ─────────────────────────────────────────
+
+model Inquiry {
+  id        String   @id @default(cuid())
+  senderId  String
+  jobId     String
+  name      String?
+  phone     String?
+  note      String?
+  instagram String?
+  createdAt DateTime @default(now())
+
+  sender    User              @relation("InquirySender", fields: [senderId], references: [id])
+  job       Job               @relation(fields: [jobId], references: [id])
+  stars     StarredInquiry[]
+
+  @@unique([senderId, jobId])
+}
+
+// ─── Blocked User ────────────────────────────────────
+
+model BlockedUser {
+  id        String   @id @default(cuid())
+  blockerId String
+  blockedId String
+  reason    String?
+  createdAt DateTime @default(now())
+
+  blocker   User     @relation("UserBlocking", fields: [blockerId], references: [id])
+  blocked   User     @relation("UserBlocked", fields: [blockedId], references: [id])
+
+  @@unique([blockerId, blockedId])
+}
+
+// ─── Starred Inquiry ─────────────────────────────────
+
+model StarredInquiry {
+  id        String   @id @default(cuid())
+  userId    String
+  inquiryId String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  inquiry   Inquiry  @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, inquiryId])
+}
+
+// ─── Notification ────────────────────────────────────
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // inquiry | message | follow | system | verified
+  title     String
+  body      String
+  isRead    Boolean  @default(false)
+  linkUrl   String?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+}
+
+// ─── Shop Follow ─────────────────────────────────────
+
+model ShopFollow {
+  id                String          @id @default(cuid())
+  userId            String
+  employerProfileId String
+  createdAt         DateTime        @default(now())
+
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employerProfile   EmployerProfile @relation(fields: [employerProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, employerProfileId])
+}
