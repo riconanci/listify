@@ -19,7 +19,8 @@ interface ManageListingCardProps {
   id: string;
   title: string;
   businessName: string;
-  role: string;
+  role: string;  // kept for backward compat, but prefer specialties
+  specialties?: string[];
   status: string;
   viewsCount: number;
   inquiriesCount: number;
@@ -65,6 +66,7 @@ export default function ManageListingCard({
   title,
   businessName,
   role,
+  specialties,
   status,
   viewsCount,
   inquiriesCount,
@@ -201,7 +203,9 @@ export default function ManageListingCard({
               isExpired ? "text-slate-500" : "text-primary"
             )}
           >
-            {formatRole(role)}
+            {specialties && specialties.length > 0
+              ? specialties.map(formatRole).join(" · ")
+              : formatRole(role)}
           </span>
         </div>
 

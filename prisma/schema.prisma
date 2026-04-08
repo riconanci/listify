@@ -15,14 +15,22 @@ enum UserRole {
   admin
 }
 
-enum JobRole {
+enum Industry {
+  hair
+  tattoo
+}
+
+enum Specialty {
   barber
   cosmetologist
   tattoo_artist
-  esthetician
-  nail_tech
-  lash_tech
   piercer
+}
+
+enum ShopType {
+  barbershop
+  salon
+  tattoo_shop
 }
 
 enum CompModel {
@@ -65,29 +73,29 @@ model User {
   starredInquiries StarredInquiry[]
   notifications    Notification[]
   shopFollows      ShopFollow[]
-
 }
 
 // ─── Talent Profile ──────────────────────────────────
 
 model TalentProfile {
-  id              String   @id @default(cuid())
-  userId          String   @unique
+  id              String      @id @default(cuid())
+  userId          String      @unique
+  industry        Industry?
+  licenses        Specialty[] @default([])
   headline        String?
   bio             String?
   yearsExperience Int?
-  verified        Boolean  @default(false)
+  verified        Boolean     @default(false)
   website         String?
   instagram       String?
   avatarUrl       String?
   specialties     String[]    @default([])
   preferredComp   CompModel[] @default([])
   createdAt       DateTime    @default(now())
-  updatedAt       DateTime @updatedAt
+  updatedAt       DateTime    @updatedAt
 
   user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   portfolio       PortfolioPhoto[]
-
 }
 
 model PortfolioPhoto {
@@ -99,7 +107,6 @@ model PortfolioPhoto {
   createdAt       DateTime      @default(now())
 
   talentProfile   TalentProfile @relation(fields: [talentProfileId], references: [id], onDelete: Cascade)
-
 }
 
 // ─── Employer Profile ────────────────────────────────
@@ -108,6 +115,8 @@ model EmployerProfile {
   id         String    @id @default(cuid())
   userId     String
   shopName   String
+  shopType   ShopType?
+  industry   Industry?
   about      String?
   phone      String?
   website    String?
@@ -124,7 +133,6 @@ model EmployerProfile {
   location   Location? @relation(fields: [locationId], references: [id])
   jobs       Job[]
   followers  ShopFollow[]
-
 }
 
 // ─── Job (Listing) ───────────────────────────────────
@@ -134,11 +142,12 @@ model Job {
   employerProfileId  String
   businessName       String?
   title              String
-  role               JobRole
+  industry           Industry        @default(hair)
+  specialties        Specialty[]     @default([])
   compModel          CompModel
   payMin             Decimal?
   payMax             Decimal?
-  payUnit            String?         // $/hr | % | $/d | $/wk | $/m
+  payUnit            String?
   payVisible         Boolean         @default(true)
   employmentType     EmploymentType?
   schedule           ScheduleType?
@@ -156,7 +165,6 @@ model Job {
   location           Location?       @relation(fields: [locationId], references: [id])
   photos             JobPhoto[]
   inquiries          Inquiry[]
-
 }
 
 model JobPhoto {
@@ -167,7 +175,6 @@ model JobPhoto {
   createdAt DateTime @default(now())
 
   job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-
 }
 
 // ─── Location ────────────────────────────────────────
@@ -185,7 +192,6 @@ model Location {
 
   employers    EmployerProfile[]
   jobs         Job[]
-
 }
 
 // ─── Inquiry ─────────────────────────────────────────
@@ -241,7 +247,7 @@ model StarredInquiry {
 model Notification {
   id        String   @id @default(cuid())
   userId    String
-  type      String   // inquiry | message | follow | system | verified
+  type      String
   title     String
   body      String
   isRead    Boolean  @default(false)

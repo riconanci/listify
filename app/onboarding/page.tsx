@@ -12,15 +12,12 @@ import {
 } from "lucide-react";
 import { clsx } from "clsx";
 
-const SPECIALTIES = [
-  "Barber",
-  "Cosmetologist",
-  "Tattoo Artist",
-  "Esthetician",
-  "Nail Tech",
-  "Lash Tech",
-  "Piercer",
-];
+const SPECIALTIES_BY_INDUSTRY: Record<string, string[]> = {
+  hair: ["Barber", "Cosmetologist"],
+  tattoo: ["Tattoo Artist", "Piercer"],
+};
+
+const ALL_SPECIALTIES = ["Barber", "Cosmetologist", "Tattoo Artist", "Piercer"];
 
 const STEPS = [
   { label: "Welcome", icon: User },
@@ -208,7 +205,7 @@ export default function OnboardingPage() {
 
             <div className="mt-8">
               <div className="grid grid-cols-2 gap-3">
-                {SPECIALTIES.map((s) => {
+                {ALL_SPECIALTIES.map((s) => {
                   const selected = specialties.includes(s);
                   return (
                     <button

@@ -150,7 +150,8 @@ export default function ManageListingsPage() {
                 id={job.id}
                 title={job.title}
                 businessName={job.businessName || "Business"}
-                role={job.role}
+                role={""}
+                specialties={job.specialties || []}
                 status={job.status}
                 viewsCount={job.viewsCount}
                 inquiriesCount={job.inquiriesCount}

@@ -32,13 +32,10 @@ export interface FilterState {
 }
 
 const SERVICE_OPTIONS = [
-  { value: "", label: "Any service" },
+  { value: "", label: "Any specialty" },
   { value: "barber", label: "Barber" },
-  { value: "cosmetologist", label: "Hair Stylist" },
+  { value: "cosmetologist", label: "Cosmetologist" },
   { value: "tattoo_artist", label: "Tattoo Artist" },
-  { value: "esthetician", label: "Esthetician" },
-  { value: "nail_tech", label: "Nail Tech" },
-  { value: "lash_tech", label: "Lash Tech" },
   { value: "piercer", label: "Piercer" },
 ];
 

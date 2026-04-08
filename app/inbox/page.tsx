@@ -220,7 +220,7 @@ export default function InboxPage() {
                 jobTitle={inq.job.title}
                 businessName={inq.job.businessName || ""}
                 jobId={inq.job.id}
-                role={inq.job.role}
+                role={inq.job.specialties?.map((s: string) => s.split("_").map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")).join(" · ") || ""}
                 city={inq.job.location?.city}
                 state={inq.job.location?.state}
                 note={inq.note}

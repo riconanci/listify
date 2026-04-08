@@ -9,7 +9,7 @@ interface JobCardProps {
   id: string;
   businessName: string;
   title: string;
-  role: string;
+  specialties: string[];
   schedule?: string | null;
   compModel: string;
   payMin?: number | null;
@@ -75,7 +75,7 @@ export default function JobCard({
   id,
   businessName,
   title,
-  role,
+  specialties,
   schedule,
   compModel,
   payMin,
@@ -88,6 +88,7 @@ export default function JobCard({
 }: JobCardProps) {
   const formattedSchedule = formatSchedule(schedule);
   const isFullTime = schedule === "full_time";
+  const specLabel = specialties.map(formatRole).join(" · ");
 
   const [saved, setSaved] = useState(false);
 
@@ -114,7 +115,7 @@ export default function JobCard({
           id,
           businessName,
           title,
-          role,
+          specialties,
           schedule,
           compModel,
           payMin,
@@ -162,7 +163,7 @@ export default function JobCard({
           </div>
         </div>
         {/* Service */}
-        <div className="col-span-1 text-sm text-slate-300">{formatRole(role)}</div>
+        <div className="col-span-1 text-sm text-slate-300">{specLabel}</div>
         {/* Schedule */}
         <div className="col-span-2 text-center">
           {formattedSchedule && (
@@ -225,7 +226,7 @@ export default function JobCard({
           </h3>
           <p className="text-xs text-slate-400 mt-0.5 truncate">{title}</p>
           <div className="flex flex-wrap items-center gap-1.5 mt-2 text-xs">
-            <span className="text-slate-400">{formatRole(role)}</span>
+            <span className="text-slate-400">{specLabel}</span>
             <span className="text-slate-600">•</span>
             {formattedSchedule && (
               <>

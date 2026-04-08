@@ -20,7 +20,7 @@ interface MapJob {
   id: string;
   businessName: string;
   title: string;
-  role: string;
+  specialties: string[];
   compModel: string;
   payMin: number | null;
   payMax: number | null;
@@ -106,7 +106,7 @@ export default function BrowseMap({ jobs, userLat, userLng }: BrowseMapProps) {
                   <p className="text-xs text-slate-600 mt-0.5">{job.title}</p>
                   <div className="flex items-center gap-2 mt-2 text-xs">
                     <span className="px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-medium">
-                      {formatRole(job.role)}
+                      {job.specialties.map(formatRole).join(" · ")}
                     </span>
                     <span className="font-semibold text-slate-800">
                       {formatComp(job.compModel, job.payMin, job.payMax, job.payUnit)}

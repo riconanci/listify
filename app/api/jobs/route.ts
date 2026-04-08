@@ -46,9 +46,20 @@ export async function GET(request: Request) {
       ],
     };
 
-    if (filters.service) {
-      where.role = filters.service;
+    // Industry filter
+    if (filters.industry) {
+      where.industry = filters.industry;
     }
+
+    // Specialty filter — supports comma-separated values
+    // Shows listings that include ANY of the selected specialties
+    if (filters.specialty) {
+      const specs = filters.specialty.split(",").filter(Boolean);
+      if (specs.length > 0) {
+        where.specialties = { hasSome: specs };
+      }
+    }
+
     if (filters.schedule) {
       where.schedule = filters.schedule;
     }
@@ -81,7 +92,7 @@ export async function GET(request: Request) {
     // Apply radius filter if lat/lng provided
     if (filters.lat && filters.lng && filters.radius) {
       jobs = jobs.filter((job) => {
-        if (!job.location?.lat || !job.location?.lng) return true; // Include jobs without location
+        if (!job.location?.lat || !job.location?.lng) return true;
         const dist = haversineDistance(
           filters.lat!,
           filters.lng!,
@@ -167,7 +178,8 @@ export async function POST(request: Request) {
         employerProfileId: profile.id,
         businessName: data.businessName,
         title: data.title,
-        role: data.role as any,
+        industry: data.industry as any,
+        specialties: data.specialties as any,
         compModel: data.compModel as any,
         payMin: data.payMin,
         payMax: data.payMax,

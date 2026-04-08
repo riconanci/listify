@@ -164,7 +164,12 @@ export default async function JobDetailPage({ params }: PageProps) {
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
-            <StatusBadge variant="primary">{formatRole(job.role)}</StatusBadge>
+            {(job.specialties && job.specialties.length > 0
+              ? job.specialties
+              : []
+            ).filter(Boolean).map((spec: string) => (
+              <StatusBadge key={spec} variant="primary">{formatRole(spec)}</StatusBadge>
+            ))}
             {schedule && <StatusBadge variant="default">{schedule}</StatusBadge>}
             {employmentType && (
               <StatusBadge variant="default">{employmentType}</StatusBadge>

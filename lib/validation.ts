@@ -13,6 +13,9 @@ export const registerSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   phone: z.string().optional(),
   role: z.enum(["talent", "employer"]).default("talent"),
+  industry: z.enum(["hair", "tattoo"]).optional(),
+  shopType: z.enum(["barbershop", "salon", "tattoo_shop"]).optional(),
+  licenses: z.array(z.enum(["barber", "cosmetologist", "tattoo_artist", "piercer"])).optional(),
 });
 
 // ─── Job / Listing ───────────────────────────────────
@@ -20,15 +23,8 @@ export const registerSchema = z.object({
 export const createJobSchema = z.object({
   businessName: z.string().min(1).max(100),
   title: z.string().min(1).max(60),
-  role: z.enum([
-    "barber",
-    "cosmetologist",
-    "tattoo_artist",
-    "esthetician",
-    "nail_tech",
-    "lash_tech",
-    "piercer",
-  ]),
+  industry: z.enum(["hair", "tattoo"]),
+  specialties: z.array(z.enum(["barber", "cosmetologist", "tattoo_artist", "piercer"])).min(1, "Select at least one specialty"),
   compModel: z.enum(["hourly", "commission", "booth_rent", "hybrid"]),
   payMin: z.number().nullable().optional(),
   payMax: z.number().nullable().optional(),
@@ -42,7 +38,7 @@ export const createJobSchema = z.object({
   city: z.string().nullable().optional(),
   lat: z.number().nullable().optional(),
   lng: z.number().nullable().optional(),
-  photo: z.string().nullable().optional(), // base64 data URL
+  photo: z.string().nullable().optional(),
 });
 
 export const updateJobStatusSchema = z.object({
@@ -84,7 +80,10 @@ export const switchRoleSchema = z.object({
 
 export const onboardingSchema = z.object({
   role: z.enum(["talent", "employer"]),
+  industry: z.enum(["hair", "tattoo"]).optional(),
   specialties: z.array(z.string()).optional(),
+  licenses: z.array(z.string()).optional(),
+  shopType: z.string().optional(),
 });
 
 // ─── Block ───────────────────────────────────────────
@@ -98,12 +97,13 @@ export const blockUserSchema = z.object({
 
 export const jobFiltersSchema = z.object({
   search: z.string().optional(),
-  service: z.string().optional(),
+  industry: z.string().optional(),
+  specialty: z.string().optional(), // comma-separated for multi
   schedule: z.string().optional(),
   compModel: z.string().optional(),
   city: z.string().optional(),
   lat: z.coerce.number().optional(),
   lng: z.coerce.number().optional(),
   radius: z.coerce.number().min(1).max(100).optional(),
-  manage: z.string().optional(), // "true" for employer's own listings
+  manage: z.string().optional(),
 });

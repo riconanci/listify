@@ -102,7 +102,7 @@ export default function SavedPage() {
                   id={job.id}
                   businessName={job.businessName}
                   title={job.title}
-                  role={job.role}
+                  specialties={job.specialties || (job.role ? [job.role] : [])}
                   schedule={job.schedule}
                   compModel={job.compModel}
                   payMin={job.payMin}

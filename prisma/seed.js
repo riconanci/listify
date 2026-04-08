@@ -6,521 +6,420 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 Seeding Listify database...\n");
 
-  // Clean existing data
-  await prisma.notification.deleteMany();
-  await prisma.shopFollow.deleteMany();
-  await prisma.starredInquiry.deleteMany();
-  await prisma.blockedUser.deleteMany();
-  await prisma.inquiry.deleteMany();
-  await prisma.jobPhoto.deleteMany();
-  await prisma.job.deleteMany();
-  await prisma.portfolioPhoto.deleteMany();
-  await prisma.talentProfile.deleteMany();
-  await prisma.employerProfile.deleteMany();
-  await prisma.location.deleteMany();
-  await prisma.user.deleteMany();
-
   const hash = await bcrypt.hash("password", 10);
 
-  // ─── Create Users ─────────────────────────────────
-
-  const talent1 = await prisma.user.create({
-    data: {
-      email: "talent@test.com",
-      name: "Alex Rivera",
-      phone: "6195551001",
-      passwordHash: hash,
-      role: "talent",
-      onboarded: true,
-    },
-  });
-
-  const talent2 = await prisma.user.create({
-    data: {
-      email: "maria@test.com",
-      name: "Maria Santos",
-      phone: "6195551002",
-      passwordHash: hash,
-      role: "talent",
-      onboarded: true,
-    },
-  });
-
-  const talent3 = await prisma.user.create({
-    data: {
-      email: "jaylen@test.com",
-      name: "Jaylen Brooks",
-      phone: "6195551003",
-      passwordHash: hash,
-      role: "talent",
-      onboarded: true,
-    },
-  });
-
-  const employer1 = await prisma.user.create({
-    data: {
-      email: "employer@test.com",
-      name: "Carlos Mendez",
-      phone: "6195552001",
-      passwordHash: hash,
-      role: "employer",
-      onboarded: true,
-    },
-  });
-
-  const employer2 = await prisma.user.create({
-    data: {
-      email: "sarah@test.com",
-      name: "Sarah Kim",
-      phone: "6195552002",
-      passwordHash: hash,
-      role: "employer",
-      onboarded: true,
-    },
-  });
-
-  const employer3 = await prisma.user.create({
-    data: {
-      email: "mike@test.com",
-      name: "Mike Johnson",
-      phone: "6195552003",
-      passwordHash: hash,
-      role: "employer",
-      onboarded: true,
-    },
-  });
-
-  console.log("✅ Created 6 users (3 talent, 3 scouts)");
-
-  // ─── Talent Profiles ──────────────────────────────
-
-  await prisma.talentProfile.create({
-    data: {
-      userId: talent1.id,
-      headline: "Senior Barber & Stylist",
-      bio: "Dedicated stylist with over 5 years of experience in high-end barbershops across California. Specialist in modern fades and precision beard sculpting.",
-      yearsExperience: 5,
-      verified: true,
-      instagram: "alex_cuts_sd",
-      website: "alexrivera.style",
-      specialties: ["Barbering", "Beard Sculpting", "Fades", "Hair Coloring"],
-    },
-  });
-
-  await prisma.talentProfile.create({
-    data: {
-      userId: talent2.id,
-      headline: "Licensed Cosmetologist",
-      bio: "Passionate about color theory and modern styling techniques. 3 years experience in busy salons.",
-      yearsExperience: 3,
-      verified: false,
-      instagram: "maria_styles",
-      specialties: ["Cosmetology", "Color", "Blowouts", "Extensions"],
-    },
-  });
-
-  await prisma.talentProfile.create({
-    data: {
-      userId: talent3.id,
-      headline: "Tattoo Artist — Traditional & Neo-Traditional",
-      bio: "Apprentice-trained tattoo artist specializing in bold traditional work and neo-traditional color pieces.",
-      yearsExperience: 4,
-      verified: true,
-      instagram: "jaylen_ink",
-      specialties: ["Tattoo Art", "Traditional", "Neo-Traditional"],
-    },
-  });
-
-  console.log("✅ Created 3 talent profiles");
-
-  // ─── Locations ─────────────────────────────────────
-
-  const locEncinitas = await prisma.location.create({
-    data: {
-      lat: 33.0370,
-      lng: -117.2920,
-      addressLine1: "500 S Coast Hwy",
-      city: "Encinitas",
-      state: "CA",
-      postalCode: "92024",
-      county: "San Diego",
-    },
-  });
-
-  const locCarlsbad = await prisma.location.create({
-    data: {
-      lat: 33.1581,
-      lng: -117.3506,
-      addressLine1: "2588 El Camino Real",
-      city: "Carlsbad",
-      state: "CA",
-      postalCode: "92008",
-      county: "San Diego",
-    },
-  });
-
-  const locOceanside = await prisma.location.create({
-    data: {
-      lat: 33.1959,
-      lng: -117.3795,
-      addressLine1: "1920 Mission Ave",
-      city: "Oceanside",
-      state: "CA",
-      postalCode: "92058",
-      county: "San Diego",
-    },
-  });
-
-  const locSD = await prisma.location.create({
-    data: {
-      lat: 32.7157,
-      lng: -117.1611,
-      addressLine1: "345 University Ave",
-      city: "San Diego",
-      state: "CA",
-      postalCode: "92103",
-      county: "San Diego",
-    },
-  });
-
-  const locEscondido = await prisma.location.create({
-    data: {
-      lat: 33.1192,
-      lng: -117.0864,
-      addressLine1: "200 E Grand Ave",
-      city: "Escondido",
-      state: "CA",
-      postalCode: "92025",
-      county: "San Diego",
-    },
-  });
-
-  const locVista = await prisma.location.create({
-    data: {
-      lat: 33.2000,
-      lng: -117.2428,
-      addressLine1: "125 Main St",
-      city: "Vista",
-      state: "CA",
-      postalCode: "92084",
-      county: "San Diego",
-    },
-  });
-
-  console.log("✅ Created 6 San Diego County locations");
-
-  // ─── Employer Profiles ─────────────────────────────
-
-  const shop1 = await prisma.employerProfile.create({
-    data: {
-      userId: employer1.id,
-      shopName: "American Deluxe Barbershop",
-      about: "Founded in 2015, American Deluxe Barbershop has become a cornerstone of the Encinitas grooming scene.",
-      phone: "7605551001",
-      website: "www.americandeluxe.com",
-      instagram: "americandeluxe_shop",
-      teamSize: 8,
-      verified: true,
-      services: ["Barbering", "Hot Shaves", "Hair Coloring"],
-      locationId: locEncinitas.id,
-    },
-  });
-
-  const shop2 = await prisma.employerProfile.create({
-    data: {
-      userId: employer2.id,
-      shopName: "Pacific Coast Beauty Studio",
-      about: "Full-service beauty studio specializing in hair, nails, and lash extensions.",
-      phone: "7605551002",
-      website: "www.pcbeauty.com",
-      instagram: "pcbeauty_sd",
-      teamSize: 12,
-      verified: true,
-      services: ["Cosmetology", "Nail Art", "Lash Extensions", "Esthetics"],
-      locationId: locCarlsbad.id,
-    },
-  });
-
-  const shop3 = await prisma.employerProfile.create({
-    data: {
-      userId: employer3.id,
-      shopName: "Iron & Ink Tattoo Studio",
-      about: "San Diego's premier tattoo studio for custom work. Walk-ins welcome.",
-      phone: "6195551003",
-      website: "www.ironandinksd.com",
-      instagram: "ironandink_sd",
-      teamSize: 5,
-      verified: false,
-      services: ["Tattooing", "Piercing"],
-      locationId: locSD.id,
-    },
-  });
-
-  console.log("✅ Created 3 shop profiles");
-
-  // ─── Jobs (Listings) ──────────────────────────────
-
-  // Expiration dates for testing
-  const in14Days = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-  const in2Days = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
-  const expired = new Date(Date.now() - 1 * 24 * 60 * 60 * 1000);
-  const in10Days = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
-
-  const jobs = await Promise.all([
-    prisma.job.create({
+  // ─── Users ───────────────────────────────────────
+  const talentUsers = await Promise.all([
+    prisma.user.create({
       data: {
-        employerProfileId: shop1.id,
-        businessName: "American Deluxe Barbershop",
-        title: "Senior Barber — Chair Available",
-        role: "barber",
-        compModel: "commission",
-        payMin: 60,
-        payMax: 70,
-        payUnit: "%",
-        payVisible: true,
-        schedule: "full_time",
-        employmentType: "c1099",
-        experienceText: "3+ years",
-        description: "Looking for an experienced barber to join our growing team. Must be skilled in classic cuts and modern fades.",
-        locationId: locEncinitas.id,
-        viewsCount: 47,
-        inquiriesCount: 3,
-        expiresAt: in14Days,
+        email: "talent@test.com",
+        name: "Carlos Martinez",
+        passwordHash: hash,
+        role: "talent",
+        onboarded: true,
       },
     }),
-    prisma.job.create({
+    prisma.user.create({
       data: {
-        employerProfileId: shop1.id,
-        businessName: "American Deluxe Barbershop",
-        title: "Apprentice Barber",
-        role: "barber",
-        compModel: "hourly",
-        payMin: 16,
-        payMax: 20,
-        payUnit: "$/hr",
-        payVisible: true,
-        schedule: "part_time",
-        employmentType: "w2",
-        experienceText: "0-1 years",
-        description: "Great opportunity for someone starting their barbering career. Training provided.",
-        locationId: locEncinitas.id,
-        viewsCount: 89,
-        inquiriesCount: 1,
-        expiresAt: in2Days,
+        email: "talent2@test.com",
+        name: "Jasmine Lee",
+        passwordHash: hash,
+        role: "talent",
+        onboarded: true,
       },
     }),
-    prisma.job.create({
+    prisma.user.create({
       data: {
-        employerProfileId: shop2.id,
-        businessName: "Pacific Coast Beauty Studio",
-        title: "Hair Stylist — Booth Rental",
-        role: "cosmetologist",
-        compModel: "booth_rent",
-        payMin: 200,
-        payMax: 200,
-        payUnit: "$/wk",
-        payVisible: true,
-        schedule: "full_time",
-        experienceText: "2+ years",
-        description: "Booth available for an independent stylist. Bring your own clientele. All amenities included.",
-        locationId: locCarlsbad.id,
-        viewsCount: 134,
-        inquiriesCount: 5,
-        expiresAt: in10Days,
-      },
-    }),
-    prisma.job.create({
-      data: {
-        employerProfileId: shop2.id,
-        businessName: "Pacific Coast Beauty Studio",
-        title: "Nail Technician",
-        role: "nail_tech",
-        compModel: "commission",
-        payMin: 50,
-        payMax: 60,
-        payUnit: "%",
-        payVisible: true,
-        schedule: "full_time",
-        employmentType: "w2",
-        experienceText: "1+ years",
-        description: "Join our team! We specialize in gel, acrylic, and nail art. Must be licensed.",
-        locationId: locCarlsbad.id,
-        viewsCount: 63,
-        inquiriesCount: 2,
-        expiresAt: in14Days,
-      },
-    }),
-    prisma.job.create({
-      data: {
-        employerProfileId: shop2.id,
-        businessName: "Pacific Coast Beauty Studio",
-        title: "Lash Extension Artist",
-        role: "lash_tech",
-        compModel: "hybrid",
-        payMin: 15,
-        payMax: 60,
-        payUnit: "hybrid",
-        payVisible: true,
-        schedule: "part_time",
-        experienceText: "1+ years",
-        description: "Guaranteed $15/hr base plus 60% commission on lash extensions. Must be certified in classic and volume lash application.",
-        locationId: locCarlsbad.id,
-        viewsCount: 41,
-        inquiriesCount: 1,
-        expiresAt: in14Days,
-      },
-    }),
-    prisma.job.create({
-      data: {
-        employerProfileId: shop3.id,
-        businessName: "Iron & Ink Tattoo Studio",
-        title: "Tattoo Artist — Traditional/Neo-Trad",
-        role: "tattoo_artist",
-        compModel: "commission",
-        payMin: 50,
-        payMax: 60,
-        payUnit: "%",
-        payVisible: true,
-        schedule: "full_time",
-        experienceText: "3+ years",
-        description: "Seeking a talented tattoo artist specializing in traditional or neo-traditional styles.",
-        locationId: locSD.id,
-        viewsCount: 210,
-        inquiriesCount: 12,
-        expiresAt: expired,
-      },
-    }),
-    prisma.job.create({
-      data: {
-        employerProfileId: shop3.id,
-        businessName: "Iron & Ink Tattoo Studio",
-        title: "Body Piercer",
-        role: "piercer",
-        compModel: "hourly",
-        payMin: 22,
-        payMax: 28,
-        payUnit: "$/hr",
-        payVisible: true,
-        schedule: "part_time",
-        experienceText: "2+ years",
-        description: "Part-time piercer needed for weekends. Must have experience with ear, nose, and body piercings.",
-        locationId: locSD.id,
-        viewsCount: 35,
-        inquiriesCount: 4,
-        expiresAt: in14Days,
-      },
-    }),
-    prisma.job.create({
-      data: {
-        employerProfileId: shop1.id,
-        businessName: "American Deluxe Barbershop",
-        title: "Barber — Escondido Location",
-        role: "barber",
-        compModel: "commission",
-        payMin: 55,
-        payMax: 65,
-        payUnit: "%",
-        payVisible: true,
-        schedule: "full_time",
-        experienceText: "2+ years",
-        description: "New location opening! Be part of our expansion into Escondido.",
-        locationId: locEscondido.id,
-        viewsCount: 28,
-        inquiriesCount: 0,
-        expiresAt: in10Days,
+        email: "talent3@test.com",
+        name: "Mike Torres",
+        passwordHash: hash,
+        role: "talent",
+        onboarded: true,
       },
     }),
   ]);
 
-  console.log(`✅ Created ${jobs.length} listings across San Diego County`);
+  const scoutUsers = await Promise.all([
+    prisma.user.create({
+      data: {
+        email: "employer@test.com",
+        name: "Sarah Chen",
+        passwordHash: hash,
+        role: "employer",
+        onboarded: true,
+      },
+    }),
+    prisma.user.create({
+      data: {
+        email: "employer2@test.com",
+        name: "David Park",
+        passwordHash: hash,
+        role: "employer",
+        onboarded: true,
+      },
+    }),
+    prisma.user.create({
+      data: {
+        email: "employer3@test.com",
+        name: "Reiko Tanaka",
+        passwordHash: hash,
+        role: "employer",
+        onboarded: true,
+      },
+    }),
+  ]);
 
-  // ─── Inquiries ─────────────────────────────────────
+  console.log(`✅ Created ${talentUsers.length + scoutUsers.length} users`);
 
-  await prisma.inquiry.create({
-    data: {
-      senderId: talent1.id,
-      jobId: jobs[0].id,
-      name: "Alex Rivera",
-      phone: "6195551001",
-      note: "I have 5 years of experience and would love to join your team. Currently cutting at a shop in Oceanside.",
-      instagram: "alex_cuts_sd",
-    },
-  });
+  // ─── Talent Profiles ─────────────────────────────
+  await Promise.all([
+    prisma.talentProfile.create({
+      data: {
+        userId: talentUsers[0].id,
+        industry: "hair",
+        licenses: ["barber"],
+        headline: "Experienced barber — fades & tapers",
+        bio: "8 years behind the chair. Specialize in skin fades, beard sculpting, and classic cuts.",
+        yearsExperience: 8,
+        instagram: "carlos_cuts_sd",
+      },
+    }),
+    prisma.talentProfile.create({
+      data: {
+        userId: talentUsers[1].id,
+        industry: "hair",
+        licenses: ["cosmetologist", "barber"],
+        headline: "Licensed cosmetologist + barber",
+        bio: "Dual-licensed with 5 years of experience. Color specialist and precision cuts.",
+        yearsExperience: 5,
+        instagram: "jasmine.styles",
+      },
+    }),
+    prisma.talentProfile.create({
+      data: {
+        userId: talentUsers[2].id,
+        industry: "tattoo",
+        licenses: ["tattoo_artist", "piercer"],
+        headline: "Tattoo artist & piercer — 10 years",
+        bio: "Blackwork, fine line, and all piercings. Portfolio on Instagram.",
+        yearsExperience: 10,
+        instagram: "miketorres_ink",
+      },
+    }),
+  ]);
 
-  await prisma.inquiry.create({
-    data: {
-      senderId: talent2.id,
-      jobId: jobs[2].id,
-      name: "Maria Santos",
-      phone: "6195551002",
-      note: "Interested in the booth rental. I have a strong clientele in the Carlsbad area.",
-      instagram: "maria_styles",
-    },
-  });
+  console.log("✅ Created talent profiles");
 
-  await prisma.inquiry.create({
-    data: {
-      senderId: talent3.id,
-      jobId: jobs[5].id,
-      name: "Jaylen Brooks",
-      phone: "6195551003",
-      note: "Love the work coming out of Iron & Ink. My portfolio is on Instagram — would love to chat.",
-      instagram: "jaylen_ink",
-    },
-  });
+  // ─── Locations ────────────────────────────────────
+  const locations = await Promise.all([
+    prisma.location.create({
+      data: { lat: 33.0376, lng: -117.2920, addressLine1: "102 Encinitas Blvd", city: "Encinitas", state: "CA" },
+    }),
+    prisma.location.create({
+      data: { lat: 33.1581, lng: -117.3506, addressLine1: "300 Carlsbad Village Dr", city: "Carlsbad", state: "CA" },
+    }),
+    prisma.location.create({
+      data: { lat: 33.1959, lng: -117.3795, addressLine1: "401 Mission Ave", city: "Oceanside", state: "CA" },
+    }),
+    prisma.location.create({
+      data: { lat: 32.7157, lng: -117.1611, addressLine1: "750 Fifth Ave", city: "San Diego", state: "CA" },
+    }),
+    prisma.location.create({
+      data: { lat: 33.1192, lng: -117.0864, addressLine1: "200 E Grand Ave", city: "Escondido", state: "CA" },
+    }),
+    prisma.location.create({
+      data: { lat: 33.2000, lng: -117.2426, addressLine1: "600 S Santa Fe Ave", city: "Vista", state: "CA" },
+    }),
+  ]);
 
-  console.log("✅ Created 3 sample inquiries");
+  console.log(`✅ Created ${locations.length} locations`);
+
+  // ─── Employer Profiles ────────────────────────────
+  const profiles = await Promise.all([
+    prisma.employerProfile.create({
+      data: {
+        userId: scoutUsers[0].id,
+        shopName: "American Deluxe Barbershop",
+        shopType: "barbershop",
+        industry: "hair",
+        about: "Premium barbershop in North County. Walk-ins welcome.",
+        phone: "7605551234",
+        teamSize: 6,
+        locationId: locations[0].id,
+      },
+    }),
+    prisma.employerProfile.create({
+      data: {
+        userId: scoutUsers[1].id,
+        shopName: "Pacific Hair Studio",
+        shopType: "salon",
+        industry: "hair",
+        about: "Full-service salon in Carlsbad Village. Color specialists.",
+        phone: "7605555678",
+        teamSize: 8,
+        locationId: locations[1].id,
+      },
+    }),
+    prisma.employerProfile.create({
+      data: {
+        userId: scoutUsers[2].id,
+        shopName: "Iron Tide Tattoo",
+        shopType: "tattoo_shop",
+        industry: "tattoo",
+        about: "Custom tattoo studio and piercings in downtown SD.",
+        phone: "6195559999",
+        teamSize: 4,
+        locationId: locations[3].id,
+      },
+    }),
+  ]);
+
+  console.log(`✅ Created ${profiles.length} employer profiles`);
+
+  // ─── Jobs (Listings) ──────────────────────────────
+  const now = new Date();
+  const d = (days) => {
+    const date = new Date(now);
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  const jobs = await Promise.all([
+    // Hair listings — barbershop wants barbers only
+    prisma.job.create({
+      data: {
+        employerProfileId: profiles[0].id,
+        businessName: "American Deluxe Barbershop",
+        title: "Barber — Encinitas Location",
+        industry: "hair",
+        specialties: ["barber"],
+        compModel: "commission",
+        payMin: 65,
+        payMax: 65,
+        payUnit: "%",
+        experienceText: "2+ years",
+        description: "Looking for a licensed barber. Busy shop with walk-ins daily.",
+        locationId: locations[0].id,
+        expiresAt: d(14),
+      },
+    }),
+    // Hair listing — barbershop open to barbers OR cosmetologists
+    prisma.job.create({
+      data: {
+        employerProfileId: profiles[0].id,
+        businessName: "American Deluxe Barbershop",
+        title: "Senior Barber — Chair Available",
+        industry: "hair",
+        specialties: ["barber", "cosmetologist"],
+        compModel: "booth_rent",
+        payMin: 200,
+        payMax: 200,
+        payUnit: "$/wk",
+        experienceText: "3+ years",
+        description: "Chair rental. Barber or cosmo license accepted. Build your own clientele.",
+        locationId: locations[0].id,
+        expiresAt: d(2),  // expiring soon
+      },
+    }),
+    // Salon wants cosmetologists only
+    prisma.job.create({
+      data: {
+        employerProfileId: profiles[1].id,
+        businessName: "Pacific Hair Studio",
+        title: "Cosmetologist — Color Specialist",
+        industry: "hair",
+        specialties: ["cosmetologist"],
+        compModel: "hourly",
+        payMin: 22,
+        payMax: 28,
+        payUnit: "$/hr",
+        experienceText: "2+ years",
+        description: "Seeking a licensed cosmetologist with color experience.",
+        locationId: locations[1].id,
+        expiresAt: d(14),
+      },
+    }),
+    // Salon open to both
+    prisma.job.create({
+      data: {
+        employerProfileId: profiles[1].id,
+        businessName: "Pacific Hair Studio",
+        title: "Stylist — Cuts & Color",
+        industry: "hair",
+        specialties: ["barber", "cosmetologist"],
+        compModel: "hybrid",
+        payMin: 15,
+        payMax: 60,
+        payUnit: "hybrid",
+        description: "Looking for a versatile stylist. Any license welcome.",
+        locationId: locations[1].id,
+        expiresAt: d(2),
+      },
+    }),
+    // Tattoo shop wants tattoo artist
+    prisma.job.create({
+      data: {
+        employerProfileId: profiles[2].id,
+        businessName: "Iron Tide Tattoo",
+        title: "Tattoo Artist — Custom Work",
+        industry: "tattoo",
+        specialties: ["tattoo_artist"],
+        compModel: "commission",
+        payMin: 60,
+        payMax: 60,
+        payUnit: "%",
+        experienceText: "3+ years",
+        description: "Looking for an artist with a strong portfolio. Custom work only.",
+        locationId: locations[3].id,
+        expiresAt: d(-2), // Expired
+      },
+    }),
+    // Tattoo shop wants piercer
+    prisma.job.create({
+      data: {
+        employerProfileId: profiles[2].id,
+        businessName: "Iron Tide Tattoo",
+        title: "Piercer — Full Time",
+        industry: "tattoo",
+        specialties: ["piercer"],
+        compModel: "hourly",
+        payMin: 20,
+        payMax: 25,
+        payUnit: "$/hr",
+        schedule: "full_time",
+        description: "Need an experienced piercer for our downtown location.",
+        locationId: locations[3].id,
+        expiresAt: d(10),
+      },
+    }),
+    // Tattoo shop wants both
+    prisma.job.create({
+      data: {
+        employerProfileId: profiles[2].id,
+        businessName: "Iron Tide Tattoo",
+        title: "Artist or Piercer — Booth Rent",
+        industry: "tattoo",
+        specialties: ["tattoo_artist", "piercer"],
+        compModel: "booth_rent",
+        payMin: 300,
+        payMax: 300,
+        payUnit: "$/wk",
+        description: "Private room available. Tattoo artist or piercer welcome.",
+        locationId: locations[3].id,
+        expiresAt: d(14),
+      },
+    }),
+    // Barbershop in Escondido
+    prisma.job.create({
+      data: {
+        employerProfileId: profiles[0].id,
+        businessName: "American Deluxe Barbershop",
+        title: "Barber — Escondido Location",
+        industry: "hair",
+        specialties: ["barber"],
+        compModel: "commission",
+        payMin: 60,
+        payMax: 70,
+        payUnit: "%",
+        experienceText: "1+ years",
+        description: "New location opening. Looking for barbers to join the team.",
+        locationId: locations[4].id,
+        expiresAt: d(-3),  // expired
+      },
+    }),
+  ]);
+
+  console.log(`✅ Created ${jobs.length} listings`);
+
+  // ─── Inquiries ────────────────────────────────────
+  await Promise.all([
+    prisma.inquiry.create({
+      data: {
+        senderId: talentUsers[0].id,
+        jobId: jobs[0].id,
+        name: "Carlos Martinez",
+        phone: "7605551111",
+        note: "8 years experience, looking for a new chair. Available immediately.",
+        instagram: "carlos_cuts_sd",
+      },
+    }),
+    prisma.inquiry.create({
+      data: {
+        senderId: talentUsers[1].id,
+        jobId: jobs[2].id,
+        name: "Jasmine Lee",
+        phone: "7605552222",
+        note: "Licensed cosmetologist with 5 years color experience.",
+        instagram: "jasmine.styles",
+      },
+    }),
+    prisma.inquiry.create({
+      data: {
+        senderId: talentUsers[2].id,
+        jobId: jobs[5].id,
+        name: "Mike Torres",
+        phone: "6195553333",
+        note: "10 years piercing experience. APP certified.",
+        instagram: "miketorres_ink",
+      },
+    }),
+  ]);
+
+  // Update inquiry counts
+  await prisma.job.update({ where: { id: jobs[0].id }, data: { inquiriesCount: 1 } });
+  await prisma.job.update({ where: { id: jobs[2].id }, data: { inquiriesCount: 1 } });
+  await prisma.job.update({ where: { id: jobs[5].id }, data: { inquiriesCount: 1 } });
+
+  console.log("✅ Created 3 inquiries");
 
   // ─── Notifications ────────────────────────────────
-
-  await prisma.notification.createMany({
-    data: [
-      {
-        userId: employer1.id,
+  await Promise.all([
+    prisma.notification.create({
+      data: {
+        userId: scoutUsers[0].id,
         type: "inquiry",
         title: "New Inquiry",
-        body: 'Alex Rivera sent an inquiry about "Senior Barber — Chair Available"',
-        linkUrl: "/inbox",
-        isRead: false,
+        body: "Carlos Martinez sent an inquiry for Barber — Encinitas Location",
+        linkUrl: `/jobs/${jobs[0].id}`,
       },
-      {
-        userId: employer2.id,
+    }),
+    prisma.notification.create({
+      data: {
+        userId: scoutUsers[1].id,
         type: "inquiry",
         title: "New Inquiry",
-        body: 'Maria Santos sent an inquiry about "Hair Stylist — Booth Rental"',
-        linkUrl: "/inbox",
-        isRead: false,
+        body: "Jasmine Lee sent an inquiry for Cosmetologist — Color Specialist",
+        linkUrl: `/jobs/${jobs[2].id}`,
       },
-      {
-        userId: employer3.id,
+    }),
+    prisma.notification.create({
+      data: {
+        userId: scoutUsers[2].id,
         type: "inquiry",
         title: "New Inquiry",
-        body: 'Jaylen Brooks sent an inquiry about "Tattoo Artist"',
-        linkUrl: "/inbox",
+        body: "Mike Torres sent an inquiry for Piercer — Full Time",
+        linkUrl: `/jobs/${jobs[5].id}`,
+      },
+    }),
+    prisma.notification.create({
+      data: {
+        userId: talentUsers[0].id,
+        type: "system",
+        title: "Welcome to Listify",
+        body: "Start browsing listings in San Diego County.",
         isRead: true,
       },
-      {
-        userId: talent1.id,
-        type: "system",
-        title: "Profile Tip",
-        body: "Complete your portfolio to stand out to scouts in your area.",
-        isRead: false,
-      },
-    ],
-  });
+    }),
+  ]);
 
-  console.log("✅ Created sample notifications");
-
-  console.log("\n🎉 Seed complete!\n");
-  console.log("Dev credentials:");
-  console.log("  Talent:  talent@test.com / password");
-  console.log("  Scout:   employer@test.com / password");
-  console.log("");
+  console.log("✅ Created 4 notifications");
+  console.log("\n🎉 Seed complete!");
 }
 
 main()
+  .then(() => prisma.$disconnect())
   .catch((e) => {
-    console.error("❌ Seed error:", e);
+    console.error(e);
+    prisma.$disconnect();
     process.exit(1);
-  })
-  .finally(() => prisma.$disconnect());
+  });

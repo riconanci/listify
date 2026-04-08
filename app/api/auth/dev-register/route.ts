@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { name, email, password, phone, role } = parsed.data;
+    const { name, email, password, phone, role, industry, shopType, licenses } = parsed.data;
 
     // Check if email already exists
     const existing = await prisma.user.findUnique({
@@ -48,12 +48,16 @@ export async function POST(request: Request) {
         data: {
           userId: user.id,
           shopName: name || "My Shop",
+          shopType: (shopType as any) || null,
+          industry: (industry as any) || null,
         },
       });
     } else {
       await prisma.talentProfile.create({
         data: {
           userId: user.id,
+          industry: (industry as any) || null,
+          licenses: (licenses as any) || [],
         },
       });
     }

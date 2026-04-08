@@ -23,7 +23,8 @@ interface Job {
   id: string;
   businessName: string;
   title: string;
-  role: string;
+  industry: string;
+  specialties: string[];
   schedule: string | null;
   compModel: string;
   payMin: number | null;
@@ -65,7 +66,9 @@ export default function BrowseListingsPage() {
     try {
       const params = new URLSearchParams();
       if (f.search) params.set("search", f.search);
-      if (f.service) params.set("service", f.service);
+      if ((f as any).industry) params.set("industry", (f as any).industry);
+      if ((f as any).specialty) params.set("specialty", (f as any).specialty);
+      if (f.service) params.set("specialty", f.service); // backward compat
       if (f.schedule) params.set("schedule", f.schedule);
       if (f.compModel) params.set("compModel", f.compModel);
       if (f.city) params.set("city", f.city);
@@ -203,9 +206,11 @@ export default function BrowseListingsPage() {
           onUseMyLocation={detectLocation}
           userCity={locationName || null}
           onApply={(modalFilters) => {
-            const updated = {
+            const updated: any = {
               ...filters,
-              service: modalFilters.serviceTypes[0] || "",
+              industry: modalFilters.industry || "",
+              specialty: modalFilters.specialties.join(",") || "",
+              service: "", // clear old field
               schedule: modalFilters.schedule[0] || "",
               compModel: modalFilters.compTypes[0] || "",
               city: modalFilters.cities[0] || "",
@@ -244,7 +249,7 @@ export default function BrowseListingsPage() {
                   id={job.id}
                   businessName={job.businessName || "Business"}
                   title={job.title}
-                  role={job.role}
+                  specialties={job.specialties || []}
                   schedule={job.schedule}
                   compModel={job.compModel}
                   payMin={job.payMin ? Number(job.payMin) : null}
@@ -269,7 +274,7 @@ export default function BrowseListingsPage() {
                 id: j.id,
                 businessName: j.businessName || "Business",
                 title: j.title,
-                role: j.role,
+                specialties: j.specialties || [],
                 compModel: j.compModel,
                 payMin: j.payMin ? Number(j.payMin) : null,
                 payMax: j.payMax ? Number(j.payMax) : null,
