@@ -56,8 +56,8 @@ const UNIT_MAP: Record<string, { value: string; label: string }[]> = {
   hourly: [{ value: "$/hr", label: "$/hr" }],
   commission: [{ value: "%", label: "%" }],
   booth_rent: [
-    { value: "$/d", label: "$/day" },
     { value: "$/wk", label: "$/week" },
+    { value: "$/d", label: "$/day" },
     { value: "$/m", label: "$/month" },
   ],
   hybrid: [
@@ -389,20 +389,19 @@ export default function PostListingPage() {
             </div>
 
             {compModel === "hybrid" ? (
-              <div className="space-y-4">
-                <div className="rounded-lg border border-slate-700 bg-bg-input p-4 space-y-3">
-                  <span className="text-xs font-black text-slate-400 uppercase tracking-wider">Base Wage</span>
-                  <div className="flex items-center gap-3">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">Base Wage</label>
+                  <div className="flex items-center gap-2">
                     <span className="text-sm text-slate-500">$</span>
-                    <input type="text" value={hybridWage} onChange={(e) => setHybridWage(e.target.value.replace(/[^0-9.]/g, ""))} placeholder="e.g. 15" className="flex-1 rounded-lg border border-slate-600 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary" />
-                    <span className="text-sm font-semibold text-slate-400">/hr</span>
+                    <input type="text" value={hybridWage} onChange={(e) => setHybridWage(e.target.value.replace(/[^0-9.]/g, ""))} placeholder="e.g. 15" className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary" />
+                    <span className="text-sm font-semibold text-slate-400 shrink-0">/hr</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-center"><span className="text-xs font-bold text-slate-500">+</span></div>
-                <div className="rounded-lg border border-slate-700 bg-bg-input p-4 space-y-3">
-                  <span className="text-xs font-black text-slate-400 uppercase tracking-wider">Commission</span>
-                  <div className="flex items-center gap-3">
-                    <input type="text" value={hybridCommission} onChange={(e) => setHybridCommission(e.target.value.replace(/[^0-9.]/g, ""))} placeholder="e.g. 60" className="flex-1 rounded-lg border border-slate-600 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary" />
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">Take Home</label>
+                  <div className="flex items-center gap-2">
+                    <input type="text" value={hybridCommission} onChange={(e) => setHybridCommission(e.target.value.replace(/[^0-9.]/g, ""))} placeholder="e.g. 60" className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary" />
                     <span className="text-sm font-semibold text-slate-400">%</span>
                   </div>
                 </div>
@@ -410,8 +409,10 @@ export default function PostListingPage() {
             ) : (
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">Value</label>
-                  <input type="text" value={payValue} onChange={(e) => setPayValue(e.target.value)} placeholder={compModel === "commission" ? "e.g. 65 or 60-70" : "e.g. 25 or 20-30"} className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary" />
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">
+                    {compModel === "hourly" ? "Base Wage" : compModel === "commission" ? "Take Home" : "Rent"}
+                  </label>
+                  <input type="text" value={payValue} onChange={(e) => setPayValue(e.target.value)} placeholder={compModel === "commission" ? "e.g. 65 or 60-70" : compModel === "booth_rent" ? "e.g. 200 or 150-250" : "e.g. 25 or 20-30"} className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary" />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-300 mb-2">Unit</label>

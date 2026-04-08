@@ -109,7 +109,7 @@ export default async function JobDetailPage({ params }: PageProps) {
     .filter((r: string) => r.length > 0) || [];
 
   return (
-    <main className="min-h-[calc(100dvh-4rem)] page-with-nav pb-24">
+    <main className="min-h-[calc(100dvh-4rem)] pb-40 md:pb-24">
       {/* Header */}
       <div className="sticky top-16 z-40 border-b border-slate-800 bg-bg-base/95 glass-header px-4 py-3">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
@@ -247,8 +247,8 @@ export default async function JobDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Sticky Inquiry Button */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-800 bg-bg-base/95 glass-header p-4 md:pb-4 pb-safe">
+      {/* Sticky Inquiry Button — above BottomNav on mobile */}
+      <div className="fixed bottom-16 left-0 right-0 z-[999] border-t border-slate-800 bg-bg-base/95 glass-header p-4 pb-safe md:bottom-0">
         <div className="max-w-3xl mx-auto">
           <InquiryForm jobId={id} userRole={userRole} isOwner={isOwner} />
         </div>

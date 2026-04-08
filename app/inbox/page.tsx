@@ -23,7 +23,7 @@ interface InquiryData {
     id: string;
     title: string;
     businessName: string | null;
-    role: string;
+    specialties?: string[];
     location?: {
       city: string | null;
       state: string | null;
