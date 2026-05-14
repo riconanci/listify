@@ -172,15 +172,20 @@ export default function BrowseListingsPage() {
           />
         </div>
 
-        {/* Mobile filter button + view toggle */}
+        {/* Mobile header */}
         <div className="md:hidden flex items-center justify-between">
-          <h1 className="text-xl font-black text-white">Browse Listings</h1>
+          <h1 className="text-lg font-black text-white">Listings</h1>
           <div className="flex items-center gap-2">
             <button
               onClick={() =>
                 setCurrentView((v) => (v === "list" ? "map" : "list"))
               }
-              className="flex items-center justify-center w-9 h-9 rounded-lg border border-slate-700 bg-bg-surface text-slate-300 hover:text-white transition-colors"
+              className={clsx(
+                "flex items-center justify-center w-9 h-9 rounded-lg border transition-colors",
+                currentView === "map"
+                  ? "border-yellow-500 bg-yellow-500/10 text-yellow-400"
+                  : "border-slate-700 bg-bg-surface text-slate-400 hover:text-white"
+              )}
               title={currentView === "list" ? "Map view" : "List view"}
             >
               {currentView === "list" ? (
@@ -191,9 +196,9 @@ export default function BrowseListingsPage() {
             </button>
             <button
               onClick={() => setFilterModalOpen(true)}
-              className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-bg-surface px-3 py-2 text-sm font-semibold text-slate-300 hover:text-white transition-colors"
+              className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-bg-surface px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
             >
-              <SlidersHorizontal className="w-4 h-4" />
+              <SlidersHorizontal className="w-3.5 h-3.5" />
               Filters
             </button>
           </div>
@@ -285,6 +290,7 @@ export default function BrowseListingsPage() {
               }))}
             userLat={filters.lat}
             userLng={filters.lng}
+            radiusMiles={filters.radius || 15}
           />
         )}
 

@@ -10,17 +10,14 @@ import {
   Shield,
 } from "lucide-react";
 import {
-  StraightRazorIcon,
-  ShearsIcon,
-  TattooMachineIcon,
-  PiercingNeedleIcon,
+  TRADE_IMAGES,
 } from "@/components/icons/TradeIcons";
 
 const TRADES = [
-  { label: "Barbers", icon: StraightRazorIcon },
-  { label: "Cosmetologists", icon: ShearsIcon },
-  { label: "Tattoo Artists", icon: TattooMachineIcon },
-  { label: "Piercers", icon: PiercingNeedleIcon },
+  { label: "Barbers", image: TRADE_IMAGES.barber },
+  { label: "Cosmetologists", image: TRADE_IMAGES.cosmetologist },
+  { label: "Tattoo Artists", image: TRADE_IMAGES.tattoo_artist },
+  { label: "Piercers", image: TRADE_IMAGES.piercer },
 ];
 
 const STEPS = [
@@ -64,11 +61,11 @@ export default function LandingPage() {
             </p>
 
             {/* Trade icons — large, prominent */}
-            <div className="mt-8 grid grid-cols-4 gap-3 max-w-xs mx-auto sm:max-w-sm sm:mt-10">
-              {TRADES.map(({ label, icon: Icon }) => (
+            <div className="mt-8 grid grid-cols-4 gap-4 max-w-sm mx-auto sm:max-w-md sm:mt-10">
+              {TRADES.map(({ label, image }) => (
                 <div key={label} className="flex flex-col items-center gap-2">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-800/80 border border-slate-700/50 transition-colors hover:border-primary/30 hover:bg-primary/5 sm:h-16 sm:w-16">
-                    <Icon size={26} className="text-primary" />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-800/80 border border-slate-700/50 transition-colors hover:border-primary/30 hover:bg-primary/5 sm:h-20 sm:w-20">
+                    <img src={image} alt={label} className="w-14 h-14 sm:w-16 sm:h-16 object-contain" />
                   </div>
                   <span className="text-[10px] font-semibold text-slate-400 sm:text-xs">
                     {label}
@@ -187,7 +184,7 @@ export default function LandingPage() {
                   {Icon ? (
                     <Icon className="w-4 h-4 text-primary" />
                   ) : (
-                    <StraightRazorIcon size={16} className="text-primary" />
+                    <img src={TRADE_IMAGES.barber} alt="" className="w-4 h-4 object-contain" />
                   )}
                 </div>
                 <div>

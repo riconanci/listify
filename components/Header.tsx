@@ -11,6 +11,8 @@ interface HeaderProps {
     name?: string | null;
     email?: string | null;
     role?: string;
+    talentProfile?: { avatarUrl?: string | null } | null;
+    employerProfiles?: { logoUrl?: string | null }[];
   } | null;
 }
 
@@ -57,6 +59,8 @@ export default function Header({ user }: HeaderProps) {
     if (email) return email[0].toUpperCase();
     return "U";
   };
+
+  const userAvatar = user?.talentProfile?.avatarUrl || user?.employerProfiles?.[0]?.logoUrl || null;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/90 glass-header">
@@ -160,9 +164,13 @@ export default function Header({ user }: HeaderProps) {
               {/* Avatar */}
               <Link
                 href="/profile"
-                className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white text-sm font-bold"
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white text-sm font-bold overflow-hidden"
               >
-                {getInitials(user.name, user.email)}
+                {userAvatar ? (
+                  <img src={userAvatar} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  getInitials(user.name, user.email)
+                )}
               </Link>
             </>
           ) : (
@@ -175,7 +183,7 @@ export default function Header({ user }: HeaderProps) {
               </Link>
               <Link
                 href="/signup"
-                className="rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 active:scale-95"
+                className="rounded-lg bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 active:scale-95 sm:px-5 sm:py-2.5 sm:text-sm"
               >
                 Create Account
               </Link>
@@ -202,8 +210,12 @@ export default function Header({ user }: HeaderProps) {
           <div className="px-4 py-3 space-y-1">
             {user && (
               <div className="flex items-center gap-3 px-3 py-3 mb-2 border-b border-slate-800">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white font-bold">
-                  {getInitials(user.name, user.email)}
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white font-bold overflow-hidden">
+                  {userAvatar ? (
+                    <img src={userAvatar} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    getInitials(user.name, user.email)
+                  )}
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-white">

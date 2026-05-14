@@ -6,27 +6,22 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   UserPlus, Users, Building2, Eye, EyeOff, Check, ArrowRight, ChevronLeft,
 } from "lucide-react";
-import {
-  StraightRazorIcon,
-  ShearsIcon,
-  TattooMachineIcon,
-  PiercingNeedleIcon,
-} from "@/components/icons/TradeIcons";
+import { TRADE_IMAGES } from "@/components/icons/TradeIcons";
 import { clsx } from "clsx";
 
 const INDUSTRY_OPTIONS = [
-  { value: "hair", label: "Hair", desc: "Barbershops & Salons", icon: ShearsIcon },
-  { value: "tattoo", label: "Tattoo & Piercing", desc: "Tattoo Shops & Studios", icon: TattooMachineIcon },
+  { value: "hair", label: "Hair", desc: "Barbershops & Salons", image: TRADE_IMAGES.cosmetologist },
+  { value: "tattoo", label: "Tattoo & Piercing", desc: "Tattoo Shops & Studios", image: TRADE_IMAGES.tattoo_artist },
 ];
 
-const LICENSE_OPTIONS: Record<string, { value: string; label: string; icon: any }[]> = {
+const LICENSE_OPTIONS: Record<string, { value: string; label: string; image: string }[]> = {
   hair: [
-    { value: "barber", label: "Barber License", icon: StraightRazorIcon },
-    { value: "cosmetologist", label: "Cosmetologist License", icon: ShearsIcon },
+    { value: "barber", label: "Barber License", image: TRADE_IMAGES.barber },
+    { value: "cosmetologist", label: "Cosmetologist License", image: TRADE_IMAGES.cosmetologist },
   ],
   tattoo: [
-    { value: "tattoo_artist", label: "Tattoo Artist", icon: TattooMachineIcon },
-    { value: "piercer", label: "Piercer", icon: PiercingNeedleIcon },
+    { value: "tattoo_artist", label: "Tattoo Artist", image: TRADE_IMAGES.tattoo_artist },
+    { value: "piercer", label: "Piercer", image: TRADE_IMAGES.piercer },
   ],
 };
 
@@ -239,7 +234,6 @@ export default function SignUpPage() {
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                   {INDUSTRY_OPTIONS.map((opt) => {
-                    const Icon = opt.icon;
                     const selected = industry === opt.value;
                     return (
                       <button
@@ -253,7 +247,7 @@ export default function SignUpPage() {
                             : "border-slate-700 bg-transparent hover:border-slate-600"
                         )}
                       >
-                        <Icon size={24} className={clsx(selected ? "text-primary" : "text-slate-400")} />
+                        <img src={opt.image} alt={opt.label} className="w-8 h-8 object-contain" />
                         <div className="text-center">
                           <p className="text-sm font-bold text-white">{opt.label}</p>
                           <p className="text-[10px] text-slate-500 leading-tight">{opt.desc}</p>
@@ -278,7 +272,6 @@ export default function SignUpPage() {
                   </p>
                   <div className="space-y-2">
                     {LICENSE_OPTIONS[industry]?.map((opt) => {
-                      const Icon = opt.icon;
                       const selected = licenses.includes(opt.value);
                       return (
                         <button
@@ -298,7 +291,7 @@ export default function SignUpPage() {
                           )}>
                             {selected && <Check className="w-3 h-3 text-white" />}
                           </div>
-                          <Icon size={16} className={clsx(selected ? "text-primary" : "text-slate-400")} />
+                          <img src={opt.image} alt={opt.label} className="w-5 h-5 object-contain" />
                           <span className="text-sm font-medium text-white">{opt.label}</span>
                         </button>
                       );

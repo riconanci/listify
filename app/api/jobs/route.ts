@@ -127,6 +127,26 @@ export async function POST(request: Request) {
       );
     }
 
+    // One-listing-per-account enforcement (free tier)
+    // Check for active, non-expired listings
+    const existingActive = await prisma.job.count({
+      where: {
+        employerProfile: { userId: user.id },
+        status: "active",
+        OR: [
+          { expiresAt: null },
+          { expiresAt: { gt: new Date() } },
+        ],
+      },
+    });
+
+    if (existingActive >= 1) {
+      return NextResponse.json(
+        { error: "Free accounts are limited to 1 active listing. Delete or let your current listing expire before posting a new one." },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const parsed = createJobSchema.safeParse(body);
 

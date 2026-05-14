@@ -20,7 +20,24 @@ export async function GET() {
           },
         },
         include: {
-          sender: { select: { id: true, name: true, email: true } },
+          sender: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              talentProfile: {
+                select: {
+                  avatarUrl: true,
+                  headline: true,
+                  portfolio: {
+                    select: { url: true },
+                    orderBy: { sortOrder: "asc" as const },
+                    take: 4,
+                  },
+                },
+              },
+            },
+          },
           job: {
             select: {
               id: true,
@@ -60,6 +77,7 @@ export async function GET() {
       return NextResponse.json(inquiries);
     }
   } catch (error: any) {
+    console.error("[INBOX GET ERROR]", error);
     return NextResponse.json(
       { error: error.message || "Failed to fetch inquiries" },
       { status: 500 }
@@ -148,6 +166,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, inquiry }, { status: 201 });
   } catch (error: any) {
+    console.error("[INQUIRY POST ERROR]", error);
     // Unique constraint violation = already sent
     if (error.code === "P2002") {
       return NextResponse.json(

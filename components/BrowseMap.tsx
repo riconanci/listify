@@ -1,8 +1,9 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import "leaflet/dist/leaflet.css";
 
 const markerIcon = new L.Icon({
@@ -14,6 +15,19 @@ const markerIcon = new L.Icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
+});
+
+const userIcon = L.divIcon({
+  className: "",
+  html: `<div style="
+    width: 16px; height: 16px;
+    background: #3b82f6;
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(59,130,246,0.5);
+  "></div>`,
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
 });
 
 interface MapJob {
@@ -34,6 +48,7 @@ interface BrowseMapProps {
   jobs: MapJob[];
   userLat?: number;
   userLng?: number;
+  radiusMiles?: number;
 }
 
 function formatRole(role: string): string {
@@ -70,19 +85,80 @@ function formatComp(
   return "Hourly";
 }
 
-export default function BrowseMap({ jobs, userLat, userLng }: BrowseMapProps) {
-  // Center on user location or San Diego
-  const center: [number, number] = userLat && userLng
-    ? [userLat, userLng]
-    : [32.7157, -117.1611];
+// Controls map center/zoom imperatively — reacts to all prop changes
+function MapController({
+  userLat,
+  userLng,
+  radiusMeters,
+  hasUserLocation,
+}: {
+  userLat?: number;
+  userLng?: number;
+  radiusMeters: number;
+  hasUserLocation: boolean;
+}) {
+  const map = useMap();
+  const prevKey = useRef("");
+  const mounted = useRef(false);
 
-  const zoom = userLat ? 11 : 10;
+  // Initial fit after map is fully ready
+  useEffect(() => {
+    const handleReady = () => {
+      mounted.current = true;
+      // Fix for map rendering in previously hidden container
+      map.invalidateSize();
+    };
+    map.whenReady(handleReady);
+    return () => { mounted.current = false; };
+  }, [map]);
+
+  useEffect(() => {
+    const key = `${userLat}-${userLng}-${radiusMeters}`;
+    if (key === prevKey.current) return;
+    prevKey.current = key;
+
+    if (!hasUserLocation || !userLat || !userLng) return;
+
+    const fitMap = () => {
+      try {
+        const center = L.latLng(userLat, userLng);
+        const bounds = center.toBounds(radiusMeters * 2);
+        map.fitBounds(bounds, { padding: [30, 30], maxZoom: 13 });
+      } catch {
+        // Map not ready — retry once more
+        setTimeout(() => {
+          try {
+            const center = L.latLng(userLat, userLng);
+            const bounds = center.toBounds(radiusMeters * 2);
+            map.fitBounds(bounds, { padding: [30, 30], maxZoom: 13 });
+          } catch {}
+        }, 300);
+      }
+    };
+
+    // Wait for map to be fully initialized
+    if (mounted.current) {
+      setTimeout(fitMap, 50);
+    } else {
+      map.whenReady(() => setTimeout(fitMap, 50));
+    }
+  }, [map, userLat, userLng, radiusMeters, hasUserLocation]);
+
+  return null;
+}
+
+export default function BrowseMap({ jobs, userLat, userLng, radiusMiles = 15 }: BrowseMapProps) {
+  const radiusMeters = radiusMiles * 1609.34;
+  const hasUserLocation = userLat !== undefined && userLng !== undefined;
+
+  // Default center — will be overridden by MapController
+  const defaultCenter: [number, number] = [32.85, -117.15];
 
   return (
     <div className="rounded-xl border border-slate-800 overflow-hidden">
       <MapContainer
-        center={center}
-        zoom={zoom}
+        center={defaultCenter}
+        zoom={10}
         className="h-[500px] md:h-[600px] w-full z-0"
         scrollWheelZoom={true}
         attributionControl={false}
@@ -92,6 +168,41 @@ export default function BrowseMap({ jobs, userLat, userLng }: BrowseMapProps) {
           attribution='&copy; <a href="https://carto.com">CARTO</a>'
         />
 
+        {/* Map controller — always present, handles centering + radius fitting */}
+        <MapController
+          userLat={userLat}
+          userLng={userLng}
+          radiusMeters={radiusMeters}
+          hasUserLocation={hasUserLocation}
+        />
+
+        {/* User location dot + radius circle */}
+        {hasUserLocation && (
+          <>
+            <Circle
+              key={`circle-${radiusMiles}`}
+              center={[userLat!, userLng!]}
+              radius={radiusMeters}
+              pathOptions={{
+                color: "#3b82f6",
+                weight: 1.5,
+                opacity: 0.4,
+                fillColor: "#3b82f6",
+                fillOpacity: 0.08,
+              }}
+            />
+            <Marker position={[userLat!, userLng!]} icon={userIcon}>
+              <Popup>
+                <div className="text-center p-1">
+                  <p className="text-sm font-bold text-slate-900">Your Location</p>
+                  <p className="text-xs text-slate-500">{radiusMiles} mile radius</p>
+                </div>
+              </Popup>
+            </Marker>
+          </>
+        )}
+
+        {/* Listing markers */}
         {jobs.map((job) => (
           <Marker key={job.id} position={[job.lat, job.lng]} icon={markerIcon}>
             <Popup>

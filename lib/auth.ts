@@ -67,6 +67,7 @@ export async function getCurrentUser() {
           phone: true,
           website: true,
           verified: true,
+          logoUrl: true,
         },
       },
       talentProfile: {
@@ -76,6 +77,12 @@ export async function getCurrentUser() {
           bio: true,
           verified: true,
           specialties: true,
+          avatarUrl: true,
+          portfolio: {
+            select: { id: true, url: true, sortOrder: true },
+            orderBy: { sortOrder: "asc" as const },
+            take: 6,
+          },
         },
       },
     },

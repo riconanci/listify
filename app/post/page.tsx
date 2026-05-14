@@ -2,14 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ChevronLeft, Camera, Check } from "lucide-react";
-import {
-  StraightRazorIcon,
-  ShearsIcon,
-  TattooMachineIcon,
-  PiercingNeedleIcon,
-} from "@/components/icons/TradeIcons";
+import { TRADE_IMAGES } from "@/components/icons/TradeIcons";
 import { clsx } from "clsx";
 import { useToast } from "@/components/Toast";
 
@@ -22,14 +18,14 @@ const MapPicker = dynamic(() => import("@/components/MapPicker"), {
   ),
 });
 
-const SPECIALTY_OPTIONS: Record<string, { value: string; label: string; icon: any }[]> = {
+const SPECIALTY_OPTIONS: Record<string, { value: string; label: string; image: string }[]> = {
   hair: [
-    { value: "barber", label: "Barbers", icon: StraightRazorIcon },
-    { value: "cosmetologist", label: "Cosmetologists", icon: ShearsIcon },
+    { value: "barber", label: "Barbers", image: TRADE_IMAGES.barber },
+    { value: "cosmetologist", label: "Cosmetologists", image: TRADE_IMAGES.cosmetologist },
   ],
   tattoo: [
-    { value: "tattoo_artist", label: "Tattoo Artists", icon: TattooMachineIcon },
-    { value: "piercer", label: "Piercers", icon: PiercingNeedleIcon },
+    { value: "tattoo_artist", label: "Tattoo Artists", image: TRADE_IMAGES.tattoo_artist },
+    { value: "piercer", label: "Piercers", image: TRADE_IMAGES.piercer },
   ],
 };
 
@@ -93,27 +89,39 @@ export default function PostListingPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [hasActiveListing, setHasActiveListing] = useState(false);
+  const [checkingLimit, setCheckingLimit] = useState(true);
 
-  // Auto-detect industry from employer profile
+  // Auto-detect industry from employer profile + check listing limit
   useEffect(() => {
-    fetch("/api/auth/me")
-      .then((r) => r.json())
-      .then(async (data) => {
-        if (data.user) {
-          // Fetch employer profile to get industry
-          const profileRes = await fetch(`/api/shops/${data.user.id}/profile`);
+    const init = async () => {
+      try {
+        const meRes = await fetch("/api/auth/me");
+        const meData = await meRes.json();
+        if (meData.user) {
+          // Fetch employer profile
+          const profileRes = await fetch(`/api/shops/${meData.user.id}/profile`);
           if (profileRes.ok) {
             const profile = await profileRes.json();
-            if (profile.industry) {
-              setIndustry(profile.industry);
-            }
-            if (profile.shopName) {
-              setBusinessName(profile.shopName);
-            }
+            if (profile.industry) setIndustry(profile.industry);
+            if (profile.shopName) setBusinessName(profile.shopName);
+          }
+
+          // Check for active listings
+          const jobsRes = await fetch("/api/jobs?manage=true");
+          const jobs = await jobsRes.json();
+          if (Array.isArray(jobs)) {
+            const now = new Date();
+            const active = jobs.filter((j: any) =>
+              j.status === "active" && (!j.expiresAt || new Date(j.expiresAt) > now)
+            );
+            setHasActiveListing(active.length >= 1);
           }
         }
-      })
-      .catch(() => {});
+      } catch {}
+      setCheckingLimit(false);
+    };
+    init();
   }, []);
 
   // Update pay unit when comp model changes
@@ -228,6 +236,42 @@ export default function PostListingPage() {
       </div>
 
       <div className="max-w-2xl mx-auto px-4 py-8">
+        {/* Loading check */}
+        {checkingLimit && (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+
+        {/* Limit reached — show gate */}
+        {!checkingLimit && hasActiveListing && (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="w-20 h-20 rounded-full bg-slate-800 flex items-center justify-center mb-6">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+                <rect x="3" y="3" width="18" height="18" rx="3" />
+                <path d="M12 8v4M12 16h.01" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-black text-white">
+              You already have an active listing
+            </h2>
+            <p className="mt-3 text-sm text-slate-400 max-w-sm leading-relaxed">
+              Free accounts are limited to 1 active listing at a time. Delete or let your current listing expire to post a new one.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
+              <Link
+                href="/jobs/manage"
+                className="flex items-center justify-center gap-2 w-full rounded-xl bg-primary px-6 py-3.5 text-base font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 active:scale-[0.98]"
+              >
+                Manage My Listing
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Normal form */}
+        {!checkingLimit && !hasActiveListing && (
+        <>
         <h1 className="text-2xl font-black text-white mb-2">Post a Listing</h1>
         <p className="text-xs text-slate-500 mb-8">
           Fields marked with <span className="text-red-400">*</span> are required
@@ -289,7 +333,7 @@ export default function PostListingPage() {
                   onClick={() => setIndustry("hair")}
                   className="flex items-center gap-3 rounded-lg border-2 border-slate-700 p-4 hover:border-slate-600 transition-all"
                 >
-                  <ShearsIcon size={20} className="text-slate-400" />
+                  <img src={TRADE_IMAGES.cosmetologist} alt="Hair" className="w-5 h-5 object-contain" />
                   <span className="text-sm font-bold text-white">Hair</span>
                 </button>
                 <button
@@ -297,7 +341,7 @@ export default function PostListingPage() {
                   onClick={() => setIndustry("tattoo")}
                   className="flex items-center gap-3 rounded-lg border-2 border-slate-700 p-4 hover:border-slate-600 transition-all"
                 >
-                  <TattooMachineIcon size={20} className="text-slate-400" />
+                  <img src={TRADE_IMAGES.tattoo_artist} alt="Tattoo" className="w-5 h-5 object-contain" />
                   <span className="text-sm font-bold text-white">Tattoo</span>
                 </button>
               </div>
@@ -310,7 +354,7 @@ export default function PostListingPage() {
                   Select all that apply — this controls who sees your listing
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  {currentSpecOptions.map(({ value, label, icon: Icon }) => {
+                  {currentSpecOptions.map(({ value, label, image }) => {
                     const selected = specialties.includes(value);
                     return (
                       <button
@@ -330,7 +374,7 @@ export default function PostListingPage() {
                         )}>
                           {selected && <Check className="w-3 h-3 text-white" />}
                         </div>
-                        <Icon size={16} className={clsx(selected ? "text-primary" : "text-slate-400")} />
+                        <img src={image} alt={label} className="w-4 h-4 object-contain" />
                         <span className="text-sm font-semibold">{label}</span>
                       </button>
                     );
@@ -508,6 +552,8 @@ export default function PostListingPage() {
             )}
           </button>
         </form>
+        </>
+        )}
       </div>
     </main>
   );

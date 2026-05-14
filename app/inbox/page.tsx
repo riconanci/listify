@@ -16,8 +16,14 @@ interface InquiryData {
   instagram: string | null;
   createdAt: string;
   sender?: {
+    id: string;
     name: string | null;
     email: string | null;
+    talentProfile?: {
+      avatarUrl?: string | null;
+      headline?: string | null;
+      portfolio?: { url: string }[];
+    } | null;
   };
   job: {
     id: string;
@@ -35,6 +41,7 @@ interface InquiryData {
 export default function InboxPage() {
   const [inquiries, setInquiries] = useState<InquiryData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [userRole, setUserRole] = useState<"talent" | "employer">("talent");
   const [filterListing, setFilterListing] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
@@ -43,17 +50,25 @@ export default function InboxPage() {
     const fetchData = async () => {
       try {
         // Get current user role
-        const meRes = await fetch("/api/auth/me");
+        const meRes = await fetch("/api/auth/me", { cache: "no-store" });
         const meData = await meRes.json();
         if (meData.user) {
           setUserRole(meData.user.role);
         }
 
-        // Get inquiries
-        const res = await fetch("/api/inbox/enquiries");
+        // Get inquiries (no-cache to always get fresh data)
+        const res = await fetch("/api/inbox/enquiries", { cache: "no-store" });
         const data = await res.json();
+
+        if (!res.ok) {
+          setError(data.error || "Failed to load inquiries");
+          setInquiries([]);
+          return;
+        }
+
         setInquiries(Array.isArray(data) ? data : data.inquiries || []);
-      } catch {
+      } catch (err: any) {
+        setError(err.message || "Failed to load inquiries");
         setInquiries([]);
       } finally {
         setLoading(false);
@@ -173,6 +188,13 @@ export default function InboxPage() {
           </div>
         )}
 
+        {/* Error */}
+        {error && (
+          <div className="px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-400 mb-6">
+            {error}
+          </div>
+        )}
+
         {/* Loading */}
         {loading && (
           <div className="space-y-4">
@@ -193,6 +215,7 @@ export default function InboxPage() {
               <InquiryCard
                 key={inq.id}
                 id={inq.id}
+                senderId={inq.sender?.id || inq.senderId}
                 senderName={inq.sender?.name || inq.name || "Unknown"}
                 senderEmail={inq.sender?.email}
                 phone={inq.phone}
@@ -203,6 +226,9 @@ export default function InboxPage() {
                 jobId={inq.job.id}
                 createdAt={inq.createdAt}
                 isStarred={Boolean(inq.stars && inq.stars.length > 0)}
+                senderPhotoUrl={inq.sender?.talentProfile?.avatarUrl || null}
+                senderHeadline={inq.sender?.talentProfile?.headline || null}
+                portfolioPhotos={inq.sender?.talentProfile?.portfolio?.map((p) => p.url) || []}
                 onStar={handleStar}
                 onDelete={handleDelete}
               />

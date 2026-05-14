@@ -13,6 +13,7 @@ import { clsx } from "clsx";
 
 interface InquiryCardProps {
   id: string;
+  senderId?: string;
   senderName: string;
   senderEmail?: string | null;
   phone?: string | null;
@@ -24,6 +25,8 @@ interface InquiryCardProps {
   createdAt: string;
   isStarred?: boolean;
   senderPhotoUrl?: string | null;
+  senderHeadline?: string | null;
+  portfolioPhotos?: string[];
   onStar?: (id: string) => void;
   onDelete?: (id: string) => void;
   onBlock?: (senderId: string) => void;
@@ -63,6 +66,7 @@ function formatPhone(phone: string): string {
 
 export default function InquiryCard({
   id,
+  senderId,
   senderName,
   senderEmail,
   phone,
@@ -74,6 +78,8 @@ export default function InquiryCard({
   createdAt,
   isStarred = false,
   senderPhotoUrl,
+  senderHeadline,
+  portfolioPhotos,
   onStar,
   onDelete,
 }: InquiryCardProps) {
@@ -163,8 +169,39 @@ export default function InquiryCard({
         </Link>
       </div>
 
+      {/* Portfolio Thumbnails */}
+      {portfolioPhotos && portfolioPhotos.length > 0 && (
+        <div className="mt-4 pl-16">
+          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+            Their Work
+          </p>
+          <div className="flex gap-2">
+            {portfolioPhotos.slice(0, 4).map((photo, i) => (
+              <div
+                key={i}
+                className="w-16 h-16 rounded-lg overflow-hidden bg-slate-800 shrink-0"
+              >
+                <img
+                  src={photo}
+                  alt={`Work ${i + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Actions */}
       <div className="mt-4 pl-16 flex items-center gap-2">
+        {senderId && (
+          <Link
+            href={`/talent/${senderId}`}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold text-primary border border-primary/20 hover:bg-primary/10 transition-colors"
+          >
+            View Profile
+          </Link>
+        )}
         <button
           onClick={() => onStar?.(id)}
           className={clsx(

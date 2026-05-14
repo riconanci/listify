@@ -111,7 +111,7 @@ export default async function JobDetailPage({ params }: PageProps) {
   return (
     <main className="min-h-[calc(100dvh-4rem)] pb-40 md:pb-24">
       {/* Header */}
-      <div className="sticky top-16 z-40 border-b border-slate-800 bg-bg-base/95 glass-header px-4 py-3">
+      <div className="sticky top-16 z-[999] border-b border-slate-800 bg-bg-base/95 glass-header px-4 py-3">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded bg-primary/20 flex items-center justify-center">

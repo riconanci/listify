@@ -68,6 +68,8 @@ export const createInquirySchema = z.object({
 export const updateProfileSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   phone: z.string().max(10).optional(),
+  avatarUrl: z.string().optional(),
+  portfolioPhotos: z.array(z.string()).max(6).optional(), // base64 data URLs
   shopName: z.string().max(100).optional(),
   shopAddress: z.string().max(200).optional(),
   website: z.string().max(100).optional(),

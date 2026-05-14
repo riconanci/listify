@@ -11,7 +11,7 @@ interface ManagedJob {
   id: string;
   title: string;
   businessName: string;
-  role: string;
+  specialties: string[];
   status: string;
   viewsCount: number;
   inquiriesCount: number;
@@ -101,6 +101,8 @@ export default function ManageListingsPage() {
     return true;
   }).length;
 
+  const canPost = activeCount === 0;
+
   return (
     <main className="min-h-[calc(100dvh-4rem)] page-with-nav">
       <div className="max-w-3xl mx-auto px-4 py-8">
@@ -119,14 +121,28 @@ export default function ManageListingsPage() {
           </p>
         </div>
 
-        {/* Post New CTA */}
-        <Link
-          href="/post"
-          className="flex items-center justify-center gap-2 w-full rounded-xl bg-primary px-6 py-4 text-base font-bold text-white shadow-xl shadow-primary/25 transition-all hover:bg-primary/90 active:scale-[0.98] mb-8"
-        >
-          <Plus className="w-5 h-5" />
-          Post New Listing
-        </Link>
+        {/* Post New CTA — only show when they can post */}
+        {canPost && !loading && (
+          <Link
+            href="/post"
+            className="flex items-center justify-center gap-2 w-full rounded-xl bg-primary px-6 py-4 text-base font-bold text-white shadow-xl shadow-primary/25 transition-all hover:bg-primary/90 active:scale-[0.98] mb-8"
+          >
+            <Plus className="w-5 h-5" />
+            Post New Listing
+          </Link>
+        )}
+
+        {/* At limit notice */}
+        {!canPost && !loading && (
+          <div className="flex items-center gap-3 rounded-xl border border-slate-800 bg-bg-surface px-4 py-3 mb-8">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <span className="text-xs font-black text-primary">1/1</span>
+            </div>
+            <p className="text-xs text-slate-400">
+              Free accounts are limited to 1 active listing. Delete or let it expire to post a new one.
+            </p>
+          </div>
+        )}
 
         {/* Loading */}
         {loading && (
@@ -166,24 +182,57 @@ export default function ManageListingsPage() {
           </div>
         )}
 
-        {/* Empty */}
+        {/* Empty — First Time Scout Experience */}
         {!loading && jobs.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mb-4">
-              <Plus className="w-8 h-8 text-slate-600" />
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="w-20 h-20 rounded-2xl bg-slate-800/80 border border-slate-700/50 flex items-center justify-center mb-6">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="text-primary">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" fill="currentColor" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.3" />
+              </svg>
             </div>
-            <h3 className="text-lg font-bold text-white">No listings yet</h3>
-            <p className="text-sm text-slate-400 mt-2 max-w-xs">
-              Post your first listing to start connecting with talent in San
-              Diego County.
+            <h3 className="text-xl font-black text-white">
+              Ready to find talent?
+            </h3>
+            <p className="text-sm text-slate-400 mt-3 max-w-sm leading-relaxed">
+              Post your first listing and start connecting with barbers, cosmetologists, tattoo artists, and piercers in San Diego County.
             </p>
-            <Link
-              href="/post"
-              className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              Post a Listing
-            </Link>
+
+            <div className="mt-8 w-full max-w-xs space-y-3">
+              <Link
+                href="/post"
+                className="flex items-center justify-center gap-2 w-full rounded-xl bg-primary px-6 py-4 text-base font-bold text-white shadow-xl shadow-primary/25 transition-all hover:bg-primary/90 active:scale-[0.98]"
+              >
+                <Plus className="w-5 h-5" />
+                Post Your First Listing
+              </Link>
+            </div>
+
+            {/* How it works mini */}
+            <div className="mt-10 w-full max-w-sm">
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
+                    <span className="text-xs font-black text-primary">1</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">Post a listing with your details</p>
+                </div>
+                <div>
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
+                    <span className="text-xs font-black text-primary">2</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">Talent sends you inquiries</p>
+                </div>
+                <div>
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
+                    <span className="text-xs font-black text-primary">3</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">Connect and work together</p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>

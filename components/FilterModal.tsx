@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X, Check, MapPin } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { X, Check, MapPin, Search } from "lucide-react";
 import { clsx } from "clsx";
 
 interface FilterModalProps {
@@ -28,6 +28,7 @@ export interface FilterModalState {
 const CITIES = [
   "Encinitas", "Oceanside", "Carlsbad", "San Marcos", "Vista", "Escondido",
   "San Diego", "La Jolla", "Del Mar", "Solana Beach", "Chula Vista", "National City",
+  "Poway", "El Cajon", "Santee", "La Mesa", "Coronado", "Imperial Beach",
 ];
 
 const INDUSTRY_OPTIONS = [
@@ -80,9 +81,16 @@ export default function FilterModal({
   isOpen, onClose, onApply, onUseMyLocation, userCity, initialFilters, resultCount,
 }: FilterModalProps) {
   const [filters, setFilters] = useState<FilterModalState>({ ...DEFAULT_FILTERS, ...initialFilters });
+  const [cityQuery, setCityQuery] = useState("");
+  const [showCitySuggestions, setShowCitySuggestions] = useState(false);
+  const cityInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (isOpen) setFilters({ ...DEFAULT_FILTERS, ...initialFilters });
+    if (isOpen) {
+      setFilters({ ...DEFAULT_FILTERS, ...initialFilters });
+      setCityQuery("");
+      setShowCitySuggestions(false);
+    }
   }, [isOpen, initialFilters]);
 
   useEffect(() => {
@@ -91,9 +99,18 @@ export default function FilterModal({
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
-  const toggleCity = (city: string) => {
-    setFilters((prev) => ({ ...prev, cities: prev.cities.includes(city) ? prev.cities.filter((c) => c !== city) : [...prev.cities, city] }));
+  const addCity = (city: string) => {
+    if (!filters.cities.includes(city)) {
+      setFilters((prev) => ({ ...prev, cities: [...prev.cities, city] }));
+    }
+    setCityQuery("");
+    setShowCitySuggestions(false);
   };
+
+  const removeCity = (city: string) => {
+    setFilters((prev) => ({ ...prev, cities: prev.cities.filter((c) => c !== city) }));
+  };
+
   const toggleSpecialty = (s: string) => {
     setFilters((prev) => ({ ...prev, specialties: prev.specialties.includes(s) ? prev.specialties.filter((x) => x !== s) : [...prev.specialties, s] }));
   };
@@ -111,6 +128,14 @@ export default function FilterModal({
     }));
   };
 
+  // City suggestions — filter by query, exclude already selected
+  const citySuggestions = cityQuery.length > 0
+    ? CITIES.filter((c) =>
+        c.toLowerCase().startsWith(cityQuery.toLowerCase()) &&
+        !filters.cities.includes(c)
+      ).slice(0, 5)
+    : [];
+
   const visibleSpecialties = filters.industry ? SPECIALTY_MAP[filters.industry] || [] : ALL_SPECIALTIES;
 
   if (!isOpen) return null;
@@ -119,15 +144,15 @@ export default function FilterModal({
     <div className="fixed inset-0 z-50 flex flex-col bg-bg-base">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
-        <button onClick={() => setFilters(DEFAULT_FILTERS)} className="text-sm font-semibold text-primary hover:text-primary-light transition-colors">Reset</button>
+        <button onClick={() => { setFilters(DEFAULT_FILTERS); setCityQuery(""); }} className="text-sm font-semibold text-primary hover:text-primary-light transition-colors">Reset</button>
         <h2 className="text-base font-bold text-white">Filters</h2>
         <button onClick={onClose} className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"><X className="w-5 h-5" /></button>
       </div>
 
-      {/* Scrollable Content — compact spacing */}
+      {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5 pb-24">
 
-        {/* USE MY LOCATION — always first, always visible */}
+        {/* USE MY LOCATION */}
         <button
           onClick={onUseMyLocation}
           className="flex items-center gap-2 w-full rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm font-semibold text-primary hover:bg-primary/10 transition-colors"
@@ -140,16 +165,54 @@ export default function FilterModal({
         <section>
           <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Location</h3>
           <div className="space-y-3">
-            <div className="flex flex-wrap gap-2">
-              {CITIES.slice(0, 8).map((city) => {
-                const selected = filters.cities.includes(city);
-                return (
-                  <button key={city} onClick={() => toggleCity(city)} className={clsx("px-3 py-1.5 rounded-full text-xs font-medium transition-colors", selected ? "bg-primary/10 border border-primary/20 text-primary" : "bg-slate-800 border border-slate-700 text-slate-300 hover:border-slate-600")}>
-                    {city}
-                  </button>
-                );
-              })}
+            {/* City search input */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input
+                ref={cityInputRef}
+                type="text"
+                value={cityQuery}
+                onChange={(e) => {
+                  setCityQuery(e.target.value);
+                  setShowCitySuggestions(true);
+                }}
+                onFocus={() => setShowCitySuggestions(true)}
+                placeholder="Search city..."
+                className="w-full rounded-lg border border-slate-700 bg-bg-input pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary"
+              />
+              {/* Suggestions dropdown */}
+              {showCitySuggestions && citySuggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 rounded-lg border border-slate-700 bg-slate-800 overflow-hidden z-10">
+                  {citySuggestions.map((city) => (
+                    <button
+                      key={city}
+                      onClick={() => addCity(city)}
+                      className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-primary/10 hover:text-white transition-colors"
+                    >
+                      {city}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
+
+            {/* Selected cities */}
+            {filters.cities.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {filters.cities.map((city) => (
+                  <button
+                    key={city}
+                    onClick={() => removeCity(city)}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
+                  >
+                    {city}
+                    <X className="w-3 h-3" />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Radius */}
             <div>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs text-slate-400">Radius</span>
@@ -162,7 +225,7 @@ export default function FilterModal({
 
         <div className="border-t border-slate-800" />
 
-        {/* INDUSTRY + SPECIALTY — combined section */}
+        {/* INDUSTRY + SPECIALTY */}
         <section>
           <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Industry & Specialty</h3>
           <div className="space-y-3">
