@@ -12,11 +12,11 @@ export default function JobsLoading() {
         </div>
 
         {/* Card skeletons */}
-        <div className="rounded-xl border border-slate-800 overflow-hidden">
+        <div className="rounded-xl border border-line-subtle overflow-hidden">
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="flex items-center gap-4 px-4 md:px-6 py-5 border-b border-slate-800/50"
+              className="flex items-center gap-4 px-4 md:px-6 py-5 border-b border-line-subtle/50"
             >
               <div
                 className="w-12 h-12 rounded-lg shimmer shrink-0"

@@ -160,7 +160,7 @@ export default function MapPicker({
   }, [address, onLocationChange]);
 
   return (
-    <div className="relative rounded-xl border border-slate-700 overflow-hidden">
+    <div className="relative rounded-xl border border-line overflow-hidden">
       <MapContainer
         center={position || defaultCenter}
         zoom={position ? 14 : 10}
@@ -182,7 +182,7 @@ export default function MapPicker({
 
       {/* Geocoding indicator */}
       {geocoding && (
-        <div className="absolute top-2 right-2 z-[999] bg-bg-base/90 rounded-lg px-3 py-1.5 text-xs text-primary font-medium flex items-center gap-1.5">
+        <div className="absolute top-2 right-2 z-[999] bg-canvas/90 rounded-lg px-3 py-1.5 text-xs text-primary font-medium flex items-center gap-1.5">
           <span className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           Finding...
         </div>
@@ -190,7 +190,7 @@ export default function MapPicker({
 
       {/* Hint */}
       {!position && (
-        <div className="absolute bottom-2 left-2 z-[999] bg-bg-base/90 rounded-lg px-3 py-1.5 text-[11px] text-slate-400">
+        <div className="absolute bottom-2 left-2 z-[999] bg-canvas/90 rounded-lg px-3 py-1.5 text-[11px] text-fg-secondary">
           Click map or press Enter in address field
         </div>
       )}

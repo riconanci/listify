@@ -104,7 +104,7 @@ export default function ManageListingCard({
   return (
     <div
       className={clsx(
-        "rounded-2xl bg-bg-surface relative transition-opacity",
+        "rounded-2xl bg-surface relative transition-opacity",
         isExpired && "opacity-60"
       )}
     >
@@ -115,7 +115,7 @@ export default function ManageListingCard({
             <h3
               className={clsx(
                 "ios-headline leading-snug line-clamp-2",
-                isExpired ? "text-slate-400" : "text-white"
+                isExpired ? "text-fg-secondary" : "text-fg-strong"
               )}
             >
               {title}
@@ -126,7 +126,7 @@ export default function ManageListingCard({
           <div className="relative shrink-0">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex items-center justify-center w-8 h-8 -mr-1 -mt-1 rounded-full text-slate-400 active:bg-slate-800 ios-press transition-colors"
+              className="flex items-center justify-center w-8 h-8 -mr-1 -mt-1 rounded-full text-fg-secondary active:bg-surface ios-press transition-colors"
               aria-label="More options"
             >
               <MoreVertical className="w-[18px] h-[18px]" strokeWidth={2} />
@@ -138,10 +138,10 @@ export default function ManageListingCard({
                   className="fixed inset-0 z-10"
                   onClick={() => setMenuOpen(false)}
                 />
-                <div className="absolute right-0 top-full mt-1 z-20 w-48 rounded-2xl bg-slate-800 shadow-xl py-1 overflow-hidden">
+                <div className="absolute right-0 top-full mt-1 z-20 w-48 rounded-2xl bg-surface shadow-xl py-1 overflow-hidden">
                   <Link
                     href={`/jobs/${id}`}
-                    className="flex items-center gap-3 px-4 py-3 ios-body text-white active:bg-slate-700 transition-colors"
+                    className="flex items-center gap-3 px-4 py-3 ios-body text-fg-strong active:bg-elevated transition-colors"
                   >
                     <Eye className="w-[18px] h-[18px]" strokeWidth={2} />
                     View Listing
@@ -153,7 +153,7 @@ export default function ManageListingCard({
                         onToggleStatus?.(id, "paused");
                         setMenuOpen(false);
                       }}
-                      className="flex items-center gap-3 w-full px-4 py-3 ios-body text-white active:bg-slate-700 transition-colors"
+                      className="flex items-center gap-3 w-full px-4 py-3 ios-body text-fg-strong active:bg-elevated transition-colors"
                     >
                       <Pause className="w-[18px] h-[18px]" strokeWidth={2} />
                       Pause Listing
@@ -166,7 +166,7 @@ export default function ManageListingCard({
                         onToggleStatus?.(id, "active");
                         setMenuOpen(false);
                       }}
-                      className="flex items-center gap-3 w-full px-4 py-3 ios-body text-white active:bg-slate-700 transition-colors"
+                      className="flex items-center gap-3 w-full px-4 py-3 ios-body text-fg-strong active:bg-elevated transition-colors"
                     >
                       <Play className="w-[18px] h-[18px]" strokeWidth={2} />
                       Reactivate
@@ -191,14 +191,14 @@ export default function ManageListingCard({
 
         {/* Row 2: Business · Role */}
         <div className="flex items-center gap-2 mt-1.5">
-          <span className="ios-subheadline text-slate-400 truncate">
+          <span className="ios-subheadline text-fg-secondary truncate">
             {businessName}
           </span>
-          <span className="text-slate-600">·</span>
+          <span className="text-fg-faint">·</span>
           <span
             className={clsx(
               "text-[12px] font-semibold shrink-0",
-              isExpired ? "text-slate-500" : "text-primary"
+              isExpired ? "text-fg-muted" : "text-primary"
             )}
           >
             {specialties && specialties.length > 0
@@ -217,7 +217,7 @@ export default function ManageListingCard({
             <div
               className={clsx(
                 "flex items-center gap-1 text-[12px] font-semibold",
-                expiration.isExpiringSoon ? "text-amber-400" : "text-slate-500"
+                expiration.isExpiringSoon ? "text-amber-400" : "text-fg-muted"
               )}
             >
               <Clock className="w-3 h-3" strokeWidth={2.2} />
@@ -228,11 +228,11 @@ export default function ManageListingCard({
           <div className="flex-1" />
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 ios-footnote text-slate-500">
+            <div className="flex items-center gap-1 ios-footnote text-fg-muted">
               <Eye className="w-3.5 h-3.5" strokeWidth={2} />
               <span>{viewsCount}</span>
             </div>
-            <div className="flex items-center gap-1 ios-footnote text-slate-500">
+            <div className="flex items-center gap-1 ios-footnote text-fg-muted">
               <MessageSquare className="w-3.5 h-3.5" strokeWidth={2} />
               <span>{inquiriesCount}</span>
             </div>
@@ -242,7 +242,7 @@ export default function ManageListingCard({
 
       {/* Renew bar */}
       {isExpired && onRenew && (
-        <div className="border-t border-slate-700/40 px-4 py-3">
+        <div className="border-t border-line/40 px-4 py-3">
           <button
             onClick={() => onRenew(id)}
             className="flex items-center justify-center gap-2 w-full rounded-full bg-primary px-4 h-10 text-[15px] font-semibold text-white ios-press active:bg-primary-dark transition-colors"

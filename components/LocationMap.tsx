@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 const MiniMap = dynamic(() => import("@/components/MiniMap"), {
   ssr: false,
   loading: () => (
-    <div className="h-36 bg-slate-800 flex items-center justify-center">
+    <div className="h-36 bg-surface flex items-center justify-center">
       <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
     </div>
   ),

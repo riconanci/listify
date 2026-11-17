@@ -22,7 +22,7 @@ import { clsx } from "clsx";
 const BrowseMap = dynamic(() => import("@/components/BrowseMap"), {
   ssr: false,
   loading: () => (
-    <div className="rounded-2xl overflow-hidden h-[500px] md:h-[600px] bg-slate-800 flex items-center justify-center">
+    <div className="rounded-2xl overflow-hidden h-[500px] md:h-[600px] bg-surface flex items-center justify-center">
       <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
     </div>
   ),
@@ -188,7 +188,7 @@ export default function BrowseListingsPage() {
         {/* Search + filter row */}
         <div className="pl-4 pr-5 pb-3 flex items-center gap-2">
           <div className="ios-search-bar flex-1 min-w-0">
-            <SearchIcon className="w-[18px] h-[18px] text-slate-400 shrink-0" strokeWidth={2} />
+            <SearchIcon className="w-[18px] h-[18px] text-fg-secondary shrink-0" strokeWidth={2} />
             <input
               type="text"
               value={filters.search}
@@ -213,7 +213,7 @@ export default function BrowseListingsPage() {
               "flex items-center justify-center w-9 h-9 rounded-full shrink-0 ios-press",
               currentView === "map"
                 ? "bg-yellow-500/15 text-yellow-400"
-                : "bg-slate-700/60 text-slate-200"
+                : "bg-elevated/60 text-fg-bright"
             )}
             aria-label={currentView === "list" ? "Map view" : "List view"}
           >
@@ -268,7 +268,7 @@ export default function BrowseListingsPage() {
         {!loading && jobs.length > 0 && currentView === "list" && (
           <>
             {/* Desktop */}
-            <div className="hidden md:block rounded-xl border border-slate-800 overflow-hidden">
+            <div className="hidden md:block rounded-xl border border-line-subtle overflow-hidden">
               <ListHeader />
               <div>
                 {jobs.map((job) => (
@@ -365,7 +365,7 @@ export default function BrowseListingsPage() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="p-2 rounded-full text-slate-400 active:bg-slate-800 disabled:opacity-30 ios-press transition-colors"
+              className="p-2 rounded-full text-fg-secondary active:bg-surface disabled:opacity-30 ios-press transition-colors"
               aria-label="Previous page"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -380,7 +380,7 @@ export default function BrowseListingsPage() {
                     "w-10 h-10 rounded-full text-[15px] font-semibold ios-press transition-colors",
                     page === pageNum
                       ? "bg-primary text-white"
-                      : "text-slate-400 active:bg-slate-800"
+                      : "text-fg-secondary active:bg-surface"
                   )}
                 >
                   {pageNum}
@@ -390,7 +390,7 @@ export default function BrowseListingsPage() {
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="p-2 rounded-full text-slate-400 active:bg-slate-800 disabled:opacity-30 ios-press transition-colors"
+              className="p-2 rounded-full text-fg-secondary active:bg-surface disabled:opacity-30 ios-press transition-colors"
               aria-label="Next page"
             >
               <ChevronRight className="w-5 h-5" />

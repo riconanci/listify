@@ -49,7 +49,7 @@ export default function NotificationItem({
     <button
       onClick={onClick}
       className={clsx(
-        "flex items-start gap-3 w-full px-4 py-3.5 text-left active:bg-slate-800/60 ios-press transition-colors",
+        "flex items-start gap-3 w-full px-4 py-3.5 text-left active:bg-surface/60 ios-press transition-colors",
         !isRead && "bg-primary/[0.04]"
       )}
     >
@@ -69,19 +69,19 @@ export default function NotificationItem({
           <h4
             className={clsx(
               "ios-subheadline font-semibold",
-              isRead ? "text-slate-300" : "text-white"
+              isRead ? "text-fg" : "text-fg-strong"
             )}
           >
             {title}
           </h4>
           <div className="flex items-center gap-2 shrink-0">
-            <span className="ios-caption text-slate-500">{timeAgo}</span>
+            <span className="ios-caption text-fg-muted">{timeAgo}</span>
             {!isRead && (
               <span className="w-2 h-2 rounded-full bg-primary pulse-dot" />
             )}
           </div>
         </div>
-        <p className="ios-subheadline text-slate-400 mt-0.5">{body}</p>
+        <p className="ios-subheadline text-fg-secondary mt-0.5">{body}</p>
       </div>
     </button>
   );

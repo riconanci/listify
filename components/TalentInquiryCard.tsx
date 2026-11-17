@@ -51,7 +51,7 @@ export default function TalentInquiryCard({
   onWithdraw,
 }: TalentInquiryCardProps) {
   return (
-    <div className="rounded-2xl bg-bg-surface p-4">
+    <div className="rounded-2xl bg-surface p-4">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <StatusBadge variant="primary">{formatRole(role)}</StatusBadge>
@@ -64,11 +64,11 @@ export default function TalentInquiryCard({
       </div>
 
       {/* Job info */}
-      <h3 className="mt-3 ios-headline text-white">
+      <h3 className="mt-3 ios-headline text-fg-strong">
         {jobTitle} — {businessName}
       </h3>
 
-      <div className="flex flex-wrap items-center gap-3 mt-1.5 ios-footnote text-slate-400">
+      <div className="flex flex-wrap items-center gap-3 mt-1.5 ios-footnote text-fg-secondary">
         {city && (
           <div className="flex items-center gap-1">
             <MapPin className="w-3 h-3" strokeWidth={2.2} />
@@ -83,8 +83,8 @@ export default function TalentInquiryCard({
 
       {/* Note preview */}
       {note && (
-        <div className="mt-3 rounded-xl bg-slate-800/60 p-3">
-          <p className="ios-subheadline text-slate-400 italic line-clamp-2">
+        <div className="mt-3 rounded-xl bg-surface/60 p-3">
+          <p className="ios-subheadline text-fg-secondary italic line-clamp-2">
             &ldquo;{note}&rdquo;
           </p>
         </div>
@@ -94,7 +94,7 @@ export default function TalentInquiryCard({
       <div className="flex items-center gap-2 mt-4">
         <button
           onClick={() => onWithdraw?.(id)}
-          className="flex-1 rounded-full bg-slate-700/60 px-4 h-10 text-[15px] font-semibold text-white ios-press active:bg-slate-700 transition-colors text-center"
+          className="flex-1 rounded-full bg-elevated/60 px-4 h-10 text-[15px] font-semibold text-fg-strong ios-press active:bg-elevated transition-colors text-center"
         >
           Withdraw
         </button>

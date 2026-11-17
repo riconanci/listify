@@ -19,8 +19,8 @@ export default function Error({
       <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-5">
         <AlertCircle className="w-8 h-8 text-red-400" />
       </div>
-      <h1 className="text-xl font-bold text-white">Something went wrong</h1>
-      <p className="mt-2 text-sm text-slate-400 max-w-xs">
+      <h1 className="text-xl font-bold text-fg-strong">Something went wrong</h1>
+      <p className="mt-2 text-sm text-fg-secondary max-w-xs">
         An unexpected error occurred. Please try again.
       </p>
       <button

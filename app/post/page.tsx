@@ -15,7 +15,7 @@ import ChipSelect from "@/components/ChipSelect";
 const MapPicker = dynamic(() => import("@/components/MapPicker"), {
   ssr: false,
   loading: () => (
-    <div className="rounded-2xl overflow-hidden h-48 bg-slate-800 flex items-center justify-center text-slate-500 ios-subheadline">
+    <div className="rounded-2xl overflow-hidden h-48 bg-surface flex items-center justify-center text-fg-muted ios-subheadline">
       Loading map…
     </div>
   ),
@@ -81,16 +81,16 @@ function StackedInputRow({
   return (
     <div className="px-4 py-3">
       <div className="flex items-center justify-between">
-        <label className="ios-footnote text-slate-400">
+        <label className="ios-footnote text-fg-secondary">
           {label}
           {required && <span className="text-red-400"> *</span>}
         </label>
         {optional && (
-          <span className="ios-caption text-slate-500">Optional</span>
+          <span className="ios-caption text-fg-muted">Optional</span>
         )}
       </div>
       <div className="mt-1">{children}</div>
-      {hint && <p className="ios-caption text-slate-500 mt-1">{hint}</p>}
+      {hint && <p className="ios-caption text-fg-muted mt-1">{hint}</p>}
     </div>
   );
 }
@@ -278,10 +278,10 @@ export default function PostListingPage() {
                 <path d="M12 8v4M12 16h.01" />
               </svg>
             </div>
-            <h2 className="ios-title-2 text-white">
+            <h2 className="ios-title-2 text-fg-strong">
               You already have an active listing
             </h2>
-            <p className="mt-2 ios-subheadline text-slate-400 max-w-sm">
+            <p className="mt-2 ios-subheadline text-fg-secondary max-w-sm">
               Free accounts are limited to 1 active listing at a time. Delete or let your current listing expire to post a new one.
             </p>
             <Link
@@ -302,7 +302,7 @@ export default function PostListingPage() {
               </div>
             )}
 
-            <p className="px-5 ios-footnote text-slate-500 mb-2">
+            <p className="px-5 ios-footnote text-fg-muted mb-2">
               Fields marked with <span className="text-red-400">*</span> are required
             </p>
 
@@ -316,7 +316,7 @@ export default function PostListingPage() {
                   onChange={(e) => setBusinessName(e.target.value)}
                   placeholder="Your shop name"
                   required
-                  className="w-full bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                  className="w-full bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                 />
               </StackedInputRow>
               <div className="ios-hairline-top" />
@@ -328,7 +328,7 @@ export default function PostListingPage() {
                   placeholder="e.g. Senior Barber — Chair Available"
                   required
                   maxLength={60}
-                  className="w-full bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                  className="w-full bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                 />
               </StackedInputRow>
             </div>
@@ -343,18 +343,18 @@ export default function PostListingPage() {
                 <button
                   type="button"
                   onClick={() => setIndustry("hair")}
-                  className="flex flex-col items-center gap-2 rounded-2xl bg-bg-surface p-5 ios-press active:bg-bg-elevated transition-colors"
+                  className="flex flex-col items-center gap-2 rounded-2xl bg-surface p-5 ios-press active:bg-elevated transition-colors"
                 >
                   <img src={TRADE_IMAGES.cosmetologist} alt="Hair" className="w-9 h-9 object-contain" />
-                  <span className="ios-headline text-white">Hair</span>
+                  <span className="ios-headline text-fg-strong">Hair</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setIndustry("tattoo")}
-                  className="flex flex-col items-center gap-2 rounded-2xl bg-bg-surface p-5 ios-press active:bg-bg-elevated transition-colors"
+                  className="flex flex-col items-center gap-2 rounded-2xl bg-surface p-5 ios-press active:bg-elevated transition-colors"
                 >
                   <img src={TRADE_IMAGES.tattoo_artist} alt="Tattoo" className="w-9 h-9 object-contain" />
-                  <span className="ios-headline text-white">Tattoo</span>
+                  <span className="ios-headline text-fg-strong">Tattoo</span>
                 </button>
               </div>
             )}
@@ -368,18 +368,18 @@ export default function PostListingPage() {
                       key={value}
                       type="button"
                       onClick={() => toggleSpecialty(value)}
-                      className="ios-row gap-3 w-full active:bg-slate-800/60 transition-colors"
+                      className="ios-row gap-3 w-full active:bg-surface/60 transition-colors"
                     >
                       <div
                         className={clsx(
                           "w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors",
-                          selected ? "bg-primary" : "bg-slate-700/60"
+                          selected ? "bg-primary" : "bg-elevated/60"
                         )}
                       >
                         {selected && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
                       </div>
                       <img src={image} alt={label} className="w-6 h-6 object-contain" />
-                      <span className="ios-body text-white">{label}</span>
+                      <span className="ios-body text-fg-strong">{label}</span>
                     </button>
                   );
                 })}
@@ -420,37 +420,37 @@ export default function PostListingPage() {
               {compModel === "hybrid" ? (
                 <>
                   <div className="ios-row gap-3">
-                    <label className="ios-body text-slate-400 w-24 shrink-0">Base Wage</label>
-                    <span className="ios-body text-slate-500">$</span>
+                    <label className="ios-body text-fg-secondary w-24 shrink-0">Base Wage</label>
+                    <span className="ios-body text-fg-muted">$</span>
                     <input
                       type="text"
                       value={hybridWage}
                       onChange={(e) => setHybridWage(e.target.value.replace(/[^0-9.]/g, ""))}
                       placeholder="15"
                       inputMode="decimal"
-                      className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                      className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                     />
-                    <span className="ios-body text-slate-400 shrink-0">/hr</span>
+                    <span className="ios-body text-fg-secondary shrink-0">/hr</span>
                   </div>
                   <div className="ios-hairline-top" />
                   <div className="ios-row gap-3">
-                    <label className="ios-body text-slate-400 w-24 shrink-0">Take Home</label>
+                    <label className="ios-body text-fg-secondary w-24 shrink-0">Take Home</label>
                     <input
                       type="text"
                       value={hybridCommission}
                       onChange={(e) => setHybridCommission(e.target.value.replace(/[^0-9.]/g, ""))}
                       placeholder="%"
                       inputMode="decimal"
-                      className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                      className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                     />
-                    <span className="ios-body text-slate-400 shrink-0">%</span>
+                    <span className="ios-body text-fg-secondary shrink-0">%</span>
                   </div>
                   <div className="ios-hairline-top" />
                 </>
               ) : (
                 <>
                   <div className="ios-row gap-3">
-                    <label className="ios-body text-slate-400 w-24 shrink-0">
+                    <label className="ios-body text-fg-secondary w-24 shrink-0">
                       {compModel === "hourly" ? "Base Wage" : compModel === "commission" ? "Take Home" : "Rent"}
                     </label>
                     <input
@@ -459,7 +459,7 @@ export default function PostListingPage() {
                       onChange={(e) => setPayValue(e.target.value)}
                       placeholder={payPlaceholder}
                       inputMode="decimal"
-                      className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                      className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                     />
                   </div>
                   <div className="ios-hairline-top" />
@@ -486,13 +486,13 @@ export default function PostListingPage() {
 
               {/* Public toggle */}
               <div className="ios-row gap-3 justify-between">
-                <span className="ios-body text-white">Show compensation publicly</span>
+                <span className="ios-body text-fg-strong">Show compensation publicly</span>
                 <button
                   type="button"
                   onClick={() => setPayVisible(!payVisible)}
                   className={clsx(
                     "relative w-[51px] h-[31px] rounded-full transition-colors shrink-0",
-                    payVisible ? "bg-green-500" : "bg-slate-700"
+                    payVisible ? "bg-green-500" : "bg-elevated"
                   )}
                   role="switch"
                   aria-checked={payVisible}
@@ -518,7 +518,7 @@ export default function PostListingPage() {
                   onChange={(e) => setExperienceText(e.target.value.slice(0, 20))}
                   placeholder="e.g. 2+ years"
                   maxLength={20}
-                  className="w-full bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                  className="w-full bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                 />
               </StackedInputRow>
               <div className="ios-hairline-top" />
@@ -529,9 +529,9 @@ export default function PostListingPage() {
                   placeholder="Tell talent what makes your shop great."
                   rows={3}
                   maxLength={200}
-                  className="w-full bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500 resize-none"
+                  className="w-full bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted resize-none"
                 />
-                <p className="ios-caption text-slate-500 text-right">
+                <p className="ios-caption text-fg-muted text-right">
                   {description.length}/200
                 </p>
               </StackedInputRow>
@@ -547,7 +547,7 @@ export default function PostListingPage() {
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Start typing…"
                   data-map-address="true"
-                  className="w-full bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                  className="w-full bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                 />
               </StackedInputRow>
               <div className="ios-hairline-top" />
@@ -557,20 +557,20 @@ export default function PostListingPage() {
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="e.g. Encinitas"
-                  className="w-full bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                  className="w-full bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                 />
               </StackedInputRow>
               <div className="ios-hairline-top" />
               {/* Address visibility toggle */}
               <div className="px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="ios-body text-white">Show exact address</span>
+                  <span className="ios-body text-fg-strong">Show exact address</span>
                   <button
                     type="button"
                     onClick={() => setAddressVisible(!addressVisible)}
                     className={clsx(
                       "relative w-[51px] h-[31px] rounded-full transition-colors shrink-0",
-                      addressVisible ? "bg-green-500" : "bg-slate-700"
+                      addressVisible ? "bg-green-500" : "bg-elevated"
                     )}
                     role="switch"
                     aria-checked={addressVisible}
@@ -583,7 +583,7 @@ export default function PostListingPage() {
                     />
                   </button>
                 </div>
-                <p className="ios-caption text-slate-500 mt-1.5">
+                <p className="ios-caption text-fg-muted mt-1.5">
                   When off, your listing shows just the city.
                 </p>
               </div>
@@ -608,15 +608,15 @@ export default function PostListingPage() {
               <div
                 className={clsx(
                   "rounded-2xl overflow-hidden flex flex-col items-center gap-3 transition-colors p-8",
-                  photoPreview ? "bg-primary/10" : "bg-bg-surface"
+                  photoPreview ? "bg-primary/10" : "bg-surface"
                 )}
               >
                 {photoPreview ? (
                   <img src={photoPreview} alt="Preview" className="w-full max-h-48 object-cover rounded-xl" />
                 ) : (
                   <>
-                    <Camera className="w-9 h-9 text-slate-500" strokeWidth={1.8} />
-                    <span className="ios-subheadline text-slate-400">Tap to add a photo</span>
+                    <Camera className="w-9 h-9 text-fg-muted" strokeWidth={1.8} />
+                    <span className="ios-subheadline text-fg-secondary">Tap to add a photo</span>
                   </>
                 )}
               </div>

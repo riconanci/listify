@@ -172,7 +172,7 @@ export default function BrowseMap({ jobs, userLat, userLng, radiusMiles = 15 }: 
   const defaultCenter: [number, number] = [32.85, -117.15];
 
   return (
-    <div className="rounded-xl border border-slate-800 overflow-hidden">
+    <div className="rounded-xl border border-line-subtle overflow-hidden">
       <MapContainer
         center={defaultCenter}
         zoom={10}

@@ -32,24 +32,24 @@ interface StatusBadgeProps {
 const variantStyles: Record<BadgeVariant, string> = {
   active: "bg-green-500/12 text-green-400 border-green-500/15",
   paused: "bg-yellow-500/12 text-yellow-400 border-yellow-500/15",
-  closed: "bg-slate-500/12 text-slate-400 border-slate-500/15",
+  closed: "bg-fg-muted/12 text-fg-secondary border-fg-muted/15",
   expired: "bg-red-500/12 text-red-400 border-red-500/15",
   expiring: "bg-amber-500/12 text-amber-400 border-amber-500/15",
   sent: "bg-green-500/12 text-green-400 border-green-500/15",
   primary: "bg-primary/12 text-primary border-primary/15",
-  default: "bg-slate-700/40 text-slate-300 border-slate-600/20",
+  default: "bg-elevated/40 text-fg border-line-strong/20",
   danger: "bg-red-500/12 text-red-400 border-red-500/15",
 };
 
 const dotColors: Record<BadgeVariant, string> = {
   active: "bg-green-400",
   paused: "bg-yellow-400",
-  closed: "bg-slate-400",
+  closed: "bg-fg-secondary",
   expired: "bg-red-400",
   expiring: "bg-amber-400",
   sent: "bg-green-400",
   primary: "bg-primary",
-  default: "bg-slate-400",
+  default: "bg-fg-secondary",
   danger: "bg-red-400",
 };
 

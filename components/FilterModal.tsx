@@ -95,7 +95,7 @@ function Chip({
         "px-4 py-2 rounded-full text-[14px] font-semibold ios-press transition-colors",
         selected
           ? "bg-primary text-white"
-          : "bg-slate-700/60 text-slate-200 active:bg-slate-700"
+          : "bg-elevated/60 text-fg-bright active:bg-elevated"
       )}
     >
       {children}
@@ -218,7 +218,7 @@ export default function FilterModal({
               {/* City search */}
               <div className="relative">
                 <div className="ios-search-bar">
-                  <Search className="w-[18px] h-[18px] text-slate-400" strokeWidth={2} />
+                  <Search className="w-[18px] h-[18px] text-fg-secondary" strokeWidth={2} />
                   <input
                     ref={cityInputRef}
                     type="text"
@@ -233,14 +233,14 @@ export default function FilterModal({
                 </div>
                 {/* Suggestions */}
                 {showCitySuggestions && citySuggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl bg-slate-800 overflow-hidden z-10 shadow-xl">
+                  <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl bg-surface overflow-hidden z-10 shadow-xl">
                     {citySuggestions.map((city, idx) => (
                       <button
                         key={city}
                         onClick={() => addCity(city)}
                         className={clsx(
-                          "w-full text-left px-4 py-3 text-[15px] text-white active:bg-slate-700 transition-colors",
-                          idx > 0 && "border-t border-slate-700/50"
+                          "w-full text-left px-4 py-3 text-[15px] text-fg-strong active:bg-elevated transition-colors",
+                          idx > 0 && "border-t border-line/50"
                         )}
                       >
                         {city}
@@ -267,9 +267,9 @@ export default function FilterModal({
               )}
 
               {/* Radius */}
-              <div className="rounded-2xl bg-bg-surface px-4 py-3">
+              <div className="rounded-2xl bg-surface px-4 py-3">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[15px] font-medium text-white">Radius</span>
+                  <span className="text-[15px] font-medium text-fg-strong">Radius</span>
                   <span className="text-[15px] font-semibold text-primary">{filters.radius} mi</span>
                 </div>
                 <input
@@ -353,7 +353,7 @@ export default function FilterModal({
         </div>
 
         {/* Sticky Apply Button */}
-        <div className="ios-hairline-top px-4 pt-3 pb-2 bg-bg-base">
+        <div className="ios-hairline-top px-4 pt-3 pb-2 bg-canvas">
           <button
             onClick={handleApply}
             className="w-full rounded-full bg-primary px-6 py-3.5 text-[17px] font-semibold text-white ios-press active:bg-primary-dark"

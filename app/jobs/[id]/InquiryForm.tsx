@@ -36,7 +36,7 @@ export default function InquiryForm({ jobId, userRole, isOwner }: InquiryFormPro
   if (userRole === "employer" || isOwner) {
     return (
       <div className="text-center py-2">
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-fg-muted">
           {isOwner ? "This is your listing" : "Only talent accounts can send inquiries"}
         </p>
       </div>
@@ -111,10 +111,10 @@ export default function InquiryForm({ jobId, userRole, isOwner }: InquiryFormPro
       )}
 
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-bold text-white">Send Inquiry</h3>
+        <h3 className="text-sm font-bold text-fg-strong">Send Inquiry</h3>
         <button
           onClick={() => setIsOpen(false)}
-          className="p-1 rounded text-slate-400 hover:text-white transition-colors"
+          className="p-1 rounded text-fg-secondary hover:text-fg-strong transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
@@ -122,36 +122,36 @@ export default function InquiryForm({ jobId, userRole, isOwner }: InquiryFormPro
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="relative">
-          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-muted" />
           <input
             type="tel"
             value={phone}
             onChange={(e) => setPhone(formatPhone(e.target.value))}
             placeholder="Phone number"
-            className="w-full rounded-lg border border-slate-700 bg-bg-input pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full rounded-lg border border-line bg-field pl-10 pr-4 py-2.5 text-sm text-fg-strong placeholder-fg-muted focus:border-primary focus:ring-1 focus:ring-primary"
           />
         </div>
         <div className="relative">
-          <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-muted" />
           <input
             type="text"
             value={instagram}
             onChange={(e) => setInstagram(e.target.value)}
             placeholder="@instagram (optional)"
-            className="w-full rounded-lg border border-slate-700 bg-bg-input pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full rounded-lg border border-line bg-field pl-10 pr-4 py-2.5 text-sm text-fg-strong placeholder-fg-muted focus:border-primary focus:ring-1 focus:ring-primary"
           />
         </div>
       </div>
 
       <div className="relative">
-        <FileText className="absolute left-3 top-3 w-4 h-4 text-slate-500" />
+        <FileText className="absolute left-3 top-3 w-4 h-4 text-fg-muted" />
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="Tell them about yourself... (optional)"
           rows={3}
           maxLength={500}
-          className="w-full rounded-lg border border-slate-700 bg-bg-input pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary resize-none"
+          className="w-full rounded-lg border border-line bg-field pl-10 pr-4 py-2.5 text-sm text-fg-strong placeholder-fg-muted focus:border-primary focus:ring-1 focus:ring-primary resize-none"
         />
       </div>
 

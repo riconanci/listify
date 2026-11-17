@@ -14,24 +14,37 @@
   --color-primary-100: #dbeafe;
   --color-primary-900: #1e3a5f;
 
-  /* Backgrounds — iOS-layered dark mode feel, kept on-brand navy */
-  --color-bg-base: #0f172a;
-  --color-bg-surface: #1e293b;
-  --color-bg-elevated: #334155;
-  --color-bg-input: #1e293b;
-  --color-bg-card: #1e293b;
-  --color-bg-grouped: #0f172a;
+  /* ── Neutral tokens ─────────────────────────────────────────────
+     Every neutral colour in the app comes from this list, so a theme
+     (light mode, a different ground) only has to change these values.
+     The dark values are Tailwind's slate scale, unchanged from what
+     the screens used when the classes were hard-coded.            */
 
-  /* Borders / separators — iOS uses very subtle hairlines */
-  --color-border: #334155;
-  --color-border-subtle: rgba(148, 163, 184, 0.12);
-  --color-border-focus: #3b82f6;
+  /* Surfaces: page, cards and rows, raised controls, text fields */
+  --color-canvas: oklch(20.8% 0.042 265.755);      /* slate-900 */
+  --color-surface: oklch(27.9% 0.041 260.031);     /* slate-800 */
+  --color-elevated: oklch(37.2% 0.044 257.287);    /* slate-700 */
+  --color-field: oklch(27.9% 0.041 260.031);       /* slate-800 */
 
-  /* Text */
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
-  --color-text-inverse: #0f172a;
+  /* Foreground: text and icons, strongest to faintest */
+  --color-fg-strong: #fff;                          /* titles, values */
+  --color-fg-default: oklch(96.8% 0.007 247.896);  /* slate-100, inherited body text */
+  --color-fg-bright: oklch(92.9% 0.013 255.508);   /* slate-200 */
+  --color-fg: oklch(86.9% 0.022 252.894);          /* slate-300, body copy */
+  --color-fg-secondary: oklch(70.4% 0.04 256.788); /* slate-400 */
+  --color-fg-muted: oklch(55.4% 0.046 257.417);    /* slate-500 */
+  --color-fg-faint: oklch(44.6% 0.043 257.281);    /* slate-600 */
+
+  /* Lines: borders and dividers */
+  --color-line-subtle: oklch(27.9% 0.041 260.031); /* slate-800 */
+  --color-line: oklch(37.2% 0.044 257.287);        /* slate-700 */
+  --color-line-strong: oklch(44.6% 0.043 257.281); /* slate-600 */
+  --color-hairline: rgba(148, 163, 184, 0.18);     /* 0.5px iOS separators */
+
+  /* Materials: translucent bars and fills */
+  --color-glass: rgba(15, 23, 42, 0.72);           /* nav bar, tab bar */
+  --color-glass-strong: rgba(15, 23, 42, 0.65);
+  --color-fill: rgba(118, 118, 128, 0.18);         /* search bar fill */
 
   /* Status */
   --color-success: #22c55e;
@@ -61,8 +74,8 @@ html {
 
 body {
   font-family: var(--font-display);
-  background-color: var(--color-bg-base);
-  color: var(--color-text-primary);
+  background-color: var(--color-canvas);
+  color: var(--color-fg-default);
   min-height: 100dvh;
   letter-spacing: -0.01em;
 }
@@ -79,22 +92,22 @@ h1, h2, h3, .ios-large-title {
 .ios-blur {
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  background-color: rgba(15, 23, 42, 0.72);
+  background-color: var(--color-glass);
 }
 
 .ios-blur-strong {
   backdrop-filter: saturate(180%) blur(30px);
   -webkit-backdrop-filter: saturate(180%) blur(30px);
-  background-color: rgba(15, 23, 42, 0.65);
+  background-color: var(--color-glass-strong);
 }
 
 /* iOS nav bar hairline separator (very subtle) */
 .ios-hairline-bottom {
-  border-bottom: 0.5px solid rgba(148, 163, 184, 0.18);
+  border-bottom: 0.5px solid var(--color-hairline);
 }
 
 .ios-hairline-top {
-  border-top: 0.5px solid rgba(148, 163, 184, 0.18);
+  border-top: 0.5px solid var(--color-hairline);
 }
 
 /* iOS type scale */
@@ -169,13 +182,13 @@ h1, h2, h3, .ios-large-title {
   font-weight: 400;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--color-text-secondary);
+  color: var(--color-fg-secondary);
   padding: 0 16px 6px;
 }
 
 /* iOS grouped card — used for forms and grouped content */
 .ios-card {
-  background-color: var(--color-bg-surface);
+  background-color: var(--color-surface);
   border-radius: 16px;
   overflow: hidden;
 }
@@ -186,7 +199,7 @@ h1, h2, h3, .ios-large-title {
   align-items: center;
   min-height: 44px;
   padding: 12px 16px;
-  background-color: var(--color-bg-surface);
+  background-color: var(--color-surface);
   position: relative;
 }
 
@@ -197,7 +210,7 @@ h1, h2, h3, .ios-large-title {
   left: 16px;
   right: 0;
   height: 0.5px;
-  background-color: rgba(148, 163, 184, 0.18);
+  background-color: var(--color-hairline);
 }
 
 /* iOS search bar — rounded gray, no border */
@@ -207,9 +220,9 @@ h1, h2, h3, .ios-large-title {
   gap: 8px;
   height: 36px;
   padding: 0 12px;
-  background-color: rgba(118, 118, 128, 0.18);
+  background-color: var(--color-fill);
   border-radius: 10px;
-  color: var(--color-text-primary);
+  color: var(--color-fg-default);
 }
 
 .ios-search-bar input {
@@ -219,11 +232,11 @@ h1, h2, h3, .ios-large-title {
   border: none;
   outline: none;
   font-size: 17px;
-  color: var(--color-text-primary);
+  color: var(--color-fg-default);
 }
 
 .ios-search-bar input::placeholder {
-  color: var(--color-text-muted);
+  color: var(--color-fg-muted);
 }
 
 /* iOS-style text gradients */
@@ -257,7 +270,7 @@ input[type="range"] {
   appearance: none;
   height: 4px;
   border-radius: 9999px;
-  background: var(--color-bg-elevated);
+  background: var(--color-elevated);
   outline: none;
 }
 input[type="range"]::-webkit-slider-thumb {
@@ -299,7 +312,7 @@ input[type="range"]::-moz-range-thumb {
 }
 .card-hover:hover {
   border-color: rgba(59, 130, 246, 0.3);
-  background-color: rgba(30, 41, 59, 0.8);
+  background-color: color-mix(in srgb, var(--color-surface) 80%, transparent);
 }
 
 /* iOS-style press animation — slight scale + opacity */
@@ -369,7 +382,7 @@ input[type="range"]::-moz-range-thumb {
   100% { background-position: 200% 0; }
 }
 .shimmer {
-  background: linear-gradient(90deg, var(--color-bg-surface) 25%, var(--color-bg-elevated) 50%, var(--color-bg-surface) 75%);
+  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-elevated) 50%, var(--color-surface) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }

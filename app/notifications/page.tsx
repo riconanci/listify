@@ -144,11 +144,11 @@ export default function NotificationsPage() {
 
         {notifications.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-            <div className="w-20 h-20 rounded-full bg-slate-800/60 flex items-center justify-center mb-5">
-              <Bell className="w-9 h-9 text-slate-600" strokeWidth={1.5} />
+            <div className="w-20 h-20 rounded-full bg-surface/60 flex items-center justify-center mb-5">
+              <Bell className="w-9 h-9 text-fg-faint" strokeWidth={1.5} />
             </div>
-            <p className="ios-title-2 text-white">All caught up!</p>
-            <p className="ios-subheadline text-slate-400 mt-2">
+            <p className="ios-title-2 text-fg-strong">All caught up!</p>
+            <p className="ios-subheadline text-fg-secondary mt-2">
               No notifications to show.
             </p>
           </div>

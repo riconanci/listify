@@ -55,7 +55,7 @@ export default async function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body className="font-display antialiased bg-bg-base text-text-primary min-h-dvh">
+      <body className="font-display antialiased bg-canvas text-fg-default min-h-dvh">
         <ToastProvider>
           <Header user={user} />
           {children}

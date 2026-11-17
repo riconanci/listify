@@ -29,14 +29,14 @@ type LinkButtonProps = BaseProps & {
 
 const variantClasses: Record<Variant, string> = {
   filled:
-    "bg-primary text-white active:bg-primary-dark disabled:bg-slate-700 disabled:text-slate-400",
+    "bg-primary text-white active:bg-primary-dark disabled:bg-elevated disabled:text-fg-secondary",
   tinted:
-    "bg-primary/15 text-primary active:bg-primary/25 disabled:bg-slate-800 disabled:text-slate-500",
+    "bg-primary/15 text-primary active:bg-primary/25 disabled:bg-surface disabled:text-fg-muted",
   plain:
-    "bg-transparent text-primary active:bg-primary/10 disabled:text-slate-500",
-  gray: "bg-slate-700/60 text-white active:bg-slate-700 disabled:bg-slate-800 disabled:text-slate-500",
+    "bg-transparent text-primary active:bg-primary/10 disabled:text-fg-muted",
+  gray: "bg-elevated/60 text-fg-strong active:bg-elevated disabled:bg-surface disabled:text-fg-muted",
   destructive:
-    "bg-status-danger text-white active:bg-red-600 disabled:bg-slate-700 disabled:text-slate-400",
+    "bg-danger text-white active:bg-red-600 disabled:bg-elevated disabled:text-fg-secondary",
 };
 
 const sizeClasses: Record<Size, string> = {

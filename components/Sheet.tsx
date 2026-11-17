@@ -193,7 +193,7 @@ export default function Sheet({
       <div
         ref={sheetRef}
         className={clsx(
-          "relative w-full max-w-2xl bg-bg-base animate-slide-up flex flex-col",
+          "relative w-full max-w-2xl bg-canvas animate-slide-up flex flex-col",
           "rounded-t-[28px] overflow-hidden",
           "pb-safe",
           isAnimating && "transition-transform duration-200 ease-out",
@@ -216,7 +216,7 @@ export default function Sheet({
           {/* Grabber pill */}
           {!hideGrabber && (
             <div className="flex justify-center pt-2 pb-1">
-              <div className="w-9 h-[5px] rounded-full bg-slate-600/80" />
+              <div className="w-9 h-[5px] rounded-full bg-fg-faint/80" />
             </div>
           )}
 
@@ -242,7 +242,7 @@ export default function Sheet({
                     onMouseDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => e.stopPropagation()}
                     aria-label="Close"
-                    className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-700/60 text-slate-300 ios-press"
+                    className="flex items-center justify-center w-8 h-8 rounded-full bg-elevated/60 text-fg ios-press"
                   >
                     <X className="w-[18px] h-[18px]" strokeWidth={2.5} />
                   </button>
@@ -253,7 +253,7 @@ export default function Sheet({
               {title && (
                 <h2
                   id="sheet-title"
-                  className="absolute left-1/2 -translate-x-1/2 text-[17px] font-semibold text-white"
+                  className="absolute left-1/2 -translate-x-1/2 text-[17px] font-semibold text-fg-strong"
                 >
                   {title}
                 </h2>

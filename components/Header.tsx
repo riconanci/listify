@@ -68,7 +68,7 @@ export default function Header({ user }: HeaderProps) {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 ios-press">
           <Logo size={28} className="sm:w-8 sm:h-8" />
-          <span className="text-[17px] font-bold tracking-tight text-white sm:text-xl">
+          <span className="text-[17px] font-bold tracking-tight text-fg-strong sm:text-xl">
             Listify
           </span>
         </Link>
@@ -85,7 +85,7 @@ export default function Header({ user }: HeaderProps) {
                   "px-4 py-2 text-sm font-medium rounded-lg transition-colors",
                   isActive
                     ? "text-primary bg-primary/10"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800/60"
+                    : "text-fg-secondary hover:text-fg-strong hover:bg-surface/60"
                 )}
               >
                 {link.label}
@@ -101,7 +101,7 @@ export default function Header({ user }: HeaderProps) {
               {/* Notification Bell */}
               <Link
                 href="/notifications"
-                className="relative flex items-center justify-center w-9 h-9 rounded-full text-slate-300 ios-press hover:bg-slate-800/60 transition-colors"
+                className="relative flex items-center justify-center w-9 h-9 rounded-full text-fg ios-press hover:bg-surface/60 transition-colors"
                 aria-label="Notifications"
               >
                 <Bell className="w-[22px] h-[22px]" strokeWidth={2} />
@@ -133,13 +133,13 @@ export default function Header({ user }: HeaderProps) {
                   Hidden under 360px, where the three items would not fit. */}
               <Link
                 href="/jobs"
-                className="md:hidden max-[359px]:hidden whitespace-nowrap px-1 py-2 text-[15px] font-medium text-slate-300 ios-press"
+                className="md:hidden max-[359px]:hidden whitespace-nowrap px-1 py-2 text-[15px] font-medium text-fg ios-press"
               >
                 Browse
               </Link>
               <Link
                 href="/signin"
-                className="whitespace-nowrap px-1 py-2 text-[15px] font-medium text-slate-300 hover:text-white transition-colors sm:px-3 sm:py-1.5"
+                className="whitespace-nowrap px-1 py-2 text-[15px] font-medium text-fg hover:text-fg-strong transition-colors sm:px-3 sm:py-1.5"
               >
                 Sign In
               </Link>

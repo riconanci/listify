@@ -68,7 +68,7 @@ export default function BottomNav({ role = "talent" }: BottomNavProps) {
               href={item.href}
               className={clsx(
                 "flex flex-col items-center justify-center gap-0.5 flex-1 py-1 ios-press",
-                active ? "text-primary" : "text-slate-500"
+                active ? "text-primary" : "text-fg-muted"
               )}
             >
               <Icon

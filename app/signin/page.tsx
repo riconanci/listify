@@ -60,8 +60,8 @@ function SignInForm() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/15 mb-5">
             <LogIn className="w-7 h-7 text-primary" strokeWidth={2} />
           </div>
-          <h1 className="ios-title-1 text-white">Welcome Back</h1>
-          <p className="mt-2 ios-subheadline text-slate-400">
+          <h1 className="ios-title-1 text-fg-strong">Welcome Back</h1>
+          <p className="mt-2 ios-subheadline text-fg-secondary">
             Sign in to your Listify account
           </p>
         </div>
@@ -77,7 +77,7 @@ function SignInForm() {
           {/* Grouped form card */}
           <div className="ios-card">
             <div className="ios-row gap-3">
-              <label className="ios-body text-slate-400 w-20 shrink-0">
+              <label className="ios-body text-fg-secondary w-20 shrink-0">
                 Email
               </label>
               <input
@@ -88,11 +88,11 @@ function SignInForm() {
                 required
                 autoComplete="email"
                 inputMode="email"
-                className="flex-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                className="flex-1 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
               />
             </div>
             <div className="ios-row gap-3">
-              <label className="ios-body text-slate-400 w-20 shrink-0">
+              <label className="ios-body text-fg-secondary w-20 shrink-0">
                 Password
               </label>
               <input
@@ -102,12 +102,12 @@ function SignInForm() {
                 placeholder="••••••••"
                 required
                 autoComplete="current-password"
-                className="flex-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                className="flex-1 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-slate-500 active:text-slate-300 transition-colors"
+                className="text-fg-muted active:text-fg transition-colors"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -130,7 +130,7 @@ function SignInForm() {
         </form>
 
         {/* Sign up link */}
-        <p className="mt-7 text-center ios-subheadline text-slate-400">
+        <p className="mt-7 text-center ios-subheadline text-fg-secondary">
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"

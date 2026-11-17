@@ -113,7 +113,7 @@ export default async function JobDetailPage({ params }: PageProps) {
             <ChevronLeft className="w-[22px] h-[22px]" strokeWidth={2.5} />
             <span className="text-[17px] font-normal">Browse</span>
           </Link>
-          <h1 className="text-[17px] font-semibold text-white truncate max-w-[60%]">
+          <h1 className="text-[17px] font-semibold text-fg-strong truncate max-w-[60%]">
             Listing
           </h1>
           <div className="w-[80px]" /> {/* spacer to balance back button */}
@@ -123,7 +123,7 @@ export default async function JobDetailPage({ params }: PageProps) {
       <div className="max-w-3xl mx-auto">
         {/* Hero Image */}
         {photoUrl ? (
-          <div className="aspect-[16/9] w-full overflow-hidden bg-slate-800">
+          <div className="aspect-[16/9] w-full overflow-hidden bg-surface">
             <img
               src={photoUrl}
               alt={job.businessName || job.title}
@@ -131,17 +131,17 @@ export default async function JobDetailPage({ params }: PageProps) {
             />
           </div>
         ) : (
-          <div className="aspect-[16/9] w-full bg-slate-800 flex items-center justify-center">
-            <ImageIcon className="w-16 h-16 text-slate-600" />
+          <div className="aspect-[16/9] w-full bg-surface flex items-center justify-center">
+            <ImageIcon className="w-16 h-16 text-fg-faint" />
           </div>
         )}
 
         {/* Title block */}
         <div className="px-4 pt-5 pb-3">
-          <h1 className="ios-title-1 text-white">
+          <h1 className="ios-title-1 text-fg-strong">
             {job.businessName || "Business"}
           </h1>
-          <p className="ios-callout text-slate-400 mt-1">{job.title}</p>
+          <p className="ios-callout text-fg-secondary mt-1">{job.title}</p>
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mt-3">
@@ -163,10 +163,10 @@ export default async function JobDetailPage({ params }: PageProps) {
         <div className="px-4 pb-5">
           <h3 className="ios-section-header">Compensation</h3>
           <div className="ios-card px-5 py-4">
-            <p className="text-3xl font-bold text-white tracking-tight">
+            <p className="text-3xl font-bold text-fg-strong tracking-tight">
               {formatCompensation(job)}
             </p>
-            <p className="ios-subheadline text-slate-400 mt-1">
+            <p className="ios-subheadline text-fg-secondary mt-1">
               {formatCompModel(job.compModel)}
             </p>
           </div>
@@ -177,7 +177,7 @@ export default async function JobDetailPage({ params }: PageProps) {
           <div className="px-4 pb-5">
             <h3 className="ios-section-header">About this position</h3>
             <div className="ios-card px-4 py-3.5">
-              <p className="ios-body text-slate-200 whitespace-pre-line">
+              <p className="ios-body text-fg-bright whitespace-pre-line">
                 {job.description}
               </p>
             </div>
@@ -191,7 +191,7 @@ export default async function JobDetailPage({ params }: PageProps) {
             <div className="ios-card">
               <div className="ios-row gap-3">
                 <CheckCircle2 className="w-5 h-5 text-primary shrink-0" strokeWidth={2} />
-                <span className="ios-body text-slate-200">
+                <span className="ios-body text-fg-bright">
                   {job.experienceText} of professional experience
                 </span>
               </div>
@@ -211,14 +211,14 @@ export default async function JobDetailPage({ params }: PageProps) {
                   className="h-36 w-full"
                 />
               ) : (
-                <div className="h-36 bg-slate-800 relative flex items-center justify-center">
+                <div className="h-36 bg-surface relative flex items-center justify-center">
                   <MapPin className="w-8 h-8 text-primary" />
                 </div>
               )}
               <div className="ios-row gap-3">
                 <MapPin className="w-5 h-5 text-primary shrink-0" strokeWidth={2} />
                 <div className="flex-1 min-w-0">
-                  <span className="ios-body text-slate-200">
+                  <span className="ios-body text-fg-bright">
                     {(job as any).addressVisible !== false
                       ? [location.addressLine1, location.city, location.state]
                           .filter(Boolean)
@@ -226,7 +226,7 @@ export default async function JobDetailPage({ params }: PageProps) {
                       : [location.city, location.state].filter(Boolean).join(", ")}
                   </span>
                   {(job as any).addressVisible === false && (
-                    <p className="ios-caption text-slate-500 mt-0.5">
+                    <p className="ios-caption text-fg-muted mt-0.5">
                       Approximate location · exact address shared after inquiry
                     </p>
                   )}

@@ -13,7 +13,7 @@ export default function ManageLoading() {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="rounded-xl border border-slate-800 p-4 flex items-start gap-4"
+              className="rounded-xl border border-line-subtle p-4 flex items-start gap-4"
             >
               <div
                 className="w-16 h-16 rounded-lg shimmer shrink-0"

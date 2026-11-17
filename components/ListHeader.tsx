@@ -30,7 +30,7 @@ export default function ListHeader({
   sortKey,
 }: ListHeaderProps) {
   return (
-    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-3 bg-bg-surface/50 border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-3 bg-surface/50 border-b border-line-subtle text-[11px] font-bold text-fg-secondary uppercase tracking-widest">
       {columns.map((col) => (
         <div
           key={col.key}
@@ -40,7 +40,7 @@ export default function ListHeader({
               : col.align === "right"
               ? "justify-end"
               : ""
-          } ${col.sortable ? "cursor-pointer hover:text-white transition-colors" : ""}`}
+          } ${col.sortable ? "cursor-pointer hover:text-fg-strong transition-colors" : ""}`}
           onClick={() => col.sortable && onSort?.(col.key)}
         >
           {col.label}
