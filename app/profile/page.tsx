@@ -13,7 +13,6 @@ import {
   Plus,
   LogOut,
 } from "lucide-react";
-import { clsx } from "clsx";
 import { useToast } from "@/components/Toast";
 import LargeTitle from "@/components/LargeTitle";
 
@@ -37,7 +36,6 @@ export default function ProfilePage() {
   const [shopName, setShopName] = useState("");
   const [shopAddress, setShopAddress] = useState("");
   const [website, setWebsite] = useState("");
-  const [emailNotifications, setEmailNotifications] = useState(true);
 
   useEffect(() => {
     fetch("/api/auth/me", { cache: "no-store" })
@@ -154,7 +152,6 @@ export default function ProfilePage() {
         shopName,
         shopAddress,
         website,
-        emailNotifications,
       };
       if (avatarPreview) payload.avatarUrl = avatarPreview;
       if (portfolioChanged) payload.portfolioPhotos = portfolioPhotos;
@@ -381,33 +378,6 @@ export default function ProfilePage() {
             </div>
           </>
         )}
-
-        {/* Preferences */}
-        <h3 className="ios-section-header">Preferences</h3>
-        <div className="ios-card mx-4 mb-6">
-          <div className="ios-row gap-3 justify-between">
-            <div>
-              <p className="ios-body text-white">Email Notifications</p>
-              <p className="ios-footnote text-slate-500 mt-0.5">Weekly updates</p>
-            </div>
-            <button
-              onClick={() => setEmailNotifications(!emailNotifications)}
-              className={clsx(
-                "relative w-[51px] h-[31px] rounded-full transition-colors shrink-0",
-                emailNotifications ? "bg-green-500" : "bg-slate-700"
-              )}
-              role="switch"
-              aria-checked={emailNotifications}
-            >
-              <span
-                className={clsx(
-                  "absolute top-[2px] w-[27px] h-[27px] rounded-full bg-white shadow-md transition-transform",
-                  emailNotifications ? "translate-x-[22px] left-[2px]" : "left-[2px]"
-                )}
-              />
-            </button>
-          </div>
-        </div>
 
         {/* Save Button */}
         <div className="px-4">

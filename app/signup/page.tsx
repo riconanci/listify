@@ -96,7 +96,7 @@ export default function SignUpPage() {
         return;
       }
 
-      router.push("/onboarding");
+      router.push(role === "employer" ? "/post" : "/jobs");
       router.refresh();
     } catch {
       setError("Something went wrong. Please try again.");
