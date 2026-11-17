@@ -74,19 +74,6 @@ export const updateProfileSchema = z.object({
   shopName: z.string().max(100).optional(),
   shopAddress: z.string().max(200).optional(),
   website: z.string().max(100).optional(),
-  emailNotifications: z.boolean().optional(),
-});
-
-export const switchRoleSchema = z.object({
-  role: z.enum(["talent", "employer"]),
-});
-
-export const onboardingSchema = z.object({
-  role: z.enum(["talent", "employer"]),
-  industry: z.enum(["hair", "tattoo"]).optional(),
-  specialties: z.array(z.string()).optional(),
-  licenses: z.array(z.string()).optional(),
-  shopType: z.string().optional(),
 });
 
 // ─── Block ───────────────────────────────────────────

@@ -37,7 +37,7 @@ export default function InquiryForm({ jobId, userRole, isOwner }: InquiryFormPro
     return (
       <div className="text-center py-2">
         <p className="text-sm text-slate-500">
-          {isOwner ? "This is your listing" : "Switch to Talent to send inquiries"}
+          {isOwner ? "This is your listing" : "Only talent accounts can send inquiries"}
         </p>
       </div>
     );

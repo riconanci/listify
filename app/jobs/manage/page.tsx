@@ -55,11 +55,16 @@ export default function ManageListingsPage() {
 
   const handleToggleStatus = async (id: string, newStatus: string) => {
     try {
-      await fetch(`/api/jobs/${id}`, {
+      const res = await fetch(`/api/jobs/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        toast(data.error || "Failed to update listing", "error");
+        return;
+      }
       setJobs((prev) =>
         prev.map((j) => (j.id === id ? { ...j, status: newStatus } : j))
       );

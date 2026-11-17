@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { createJobSchema, jobFiltersSchema } from "@/lib/validation";
 import { haversineDistance } from "@/lib/utils";
+import { FREE_LISTING_LIMIT, countLiveListings, publicLocation } from "@/lib/listings";
 
 // GET /api/jobs — List jobs with optional filters
 export async function GET(request: Request) {
@@ -103,7 +104,13 @@ export async function GET(request: Request) {
       });
     }
 
-    return NextResponse.json(jobs);
+    // The radius filter above needs real coordinates; the response does not.
+    return NextResponse.json(
+      jobs.map((job) => ({
+        ...job,
+        location: publicLocation(job.location, job.addressVisible),
+      }))
+    );
   } catch (error: any) {
     return NextResponse.json(
       { error: error.message || "Failed to fetch jobs" },
@@ -128,19 +135,9 @@ export async function POST(request: Request) {
     }
 
     // One-listing-per-account enforcement (free tier)
-    // Check for active, non-expired listings
-    const existingActive = await prisma.job.count({
-      where: {
-        employerProfile: { userId: user.id },
-        status: "active",
-        OR: [
-          { expiresAt: null },
-          { expiresAt: { gt: new Date() } },
-        ],
-      },
-    });
+    const existingActive = await countLiveListings(user.id);
 
-    if (existingActive >= 1) {
+    if (existingActive >= FREE_LISTING_LIMIT) {
       return NextResponse.json(
         { error: "Free accounts are limited to 1 active listing. Delete or let your current listing expire before posting a new one." },
         { status: 403 }
