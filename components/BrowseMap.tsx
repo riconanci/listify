@@ -1,6 +1,7 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap, AttributionControl } from "react-leaflet";
+import { TILE_URL, TILE_ATTRIBUTION } from "@/lib/mapTiles";
 import L from "leaflet";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
@@ -179,10 +180,9 @@ export default function BrowseMap({ jobs, userLat, userLng, radiusMiles = 15 }: 
         scrollWheelZoom={true}
         attributionControl={false}
       >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://carto.com">CARTO</a>'
-        />
+        <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} />
+        {/* Credit line required by the map data and tile providers */}
+        <AttributionControl position="bottomright" prefix={false} />
 
         {/* Map controller — always present, handles centering + radius fitting */}
         <MapController

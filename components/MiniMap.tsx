@@ -1,6 +1,7 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, AttributionControl } from "react-leaflet";
+import { TILE_URL, TILE_ATTRIBUTION } from "@/lib/mapTiles";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -34,10 +35,9 @@ export default function MiniMap({ lat, lng, className }: MiniMapProps) {
       doubleClickZoom={false}
       touchZoom={false}
     >
-      <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        attribution='&copy; <a href="https://carto.com">CARTO</a>'
-      />
+      <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} />
+      {/* Credit line required by the map data and tile providers */}
+      <AttributionControl position="bottomright" prefix={false} />
       <Marker position={[lat, lng]} icon={markerIcon} />
     </MapContainer>
   );
