@@ -10,6 +10,7 @@ import { clsx } from "clsx";
 import { useToast } from "@/components/Toast";
 import LargeTitle from "@/components/LargeTitle";
 import SelectRow from "@/components/SelectRow";
+import ChipSelect from "@/components/ChipSelect";
 
 const MapPicker = dynamic(() => import("@/components/MapPicker"), {
   ssr: false,
@@ -38,7 +39,6 @@ const SCHEDULE_OPTIONS = [
 ];
 
 const EMPLOYMENT_OPTIONS = [
-  { value: "", label: "—" },
   { value: "w2", label: "W-2" },
   { value: "c1099", label: "1099" },
 ];
@@ -386,28 +386,30 @@ export default function PostListingPage() {
               </div>
             )}
 
-            {/* ─── JOB DETAILS ─── SelectRow pickers */}
+            {/* ─── JOB DETAILS ─── inline chips: few options, one tap */}
             <h3 className="ios-section-header">Job Details</h3>
             <div className="ios-card mx-4 mb-6">
-              <SelectRow
+              <ChipSelect
                 label="Schedule"
                 value={schedule}
                 options={SCHEDULE_OPTIONS}
                 onChange={setSchedule}
               />
               <div className="ios-hairline-top" />
-              <SelectRow
+              {/* Optional: tap the selected chip again to clear it */}
+              <ChipSelect
                 label="Employment"
                 value={employmentType}
                 options={EMPLOYMENT_OPTIONS}
                 onChange={setEmploymentType}
+                clearable
               />
             </div>
 
             {/* ─── COMPENSATION ─── */}
             <h3 className="ios-section-header">Compensation</h3>
             <div className="ios-card mx-4 mb-2">
-              <SelectRow
+              <ChipSelect
                 label="Type"
                 value={compModel}
                 options={COMP_MODEL_OPTIONS}
@@ -463,7 +465,7 @@ export default function PostListingPage() {
                   <div className="ios-hairline-top" />
                   {/* Unit: static for Hourly/Commission (single option), picker for Booth Rent */}
                   {compModel === "booth_rent" ? (
-                    <SelectRow
+                    <ChipSelect
                       label="Unit"
                       value={payUnit}
                       options={UNIT_MAP[compModel] || []}

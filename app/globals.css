@@ -328,21 +328,22 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* iOS-style sheet slide-up animation */
+/* These two animate *from* a start state only and do not use `forwards`.
+   An explicit end keyframe held with `forwards` outranks inline styles, which
+   pinned the backdrop at full black and stopped the sheet following a drag. */
 @keyframes slideUp {
   from { transform: translateY(100%); }
-  to { transform: translateY(0); }
 }
 .animate-slide-up {
-  animation: slideUp 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  animation: slideUp 0.35s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* Backdrop fade-in for sheets */
+/* Backdrop fade-in for sheets: ends at the opacity the sheet sets inline */
 @keyframes backdropFadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
 }
 .animate-backdrop-in {
-  animation: backdropFadeIn 0.25s ease-out forwards;
+  animation: backdropFadeIn 0.25s ease-out;
 }
 
 /* Staggered fade-in */

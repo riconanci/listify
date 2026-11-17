@@ -171,7 +171,7 @@ export default function Sheet({
 
   // Backdrop opacity follows drag progress for a nice tactile feel
   const dragProgress = Math.min(dragOffset / 300, 1);
-  const backdropOpacity = 0.5 * (1 - dragProgress * 0.6);
+  const backdropOpacity = 0.35 * (1 - dragProgress * 0.6);
 
   return (
     <div
