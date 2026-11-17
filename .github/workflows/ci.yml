@@ -8,6 +8,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      # Placeholder only. Prisma needs the variable to exist to read the schema,
+      # and the build never connects to it.
+      DATABASE_URL: "postgresql://user:pass@localhost:5432/listify?schema=public"
+      NEXT_TELEMETRY_DISABLED: "1"
+
     steps:
       - uses: actions/checkout@v4
 
@@ -23,13 +30,9 @@ jobs:
       - run: npx prisma generate
       - run: npx prisma validate
 
-      # Type + lint are fast & catch most issues without requiring DB
-      - run: npm run typecheck --if-present
-      - run: npm run lint --if-present
+      - run: npm run typecheck
 
-      # Optional: Next build (uncomment once env issues are sorted)
-      # - run: npm run build
-      #   env:
-      #     NEXT_TELEMETRY_DISABLED: "1"
-      #     # Provide a dummy DATABASE_URL if your code reads it at build time:
-      #     DATABASE_URL: "postgresql://user:pass@localhost:5432/db?schema=public"
+      # Lint is not run here yet: ESLint is not installed, and `next lint`
+      # exits with an error when it has no config to use.
+
+      - run: npm run build
