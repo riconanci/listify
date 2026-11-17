@@ -9,7 +9,7 @@ interface Column {
 }
 
 interface ListHeaderProps {
-  columns: Column[];
+  columns?: Column[];
   onSort?: (key: string) => void;
   sortKey?: string;
   sortDir?: "asc" | "desc";

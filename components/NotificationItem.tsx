@@ -4,6 +4,7 @@ import {
   UserPlus,
   AlertTriangle,
   Shield,
+  type LucideIcon,
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -25,7 +26,7 @@ interface NotificationItemProps {
 
 const iconMap: Record<
   NotificationType,
-  { icon: React.ComponentType<{ className?: string; strokeWidth?: number }>; color: string }
+  { icon: LucideIcon; color: string }
 > = {
   inquiry: { icon: Eye, color: "bg-primary/20 text-primary" },
   message: { icon: MessageSquare, color: "bg-primary/20 text-primary" },

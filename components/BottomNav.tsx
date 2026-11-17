@@ -10,13 +10,14 @@ import {
   Home,
   PlusCircle,
   Briefcase,
+  type LucideIcon,
 } from "lucide-react";
 import { clsx } from "clsx";
 
 interface NavItem {
   href: string;
   label: string;
-  icon: React.ComponentType<{ className?: string; strokeWidth?: number; fill?: string }>;
+  icon: LucideIcon;
   matchPaths?: string[];
 }
 
