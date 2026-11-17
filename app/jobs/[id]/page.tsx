@@ -104,7 +104,7 @@ export default async function JobDetailPage({ params }: PageProps) {
   return (
     <main className="min-h-[calc(100dvh-3.5rem)] pb-40 md:pb-24">
       {/* iOS-style nav bar with chevron back */}
-      <div className="sticky top-14 md:top-16 z-[999] ios-blur ios-hairline-bottom">
+      <div className="sticky top-14 sm:top-16 z-[999] ios-blur ios-hairline-bottom">
         <div className="max-w-3xl mx-auto flex items-center justify-between px-2 h-11">
           <Link
             href="/jobs"
@@ -238,7 +238,7 @@ export default async function JobDetailPage({ params }: PageProps) {
       </div>
 
       {/* Sticky Inquiry Button */}
-      <div className="fixed bottom-16 left-0 right-0 z-[999] ios-hairline-top ios-blur-strong p-4 pb-safe md:bottom-0">
+      <div className="action-bar z-[999] ios-hairline-top ios-blur-strong">
         <div className="max-w-3xl mx-auto">
           <InquiryForm jobId={id} userRole={userRole} isOwner={isOwner} />
         </div>

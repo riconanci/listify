@@ -59,7 +59,11 @@ export default async function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body className="font-display antialiased bg-canvas text-fg-default min-h-dvh">
+      <body
+        className={`font-display antialiased bg-canvas text-fg-default min-h-dvh${
+          user ? " has-tabbar" : ""
+        }`}
+      >
         <ToastProvider>
           <Header user={user} />
           {children}

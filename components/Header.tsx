@@ -6,6 +6,7 @@ import { Bell } from "lucide-react";
 import { clsx } from "clsx";
 import { useState, useEffect } from "react";
 import Logo from "@/components/Logo";
+import { activeNavHref } from "@/lib/utils";
 
 interface HeaderProps {
   user?: {
@@ -43,6 +44,7 @@ export default function Header({ user }: HeaderProps) {
   }, [user, pathname]);
 
   const filteredLinks = navLinks.filter((link) => !link.scoutOnly || isScout);
+  const activeHref = activeNavHref(pathname, filteredLinks.map((link) => link.href));
 
   const getInitials = (name?: string | null, email?: string | null) => {
     if (name) {
@@ -76,7 +78,7 @@ export default function Header({ user }: HeaderProps) {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-1">
           {filteredLinks.map((link) => {
-            const isActive = pathname.startsWith(link.href);
+            const isActive = link.href === activeHref;
             return (
               <Link
                 key={link.href}

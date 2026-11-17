@@ -353,12 +353,6 @@ h1, h2, h3, .ios-large-title {
   background-clip: text;
 }
 
-/* Legacy alias — keep working for any code that still uses it */
-.glass-header {
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-}
-
 /* Hide scrollbar utility */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -398,6 +392,34 @@ input[type="range"]::-moz-range-thumb {
 
 .pt-safe {
   padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* The phone tab bar's height (keep in step with BottomNav), so bars pinned
+   to the bottom can sit on top of it. Zero where there is no tab bar:
+   signed out, or at tablet width and up.                               */
+:root {
+  --tabbar-height: 0px;
+}
+@media (max-width: 767.98px) {
+  .has-tabbar {
+    --tabbar-height: calc(62px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* A bar of actions pinned to the bottom of the screen (Send Inquiry,
+   Contact). It rests on the tab bar when there is one; otherwise on the
+   bottom edge, leaving room for the iPhone home indicator.              */
+.action-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--tabbar-height);
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+}
+@media (max-width: 767.98px) {
+  .has-tabbar .action-bar {
+    padding-bottom: 0.75rem;
+  }
 }
 
 /* Bottom nav spacing for pages */

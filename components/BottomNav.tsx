@@ -13,27 +13,27 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { clsx } from "clsx";
+import { activeNavHref } from "@/lib/utils";
 
 interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
-  matchPaths?: string[];
 }
 
 const talentNav: NavItem[] = [
-  { href: "/jobs", label: "Browse", icon: Search, matchPaths: ["/jobs"] },
-  { href: "/inbox", label: "Inbox", icon: Mail, matchPaths: ["/inbox"] },
-  { href: "/saved", label: "Saved", icon: Bookmark, matchPaths: ["/saved"] },
-  { href: "/profile", label: "Profile", icon: User, matchPaths: ["/profile"] },
+  { href: "/jobs", label: "Browse", icon: Search },
+  { href: "/inbox", label: "Inbox", icon: Mail },
+  { href: "/saved", label: "Saved", icon: Bookmark },
+  { href: "/profile", label: "Profile", icon: User },
 ];
 
 const scoutNav: NavItem[] = [
-  { href: "/jobs", label: "Home", icon: Home, matchPaths: ["/jobs"] },
-  { href: "/post", label: "Post", icon: PlusCircle, matchPaths: ["/post"] },
-  { href: "/jobs/manage", label: "Manage", icon: Briefcase, matchPaths: ["/jobs/manage"] },
-  { href: "/inbox", label: "Inbox", icon: Mail, matchPaths: ["/inbox"] },
-  { href: "/profile", label: "Profile", icon: User, matchPaths: ["/profile"] },
+  { href: "/jobs", label: "Home", icon: Home },
+  { href: "/post", label: "Post", icon: PlusCircle },
+  { href: "/jobs/manage", label: "Manage", icon: Briefcase },
+  { href: "/inbox", label: "Inbox", icon: Mail },
+  { href: "/profile", label: "Profile", icon: User },
 ];
 
 interface BottomNavProps {
@@ -44,12 +44,8 @@ export default function BottomNav({ role = "talent" }: BottomNavProps) {
   const pathname = usePathname();
   const navItems = role === "employer" ? scoutNav : talentNav;
 
-  const isActive = (item: NavItem) => {
-    if (item.matchPaths) {
-      return item.matchPaths.some((p) => pathname.startsWith(p));
-    }
-    return pathname === item.href;
-  };
+  // One tab is active at a time ("/jobs/manage" is Manage, not Home as well).
+  const activeHref = activeNavHref(pathname, navItems.map((item) => item.href));
 
   return (
     <nav
@@ -59,22 +55,26 @@ export default function BottomNav({ role = "talent" }: BottomNavProps) {
     >
       <div className="flex items-stretch justify-around px-1 pt-1.5 pb-1">
         {navItems.map((item) => {
-          const active = isActive(item);
+          const active = item.href === activeHref;
           const Icon = item.icon;
 
           return (
             <Link
               key={item.href}
               href={item.href}
+              aria-current={active ? "page" : undefined}
               className={clsx(
                 "flex flex-col items-center justify-center gap-0.5 flex-1 py-1 ios-press",
                 active ? "text-primary" : "text-fg-muted"
               )}
             >
+              {/* Active: a heavier line and a light tint inside. A solid fill
+                  hides the detail of line icons (the plus, the envelope flap). */}
               <Icon
                 className="w-[26px] h-[26px]"
-                strokeWidth={active ? 2.4 : 1.8}
+                strokeWidth={active ? 2.2 : 1.8}
                 fill={active ? "currentColor" : "none"}
+                fillOpacity={active ? 0.18 : undefined}
               />
               <span
                 className={clsx(

@@ -107,7 +107,7 @@ export default function ShopProfilePage() {
   return (
     <main className="min-h-[calc(100dvh-4rem)] page-with-nav">
       {/* Header */}
-      <div className="sticky top-16 z-40 border-b border-line-subtle bg-canvas/95 glass-header px-4 py-3">
+      <div className="sticky top-14 sm:top-16 z-40 ios-blur ios-hairline-bottom px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <button
             onClick={() => router.back()}
@@ -312,7 +312,7 @@ export default function ShopProfilePage() {
       </div>
 
       {/* Sticky Bottom Actions */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-line-subtle bg-canvas/95 glass-header p-4 pb-safe">
+      <div className="action-bar z-40 ios-hairline-top ios-blur-strong">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <button
             onClick={() => setFollowing(!following)}
