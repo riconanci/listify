@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Bell } from "lucide-react";
 import { clsx } from "clsx";
 import { useState, useEffect } from "react";
+import Logo from "@/components/Logo";
 
 interface HeaderProps {
   user?: {
@@ -66,20 +67,7 @@ export default function Header({ user }: HeaderProps) {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 ios-press">
-          <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-primary/20 sm:w-8 sm:h-8">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              className="text-primary sm:w-[18px] sm:h-[18px]"
-            >
-              <rect x="3" y="3" width="7" height="7" rx="1.5" fill="currentColor" />
-              <rect x="14" y="3" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6" />
-              <rect x="3" y="14" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6" />
-              <rect x="14" y="14" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.3" />
-            </svg>
-          </div>
+          <Logo size={28} className="sm:w-8 sm:h-8" />
           <span className="text-[17px] font-bold tracking-tight text-white sm:text-xl">
             Listify
           </span>
