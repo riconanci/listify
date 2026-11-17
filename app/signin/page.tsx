@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LogIn, Eye, EyeOff } from "lucide-react";
 
-export default function SignInPage() {
+function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/jobs";
@@ -141,5 +141,15 @@ export default function SignInPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+// useSearchParams() makes the form client-rendered, and Next.js requires a
+// Suspense boundary around it for the production build to succeed.
+export default function SignInPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignInForm />
+    </Suspense>
   );
 }

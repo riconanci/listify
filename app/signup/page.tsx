@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -25,7 +25,7 @@ const LICENSE_OPTIONS: Record<string, { value: string; label: string; image: str
   ],
 };
 
-export default function SignUpPage() {
+function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const defaultRole = searchParams.get("role") === "employer" ? "employer" : "talent";
@@ -403,5 +403,15 @@ export default function SignUpPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+// useSearchParams() makes the form client-rendered, and Next.js requires a
+// Suspense boundary around it for the production build to succeed.
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignUpForm />
+    </Suspense>
   );
 }
