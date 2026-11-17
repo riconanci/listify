@@ -203,7 +203,7 @@ export default function InquiryCard({
           className={clsx(
             "flex items-center justify-center w-10 h-10 rounded-full ios-press transition-colors shrink-0",
             isStarred
-              ? "bg-yellow-400/15 text-yellow-400"
+              ? "bg-warning-fg/15 text-warning-fg"
               : "bg-elevated/60 text-fg-secondary active:bg-elevated"
           )}
           aria-label={isStarred ? "Unstar inquiry" : "Star inquiry"}
@@ -222,7 +222,7 @@ export default function InquiryCard({
         </button>
         <button
           onClick={() => onDelete?.(id)}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-elevated/60 text-red-400 ios-press active:bg-red-500/15 transition-colors shrink-0"
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-elevated/60 text-danger-fg ios-press active:bg-danger/15 transition-colors shrink-0"
           aria-label="Delete inquiry"
         >
           <Trash2 className="w-[18px] h-[18px]" strokeWidth={2} />

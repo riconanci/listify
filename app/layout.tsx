@@ -29,8 +29,12 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  themeColor: "#0f172a",
+  // Follows the device's appearance setting; the colours match --color-canvas.
+  colorScheme: "dark light",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
+    { media: "(prefers-color-scheme: light)", color: "#f1f5f9" },
+  ],
 };
 
 export default async function RootLayout({

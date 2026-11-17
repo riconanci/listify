@@ -212,7 +212,7 @@ export default function BrowseListingsPage() {
             className={clsx(
               "flex items-center justify-center w-9 h-9 rounded-full shrink-0 ios-press",
               currentView === "map"
-                ? "bg-yellow-500/15 text-yellow-400"
+                ? "bg-warning/15 text-warning-fg"
                 : "bg-elevated/60 text-fg-bright"
             )}
             aria-label={currentView === "list" ? "Map view" : "List view"}

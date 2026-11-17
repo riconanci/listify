@@ -16,8 +16,8 @@ export default function Error({
 
   return (
     <main className="min-h-[calc(100dvh-4rem)] flex flex-col items-center justify-center px-4 text-center">
-      <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-5">
-        <AlertCircle className="w-8 h-8 text-red-400" />
+      <div className="w-16 h-16 rounded-full bg-danger/10 flex items-center justify-center mb-5">
+        <AlertCircle className="w-8 h-8 text-danger-fg" />
       </div>
       <h1 className="text-xl font-bold text-fg-strong">Something went wrong</h1>
       <p className="mt-2 text-sm text-fg-secondary max-w-xs">

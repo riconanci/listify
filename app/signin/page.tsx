@@ -69,8 +69,8 @@ function SignInForm() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-2xl bg-red-500/12 border border-red-500/15 px-4 py-3">
-              <p className="ios-subheadline text-red-400">{error}</p>
+            <div className="rounded-2xl bg-danger/12 border border-danger/15 px-4 py-3">
+              <p className="ios-subheadline text-danger-fg">{error}</p>
             </div>
           )}
 

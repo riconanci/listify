@@ -112,7 +112,7 @@ export default function SavedPage() {
                       e.stopPropagation();
                       removeSaved(job.id);
                     }}
-                    className="absolute top-3 right-3 flex items-center justify-center w-9 h-9 rounded-full bg-surface/80 text-fg-secondary hover:text-red-400 hover:bg-red-500/10 transition-colors opacity-0 group-hover:opacity-100"
+                    className="absolute top-3 right-3 flex items-center justify-center w-9 h-9 rounded-full bg-surface/80 text-fg-secondary hover:text-danger-fg hover:bg-danger/10 transition-colors opacity-0 group-hover:opacity-100"
                     title="Remove from saved"
                   >
                     <Trash2 className="w-4 h-4" />

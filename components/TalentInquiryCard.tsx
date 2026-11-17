@@ -56,8 +56,8 @@ export default function TalentInquiryCard({
       <div className="flex items-start justify-between gap-3">
         <StatusBadge variant="primary">{formatRole(role)}</StatusBadge>
         <div className="flex items-center gap-1">
-          <CheckCircle2 className="w-3.5 h-3.5 text-green-400" strokeWidth={2.2} />
-          <span className="ios-footnote font-semibold text-green-400 capitalize">
+          <CheckCircle2 className="w-3.5 h-3.5 text-success-fg" strokeWidth={2.2} />
+          <span className="ios-footnote font-semibold text-success-fg capitalize">
             {status}
           </span>
         </div>

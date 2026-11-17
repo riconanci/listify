@@ -402,7 +402,7 @@ export default function ProfilePage() {
               router.push("/");
               router.refresh();
             }}
-            className="w-full rounded-full bg-elevated/60 px-6 h-12 text-[17px] font-semibold text-red-400 ios-press active:bg-elevated flex items-center justify-center gap-2 transition-colors"
+            className="w-full rounded-full bg-elevated/60 px-6 h-12 text-[17px] font-semibold text-danger-fg ios-press active:bg-elevated flex items-center justify-center gap-2 transition-colors"
           >
             <LogOut className="w-[18px] h-[18px]" strokeWidth={2} />
             Sign Out

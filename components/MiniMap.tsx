@@ -1,7 +1,7 @@
 "use client";
 
 import { MapContainer, TileLayer, Marker, AttributionControl } from "react-leaflet";
-import { TILE_URL, TILE_ATTRIBUTION } from "@/lib/mapTiles";
+import { useTileUrl, TILE_ATTRIBUTION } from "@/lib/mapTiles";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -23,6 +23,7 @@ interface MiniMapProps {
 }
 
 export default function MiniMap({ lat, lng, className }: MiniMapProps) {
+  const tileUrl = useTileUrl();
   return (
     <MapContainer
       center={[lat, lng]}
@@ -35,7 +36,7 @@ export default function MiniMap({ lat, lng, className }: MiniMapProps) {
       doubleClickZoom={false}
       touchZoom={false}
     >
-      <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} />
+      <TileLayer url={tileUrl} attribution={TILE_ATTRIBUTION} />
       {/* Credit line required by the map data and tile providers */}
       <AttributionControl position="bottomright" prefix={false} />
       <Marker position={[lat, lng]} icon={markerIcon} />

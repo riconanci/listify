@@ -31,8 +31,8 @@ const iconMap: Record<
   inquiry: { icon: Eye, color: "bg-primary/20 text-primary" },
   message: { icon: MessageSquare, color: "bg-primary/20 text-primary" },
   follow: { icon: UserPlus, color: "bg-primary/20 text-primary" },
-  system: { icon: AlertTriangle, color: "bg-yellow-500/20 text-yellow-400" },
-  verified: { icon: Shield, color: "bg-green-500/20 text-green-400" },
+  system: { icon: AlertTriangle, color: "bg-warning/20 text-warning-fg" },
+  verified: { icon: Shield, color: "bg-success/20 text-success-fg" },
 };
 
 export default function NotificationItem({

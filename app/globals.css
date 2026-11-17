@@ -2,7 +2,8 @@
 
 /* ============================================
    LISTIFY — iOS-tuned Design System
-   Dark theme, iOS HIG-aligned spacing & motion
+   Dark and light themes that follow the device setting,
+   iOS HIG-aligned spacing & motion
    ============================================ */
 
 @theme {
@@ -42,19 +43,93 @@
   --color-hairline: rgba(148, 163, 184, 0.18);     /* 0.5px iOS separators */
 
   /* Materials: translucent bars and fills */
-  --color-glass: rgba(15, 23, 42, 0.72);           /* nav bar, tab bar */
-  --color-glass-strong: rgba(15, 23, 42, 0.65);
+  --color-glass: rgba(15, 23, 42, 0.72);           /* nav bar */
+  --color-glass-strong: rgba(15, 23, 42, 0.65);    /* tab bar, action bars */
+  --color-glass-float: rgba(30, 41, 59, 0.62);     /* floating pieces: toasts, capsules */
+  --color-glass-edge: rgba(255, 255, 255, 0.14);   /* the bright rim on floating glass */
   --color-fill: rgba(118, 118, 128, 0.18);         /* search bar fill */
 
-  /* Status */
-  --color-success: #22c55e;
-  --color-warning: #eab308;
-  --color-danger: #ef4444;
-  --color-info: #3b82f6;
+  /* Status. The plain token is the hue for tints and solid fills
+     (bg-danger/12, border-success/15); the -fg token is the readable
+     version for text, icons and dots on top of the page.            */
+  --color-success: oklch(72.3% 0.219 149.579);     /* green-500 */
+  --color-success-fg: oklch(79.2% 0.209 151.711);  /* green-400 */
+  --color-warning: oklch(79.5% 0.184 86.047);      /* yellow-500 */
+  --color-warning-fg: oklch(85.2% 0.199 91.936);   /* yellow-400 */
+  --color-caution: oklch(76.9% 0.188 70.08);       /* amber-500 */
+  --color-caution-fg: oklch(82.8% 0.189 84.429);   /* amber-400 */
+  --color-danger: oklch(63.7% 0.237 25.331);       /* red-500 */
+  --color-danger-fg: oklch(70.4% 0.191 22.216);    /* red-400 */
 
   /* Font — system stack gets SF Pro on iOS for free */
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display",
     "SF Pro Text", "Helvetica Neue", Inter, system-ui, sans-serif;
+}
+
+/* ============================================
+   Themes
+   Dark is the default (the values above). Light replaces the same
+   tokens when the phone or computer is set to light appearance.
+   ============================================ */
+
+:root {
+  color-scheme: dark;
+
+  /* Shadow under floating glass, and the hero headline gradient */
+  --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --gradient-brand: linear-gradient(135deg, #60a5fa, #3b82f6);
+  --gradient-hero: linear-gradient(135deg, #93c5fd, #3b82f6, #60a5fa);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+
+    /* Brand: one step deeper so blue text and white-on-blue stay readable */
+    --color-primary: #2563eb;
+    --color-primary-light: #3b82f6;
+    --color-primary-dark: #1d4ed8;
+
+    /* Surfaces: a cool grey page with white cards, as iOS groups content */
+    --color-canvas: oklch(96.8% 0.007 247.896);      /* slate-100 */
+    --color-surface: #fff;
+    --color-elevated: oklch(86.9% 0.022 252.894);    /* slate-300 */
+    --color-field: oklch(96.8% 0.007 247.896);       /* slate-100, a tinted well */
+
+    /* Foreground */
+    --color-fg-strong: oklch(12.9% 0.042 264.695);   /* slate-950 */
+    --color-fg-default: oklch(20.8% 0.042 265.755);  /* slate-900 */
+    --color-fg-bright: oklch(27.9% 0.041 260.031);   /* slate-800 */
+    --color-fg: oklch(37.2% 0.044 257.287);          /* slate-700 */
+    --color-fg-secondary: oklch(44.6% 0.043 257.281);/* slate-600 */
+    --color-fg-muted: oklch(53% 0.046 257.417);      /* slate-500, a touch darker */
+    --color-fg-faint: oklch(70.4% 0.04 256.788);     /* slate-400 */
+
+    /* Lines */
+    --color-line-subtle: oklch(92.9% 0.013 255.508); /* slate-200 */
+    --color-line: oklch(86.9% 0.022 252.894);        /* slate-300 */
+    --color-line-strong: oklch(70.4% 0.04 256.788);  /* slate-400 */
+    --color-hairline: rgba(15, 23, 42, 0.12);
+
+    /* Materials */
+    --color-glass: rgba(241, 245, 249, 0.72);
+    --color-glass-strong: rgba(255, 255, 255, 0.7);
+    --color-glass-float: rgba(255, 255, 255, 0.72);
+    --color-glass-edge: rgba(255, 255, 255, 0.9);
+    --color-fill: rgba(118, 118, 128, 0.12);
+
+    /* Status: same hues, darker text so it reads on white (each is the
+       Tailwind step named, nudged to pass 4.5:1 on the page background) */
+    --color-success: oklch(62.7% 0.194 149.214);     /* green-600 */
+    --color-success-fg: oklch(51% 0.154 150.069);    /* green-700 */
+    --color-warning-fg: oklch(54% 0.135 66.442);     /* yellow-700 */
+    --color-caution-fg: oklch(54% 0.163 48.998);     /* amber-700 */
+    --color-danger-fg: oklch(55% 0.235 27.325);      /* red-600 */
+
+    --glass-shadow: 0 10px 30px rgba(15, 23, 42, 0.14);
+    --gradient-brand: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    --gradient-hero: linear-gradient(135deg, #3b82f6, #1d4ed8, #2563eb);
+  }
 }
 
 /* ============================================
@@ -99,6 +174,30 @@ h1, h2, h3, .ios-large-title {
   backdrop-filter: saturate(180%) blur(30px);
   -webkit-backdrop-filter: saturate(180%) blur(30px);
   background-color: var(--color-glass-strong);
+}
+
+/* Floating glass: for pieces that sit above the content rather than
+   edge to edge (toasts now; the tab bar and buttons in the redesign).
+   A bright rim on the top edge, a soft shadow underneath.             */
+.glass {
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  background-color: var(--color-glass-float);
+  box-shadow:
+    inset 0 0 0 0.5px var(--color-glass-edge),
+    inset 0 1px 0 var(--color-glass-edge),
+    var(--glass-shadow);
+}
+
+/* Glass needs the blur to stay readable. Where the browser cannot blur,
+   or the person has asked for less transparency, use solid surfaces.   */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .ios-blur, .ios-blur-strong { background-color: var(--color-canvas); }
+  .glass { background-color: var(--color-surface); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .ios-blur, .ios-blur-strong { background-color: var(--color-canvas); }
+  .glass { background-color: var(--color-surface); }
 }
 
 /* iOS nav bar hairline separator (very subtle) */
@@ -241,14 +340,14 @@ h1, h2, h3, .ios-large-title {
 
 /* iOS-style text gradients */
 .text-gradient {
-  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  background: var(--gradient-brand);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .text-gradient-hero {
-  background: linear-gradient(135deg, #93c5fd, #3b82f6, #60a5fa);
+  background: var(--gradient-hero);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -311,7 +410,7 @@ input[type="range"]::-moz-range-thumb {
   transition: all 0.2s ease;
 }
 .card-hover:hover {
-  border-color: rgba(59, 130, 246, 0.3);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
   background-color: color-mix(in srgb, var(--color-surface) 80%, transparent);
 }
 
@@ -387,16 +486,48 @@ input[type="range"]::-moz-range-thumb {
   animation: shimmer 1.5s infinite;
 }
 
-/* Map credit line. Leaflet's default is a white box; match the dark maps.
+/* Behind the map tiles while they load. Leaflet's default is light grey,
+   which flashes on the dark theme. */
+.leaflet-container {
+  background: var(--color-surface);
+}
+
+/* Map credit line. Leaflet's default is a white box; match the app's bars.
    Three classes so this wins over Leaflet's own stylesheet whatever the order. */
 .leaflet-container .leaflet-control-attribution.leaflet-control {
-  background: rgba(15, 23, 42, 0.72);
-  color: #94a3b8;
+  background: var(--color-glass);
+  color: var(--color-fg-secondary);
   font-size: 10px;
   line-height: 1.4;
   padding: 1px 6px;
   border-top-left-radius: 6px;
 }
 .leaflet-container .leaflet-control-attribution.leaflet-control a {
-  color: #cbd5e1;
+  color: var(--color-fg);
+}
+
+/* Trade icons. The artwork is pale blue line art drawn for a dark page.
+   In dark mode it is shown as it is; in light mode the same artwork is
+   used as a stencil and filled with the brand blue so it stays crisp.  */
+.trade-icon {
+  display: inline-block;
+  flex: none;
+  background: var(--trade-icon-src) center / contain no-repeat;
+}
+@media (prefers-color-scheme: light) {
+  .trade-icon {
+    background: var(--color-primary);
+    -webkit-mask: var(--trade-icon-src) center / contain no-repeat;
+    mask: var(--trade-icon-src) center / contain no-repeat;
+  }
+}
+
+/* Respect the "reduce motion" setting: no slides, fades or smooth scroll */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

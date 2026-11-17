@@ -83,7 +83,7 @@ export default function InquiryForm({ jobId, userRole, isOwner }: InquiryFormPro
 
   if (sent) {
     return (
-      <div className="flex items-center justify-center gap-2 py-3 text-green-400">
+      <div className="flex items-center justify-center gap-2 py-3 text-success-fg">
         <Send className="w-4 h-4" />
         <span className="text-sm font-semibold">Inquiry sent successfully!</span>
       </div>
@@ -105,7 +105,7 @@ export default function InquiryForm({ jobId, userRole, isOwner }: InquiryFormPro
   return (
     <div className="space-y-4 animate-fade-in-up">
       {error && (
-        <div className="px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+        <div className="px-4 py-3 rounded-lg bg-danger/10 border border-danger/20 text-sm text-danger-fg">
           {error}
         </div>
       )}
@@ -128,7 +128,7 @@ export default function InquiryForm({ jobId, userRole, isOwner }: InquiryFormPro
             value={phone}
             onChange={(e) => setPhone(formatPhone(e.target.value))}
             placeholder="Phone number"
-            className="w-full rounded-lg border border-line bg-field pl-10 pr-4 py-2.5 text-sm text-fg-strong placeholder-fg-muted focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full rounded-lg border border-line bg-field pl-10 pr-4 py-2.5 text-base md:text-sm text-fg-strong placeholder-fg-muted focus:border-primary focus:ring-1 focus:ring-primary"
           />
         </div>
         <div className="relative">
@@ -138,7 +138,7 @@ export default function InquiryForm({ jobId, userRole, isOwner }: InquiryFormPro
             value={instagram}
             onChange={(e) => setInstagram(e.target.value)}
             placeholder="@instagram (optional)"
-            className="w-full rounded-lg border border-line bg-field pl-10 pr-4 py-2.5 text-sm text-fg-strong placeholder-fg-muted focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full rounded-lg border border-line bg-field pl-10 pr-4 py-2.5 text-base md:text-sm text-fg-strong placeholder-fg-muted focus:border-primary focus:ring-1 focus:ring-primary"
           />
         </div>
       </div>
@@ -151,7 +151,7 @@ export default function InquiryForm({ jobId, userRole, isOwner }: InquiryFormPro
           placeholder="Tell them about yourself... (optional)"
           rows={3}
           maxLength={500}
-          className="w-full rounded-lg border border-line bg-field pl-10 pr-4 py-2.5 text-sm text-fg-strong placeholder-fg-muted focus:border-primary focus:ring-1 focus:ring-primary resize-none"
+          className="w-full rounded-lg border border-line bg-field pl-10 pr-4 py-2.5 text-base md:text-sm text-fg-strong placeholder-fg-muted focus:border-primary focus:ring-1 focus:ring-primary resize-none"
         />
       </div>
 

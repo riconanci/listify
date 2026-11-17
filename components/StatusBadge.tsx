@@ -30,27 +30,27 @@ interface StatusBadgeProps {
  */
 
 const variantStyles: Record<BadgeVariant, string> = {
-  active: "bg-green-500/12 text-green-400 border-green-500/15",
-  paused: "bg-yellow-500/12 text-yellow-400 border-yellow-500/15",
+  active: "bg-success/12 text-success-fg border-success/15",
+  paused: "bg-warning/12 text-warning-fg border-warning/15",
   closed: "bg-fg-muted/12 text-fg-secondary border-fg-muted/15",
-  expired: "bg-red-500/12 text-red-400 border-red-500/15",
-  expiring: "bg-amber-500/12 text-amber-400 border-amber-500/15",
-  sent: "bg-green-500/12 text-green-400 border-green-500/15",
+  expired: "bg-danger/12 text-danger-fg border-danger/15",
+  expiring: "bg-caution/12 text-caution-fg border-caution/15",
+  sent: "bg-success/12 text-success-fg border-success/15",
   primary: "bg-primary/12 text-primary border-primary/15",
   default: "bg-elevated/40 text-fg border-line-strong/20",
-  danger: "bg-red-500/12 text-red-400 border-red-500/15",
+  danger: "bg-danger/12 text-danger-fg border-danger/15",
 };
 
 const dotColors: Record<BadgeVariant, string> = {
-  active: "bg-green-400",
-  paused: "bg-yellow-400",
+  active: "bg-success-fg",
+  paused: "bg-warning-fg",
   closed: "bg-fg-secondary",
-  expired: "bg-red-400",
-  expiring: "bg-amber-400",
-  sent: "bg-green-400",
+  expired: "bg-danger-fg",
+  expiring: "bg-caution-fg",
+  sent: "bg-success-fg",
   primary: "bg-primary",
   default: "bg-fg-secondary",
-  danger: "bg-red-400",
+  danger: "bg-danger-fg",
 };
 
 export default function StatusBadge({

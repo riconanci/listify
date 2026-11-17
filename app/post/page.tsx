@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Camera, Check } from "lucide-react";
-import { TRADE_IMAGES } from "@/components/icons/TradeIcons";
+import { TRADE_IMAGES, TradeIcon } from "@/components/icons/TradeIcons";
 import { clsx } from "clsx";
 import { useToast } from "@/components/Toast";
 import LargeTitle from "@/components/LargeTitle";
@@ -83,7 +83,7 @@ function StackedInputRow({
       <div className="flex items-center justify-between">
         <label className="ios-footnote text-fg-secondary">
           {label}
-          {required && <span className="text-red-400"> *</span>}
+          {required && <span className="text-danger-fg"> *</span>}
         </label>
         {optional && (
           <span className="ios-caption text-fg-muted">Optional</span>
@@ -297,13 +297,13 @@ export default function PostListingPage() {
         {!checkingLimit && !hasActiveListing && (
           <form onSubmit={handleSubmit} className="space-y-1">
             {error && (
-              <div className="mx-4 rounded-2xl bg-red-500/12 border border-red-500/15 px-4 py-3 mb-4">
-                <p className="ios-subheadline text-red-400">{error}</p>
+              <div className="mx-4 rounded-2xl bg-danger/12 border border-danger/15 px-4 py-3 mb-4">
+                <p className="ios-subheadline text-danger-fg">{error}</p>
               </div>
             )}
 
             <p className="px-5 ios-footnote text-fg-muted mb-2">
-              Fields marked with <span className="text-red-400">*</span> are required
+              Fields marked with <span className="text-danger-fg">*</span> are required
             </p>
 
             {/* ─── BASICS ─── stacked because both fields can be long */}
@@ -335,7 +335,7 @@ export default function PostListingPage() {
 
             {/* ─── WHO ARE YOU LOOKING FOR ─── */}
             <h3 className="ios-section-header">
-              Who Are You Looking For <span className="text-red-400">*</span>
+              Who Are You Looking For <span className="text-danger-fg">*</span>
             </h3>
 
             {!industry && (
@@ -345,7 +345,7 @@ export default function PostListingPage() {
                   onClick={() => setIndustry("hair")}
                   className="flex flex-col items-center gap-2 rounded-2xl bg-surface p-5 ios-press active:bg-elevated transition-colors"
                 >
-                  <img src={TRADE_IMAGES.cosmetologist} alt="Hair" className="w-9 h-9 object-contain" />
+                  <TradeIcon src={TRADE_IMAGES.cosmetologist} className="w-9 h-9" />
                   <span className="ios-headline text-fg-strong">Hair</span>
                 </button>
                 <button
@@ -353,7 +353,7 @@ export default function PostListingPage() {
                   onClick={() => setIndustry("tattoo")}
                   className="flex flex-col items-center gap-2 rounded-2xl bg-surface p-5 ios-press active:bg-elevated transition-colors"
                 >
-                  <img src={TRADE_IMAGES.tattoo_artist} alt="Tattoo" className="w-9 h-9 object-contain" />
+                  <TradeIcon src={TRADE_IMAGES.tattoo_artist} className="w-9 h-9" />
                   <span className="ios-headline text-fg-strong">Tattoo</span>
                 </button>
               </div>
@@ -378,7 +378,7 @@ export default function PostListingPage() {
                       >
                         {selected && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
                       </div>
-                      <img src={image} alt={label} className="w-6 h-6 object-contain" />
+                      <TradeIcon src={image} className="w-6 h-6" />
                       <span className="ios-body text-fg-strong">{label}</span>
                     </button>
                   );
@@ -492,7 +492,7 @@ export default function PostListingPage() {
                   onClick={() => setPayVisible(!payVisible)}
                   className={clsx(
                     "relative w-[51px] h-[31px] rounded-full transition-colors shrink-0",
-                    payVisible ? "bg-green-500" : "bg-elevated"
+                    payVisible ? "bg-success" : "bg-elevated"
                   )}
                   role="switch"
                   aria-checked={payVisible}
@@ -570,7 +570,7 @@ export default function PostListingPage() {
                     onClick={() => setAddressVisible(!addressVisible)}
                     className={clsx(
                       "relative w-[51px] h-[31px] rounded-full transition-colors shrink-0",
-                      addressVisible ? "bg-green-500" : "bg-elevated"
+                      addressVisible ? "bg-success" : "bg-elevated"
                     )}
                     role="switch"
                     aria-checked={addressVisible}

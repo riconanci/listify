@@ -1,4 +1,4 @@
-import { SVGProps } from "react";
+import type { CSSProperties, SVGProps } from "react";
 
 type IconProps = SVGProps<SVGSVGElement> & { size?: number };
 
@@ -10,18 +10,21 @@ export const TRADE_IMAGES: Record<string, string> = {
   piercer: "/icons/piercing.png",
 };
 
-// Trade image component
-export function TradeImage({ trade, size = 26, className = "" }: { trade: string; size?: number; className?: string }) {
-  const src = TRADE_IMAGES[trade];
-  if (!src) return null;
+/**
+ * A trade icon drawn from the artwork above, in any size (`w-9 h-9`, …).
+ *
+ * The artwork is pale blue line art made for a dark page. On the dark theme it
+ * is shown as it is. On the light theme the same file is used as a stencil and
+ * filled with the brand blue (see `.trade-icon` in globals.css), so one set of
+ * images serves both. Every use sits next to a visible label, so the icon is
+ * hidden from screen readers rather than read out twice.
+ */
+export function TradeIcon({ src, className = "" }: { src: string; className?: string }) {
   return (
-    <img
-      src={src}
-      alt={trade}
-      width={size}
-      height={size}
-      className={className}
-      style={{ width: size, height: size, objectFit: "contain" }}
+    <span
+      aria-hidden="true"
+      className={`trade-icon ${className}`}
+      style={{ "--trade-icon-src": `url(${src})` } as CSSProperties}
     />
   );
 }

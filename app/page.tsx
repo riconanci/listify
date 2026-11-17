@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { MapPin, ArrowRight } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
-import { TRADE_IMAGES } from "@/components/icons/TradeIcons";
+import { TRADE_IMAGES, TradeIcon } from "@/components/icons/TradeIcons";
 
 const TRADES = [
   { label: "Barbers", image: TRADE_IMAGES.barber },
@@ -40,11 +40,7 @@ export default async function LandingPage() {
             {TRADES.map(({ label, image }) => (
               <div key={label} className="flex flex-col items-center gap-2">
                 <div className="flex h-[68px] w-[68px] items-center justify-center rounded-2xl bg-surface ios-press hover:bg-primary/10 transition-colors sm:h-20 sm:w-20">
-                  <img
-                    src={image}
-                    alt={label}
-                    className="w-12 h-12 sm:w-14 sm:h-14 object-contain"
-                  />
+                  <TradeIcon src={image} className="w-12 h-12 sm:w-14 sm:h-14" />
                 </div>
                 <span className="text-[11px] font-semibold text-fg-secondary sm:text-xs">
                   {label}

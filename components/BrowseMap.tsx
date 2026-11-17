@@ -1,7 +1,7 @@
 "use client";
 
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap, AttributionControl } from "react-leaflet";
-import { TILE_URL, TILE_ATTRIBUTION } from "@/lib/mapTiles";
+import { useTileUrl, TILE_ATTRIBUTION } from "@/lib/mapTiles";
 import L from "leaflet";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
@@ -165,6 +165,7 @@ function MapController({
 }
 
 export default function BrowseMap({ jobs, userLat, userLng, radiusMiles = 15 }: BrowseMapProps) {
+  const tileUrl = useTileUrl();
   const radiusMeters = radiusMiles * 1609.34;
   const hasUserLocation = userLat !== undefined && userLng !== undefined;
 
@@ -180,7 +181,7 @@ export default function BrowseMap({ jobs, userLat, userLng, radiusMiles = 15 }: 
         scrollWheelZoom={true}
         attributionControl={false}
       >
-        <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} />
+        <TileLayer url={tileUrl} attribution={TILE_ATTRIBUTION} />
         {/* Credit line required by the map data and tile providers */}
         <AttributionControl position="bottomright" prefix={false} />
 

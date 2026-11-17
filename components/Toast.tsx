@@ -57,26 +57,20 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={t.id}
             className={clsx(
-              "flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl border pointer-events-auto animate-fade-in-up",
-              t.type === "success" &&
-                "bg-green-500/10 border-green-500/20 text-green-400",
-              t.type === "error" &&
-                "bg-red-500/10 border-red-500/20 text-red-400",
-              t.type === "info" &&
-                "bg-primary/10 border-primary/20 text-primary"
+              "glass flex items-center gap-3 px-4 py-3 rounded-2xl pointer-events-auto animate-fade-in-up",
+              t.type === "success" && "text-success-fg",
+              t.type === "error" && "text-danger-fg",
+              t.type === "info" && "text-primary"
             )}
-            style={{
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-            }}
           >
             {t.type === "success" && <CheckCircle2 className="w-5 h-5 shrink-0" />}
             {t.type === "error" && <AlertCircle className="w-5 h-5 shrink-0" />}
             {t.type === "info" && <AlertCircle className="w-5 h-5 shrink-0" />}
-            <p className="flex-1 text-sm font-medium">{t.message}</p>
+            <p className="flex-1 text-sm font-medium text-fg-strong">{t.message}</p>
             <button
               onClick={() => dismiss(t.id)}
-              className="p-1 rounded hover:bg-white/10 transition-colors shrink-0"
+              aria-label="Dismiss"
+              className="p-1 rounded text-fg-secondary hover:bg-fg-strong/10 transition-colors shrink-0"
             >
               <X className="w-3.5 h-3.5" />
             </button>

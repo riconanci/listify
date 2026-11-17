@@ -151,8 +151,8 @@ export default function InboxPage() {
       <div className="max-w-3xl mx-auto px-4 md:px-6 pb-8">
         {/* Error */}
         {error && (
-          <div className="rounded-2xl bg-red-500/12 border border-red-500/15 px-4 py-3 mb-4">
-            <p className="ios-subheadline text-red-400">{error}</p>
+          <div className="rounded-2xl bg-danger/12 border border-danger/15 px-4 py-3 mb-4">
+            <p className="ios-subheadline text-danger-fg">{error}</p>
           </div>
         )}
 

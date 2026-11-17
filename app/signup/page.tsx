@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   UserPlus, Users, Building2, Eye, EyeOff, Check, ArrowRight, ChevronLeft,
 } from "lucide-react";
-import { TRADE_IMAGES } from "@/components/icons/TradeIcons";
+import { TRADE_IMAGES, TradeIcon } from "@/components/icons/TradeIcons";
 import { clsx } from "clsx";
 
 const INDUSTRY_OPTIONS = [
@@ -235,7 +235,7 @@ function SignUpForm() {
                         selected ? "bg-primary/15 ring-2 ring-primary" : "bg-surface"
                       )}
                     >
-                      <img src={opt.image} alt={opt.label} className="w-10 h-10 object-contain" />
+                      <TradeIcon src={opt.image} className="w-10 h-10" />
                       <div className="text-center">
                         <p className="ios-headline text-fg-strong">{opt.label}</p>
                         <p className="ios-caption text-fg-secondary mt-0.5 leading-tight">{opt.desc}</p>
@@ -273,7 +273,7 @@ function SignUpForm() {
                         )}>
                           {selected && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
                         </div>
-                        <img src={opt.image} alt={opt.label} className="w-6 h-6 object-contain" />
+                        <TradeIcon src={opt.image} className="w-6 h-6" />
                         <span className="ios-body text-fg-strong">{opt.label}</span>
                       </button>
                     );
@@ -313,8 +313,8 @@ function SignUpForm() {
             </button>
 
             {error && (
-              <div className="rounded-2xl bg-red-500/12 border border-red-500/15 px-4 py-3">
-                <p className="ios-subheadline text-red-400">{error}</p>
+              <div className="rounded-2xl bg-danger/12 border border-danger/15 px-4 py-3">
+                <p className="ios-subheadline text-danger-fg">{error}</p>
               </div>
             )}
 

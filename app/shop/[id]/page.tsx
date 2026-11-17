@@ -166,7 +166,7 @@ export default function ShopProfilePage() {
               </div>
             )}
             {data.verified && (
-              <div className="flex items-center gap-1 text-xs font-bold text-green-400">
+              <div className="flex items-center gap-1 text-xs font-bold text-success-fg">
                 <Shield className="w-3.5 h-3.5" />
                 Verified Shop
               </div>
@@ -201,7 +201,7 @@ export default function ShopProfilePage() {
                 {data.rating || "—"}
               </span>
               {data.rating && (
-                <Star className="w-4 h-4 text-yellow-400" fill="currentColor" />
+                <Star className="w-4 h-4 text-warning-fg" fill="currentColor" />
               )}
             </div>
           </div>

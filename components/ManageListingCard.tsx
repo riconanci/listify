@@ -178,7 +178,7 @@ export default function ManageListingCard({
                       onDelete?.(id);
                       setMenuOpen(false);
                     }}
-                    className="flex items-center gap-3 w-full px-4 py-3 ios-body text-red-400 active:bg-red-500/10 transition-colors"
+                    className="flex items-center gap-3 w-full px-4 py-3 ios-body text-danger-fg active:bg-danger/10 transition-colors"
                   >
                     <Trash2 className="w-[18px] h-[18px]" strokeWidth={2} />
                     Delete Listing
@@ -217,7 +217,7 @@ export default function ManageListingCard({
             <div
               className={clsx(
                 "flex items-center gap-1 text-[12px] font-semibold",
-                expiration.isExpiringSoon ? "text-amber-400" : "text-fg-muted"
+                expiration.isExpiringSoon ? "text-caution-fg" : "text-fg-muted"
               )}
             >
               <Clock className="w-3 h-3" strokeWidth={2.2} />
