@@ -17,6 +17,20 @@ const markerIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
+// Distinct icon for approximate (city-centroid) markers — lower opacity to signal vagueness
+const approxIcon = L.divIcon({
+  className: "",
+  html: `<div style="
+    width: 22px; height: 22px;
+    background: rgba(59,130,246,0.55);
+    border: 2px solid rgba(255,255,255,0.85);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.18), 0 2px 6px rgba(0,0,0,0.4);
+  "></div>`,
+  iconSize: [22, 22],
+  iconAnchor: [11, 11],
+});
+
 const userIcon = L.divIcon({
   className: "",
   html: `<div style="
@@ -42,6 +56,8 @@ interface MapJob {
   lat: number;
   lng: number;
   city?: string | null;
+  /** When true, the lat/lng is a city centroid (not the exact location). */
+  isApproximate?: boolean;
 }
 
 interface BrowseMapProps {
@@ -204,7 +220,11 @@ export default function BrowseMap({ jobs, userLat, userLng, radiusMiles = 15 }: 
 
         {/* Listing markers */}
         {jobs.map((job) => (
-          <Marker key={job.id} position={[job.lat, job.lng]} icon={markerIcon}>
+          <Marker
+            key={job.id}
+            position={[job.lat, job.lng]}
+            icon={job.isApproximate ? approxIcon : markerIcon}
+          >
             <Popup>
               <div className="min-w-[200px] p-1">
                 <Link
@@ -226,6 +246,12 @@ export default function BrowseMap({ jobs, userLat, userLng, radiusMiles = 15 }: 
                   {job.city && (
                     <p className="text-[11px] text-slate-500 mt-1.5">
                       {job.city}
+                      {job.isApproximate && " · approximate"}
+                    </p>
+                  )}
+                  {job.isApproximate && (
+                    <p className="text-[10px] text-slate-400 mt-1 italic">
+                      Exact address shared after inquiry
                     </p>
                   )}
                 </Link>

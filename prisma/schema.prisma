@@ -149,6 +149,7 @@ model Job {
   payMax             Decimal?
   payUnit            String?
   payVisible         Boolean         @default(true)
+  addressVisible     Boolean         @default(true)
   employmentType     EmploymentType?
   schedule           ScheduleType?
   experienceText     String?

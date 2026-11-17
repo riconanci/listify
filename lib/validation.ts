@@ -30,6 +30,7 @@ export const createJobSchema = z.object({
   payMax: z.number().nullable().optional(),
   payUnit: z.string().nullable().optional(),
   payVisible: z.boolean().default(true),
+  addressVisible: z.boolean().default(true),
   employmentType: z.enum(["w2", "c1099"]).nullable().optional(),
   schedule: z.enum(["full_time", "part_time"]).nullable().optional(),
   experienceText: z.string().max(20).nullable().optional(),

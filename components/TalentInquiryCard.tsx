@@ -51,59 +51,56 @@ export default function TalentInquiryCard({
   onWithdraw,
 }: TalentInquiryCardProps) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-bg-surface p-5 card-hover">
+    <div className="rounded-2xl bg-bg-surface p-4">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        {/* Role tag */}
+      <div className="flex items-start justify-between gap-3">
         <StatusBadge variant="primary">{formatRole(role)}</StatusBadge>
-
-        {/* Status */}
-        <div className="flex items-center gap-1.5">
-          <CheckCircle2 className="w-3.5 h-3.5 text-green-400" />
-          <span className="text-xs font-semibold text-green-400 capitalize">
+        <div className="flex items-center gap-1">
+          <CheckCircle2 className="w-3.5 h-3.5 text-green-400" strokeWidth={2.2} />
+          <span className="ios-footnote font-semibold text-green-400 capitalize">
             {status}
           </span>
         </div>
       </div>
 
-      {/* Job Info */}
-      <h3 className="mt-3 text-base font-bold text-white">
+      {/* Job info */}
+      <h3 className="mt-3 ios-headline text-white">
         {jobTitle} — {businessName}
       </h3>
 
-      <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-slate-400">
+      <div className="flex flex-wrap items-center gap-3 mt-1.5 ios-footnote text-slate-400">
         {city && (
           <div className="flex items-center gap-1">
-            <MapPin className="w-3 h-3" />
+            <MapPin className="w-3 h-3" strokeWidth={2.2} />
             {city}, {state || "CA"}
           </div>
         )}
         <div className="flex items-center gap-1">
-          <Clock className="w-3 h-3" />
+          <Clock className="w-3 h-3" strokeWidth={2.2} />
           Sent {timeAgo(createdAt)}
         </div>
       </div>
 
       {/* Note preview */}
       {note && (
-        <div className="mt-3 rounded-lg bg-slate-800/50 p-3">
-          <p className="text-sm text-slate-400 italic line-clamp-2">
+        <div className="mt-3 rounded-xl bg-slate-800/60 p-3">
+          <p className="ios-subheadline text-slate-400 italic line-clamp-2">
             &ldquo;{note}&rdquo;
           </p>
         </div>
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-3 mt-4">
+      <div className="flex items-center gap-2 mt-4">
         <button
           onClick={() => onWithdraw?.(id)}
-          className="flex-1 rounded-lg border border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-center"
+          className="flex-1 rounded-full bg-slate-700/60 px-4 h-10 text-[15px] font-semibold text-white ios-press active:bg-slate-700 transition-colors text-center"
         >
           Withdraw
         </button>
         <Link
           href={`/jobs/${jobId}`}
-          className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white text-center hover:bg-primary/90 transition-colors"
+          className="flex-1 rounded-full bg-primary px-4 h-10 text-[15px] font-semibold text-white ios-press active:bg-primary-dark transition-colors text-center flex items-center justify-center"
         >
           View Details
         </Link>

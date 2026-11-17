@@ -30,7 +30,6 @@ export default function SignUpPage() {
   const searchParams = useSearchParams();
   const defaultRole = searchParams.get("role") === "employer" ? "employer" : "talent";
 
-  // Step 0: role, Step 1: industry/details, Step 2: credentials
   const [step, setStep] = useState(0);
   const [role, setRole] = useState<"talent" | "employer">(defaultRole);
   const [industry, setIndustry] = useState("");
@@ -44,7 +43,6 @@ export default function SignUpPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Redirect if already logged in
   useEffect(() => {
     fetch("/api/auth/me")
       .then((r) => r.json())
@@ -54,7 +52,6 @@ export default function SignUpPage() {
       .catch(() => {});
   }, [router]);
 
-  // Reset sub-selections when industry changes
   useEffect(() => {
     setLicenses([]);
   }, [industry]);
@@ -113,313 +110,297 @@ export default function SignUpPage() {
   );
 
   return (
-    <main className="min-h-[calc(100dvh-4rem)] flex items-center justify-center px-4 py-12">
+    <main className="min-h-[calc(100dvh-3.5rem)] flex items-start justify-center px-4 pt-8 pb-12 sm:items-center sm:pt-12">
       <div className="w-full max-w-md">
-        <div className="rounded-2xl border border-slate-800 bg-bg-surface p-8">
-          {/* Icon */}
-          <div className="flex justify-center mb-6">
-            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-slate-800">
-              <UserPlus className="w-7 h-7 text-primary" />
-            </div>
+        {/* Header */}
+        <div className="text-center mb-7">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/15 mb-5">
+            <UserPlus className="w-7 h-7 text-primary" strokeWidth={2} />
           </div>
+          <h1 className="ios-title-1 text-white">Join Listify</h1>
+          <p className="mt-2 ios-subheadline text-slate-400">
+            {step === 0 && "How do you want to use Listify?"}
+            {step === 1 && "Tell us about your field"}
+            {step === 2 && "Create your account"}
+          </p>
+        </div>
 
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-black text-white">Join Listify</h1>
-            <p className="mt-2 text-sm text-slate-400">
-              {step === 0 && "How do you want to use Listify?"}
-              {step === 1 && "Tell us about your field"}
-              {step === 2 && "Create your account"}
-            </p>
-          </div>
+        {/* Progress dots */}
+        <div className="flex justify-center gap-2 mb-7">
+          {[0, 1, 2].map((s) => (
+            <div
+              key={s}
+              className={clsx(
+                "h-1.5 rounded-full transition-all",
+                s === step ? "bg-primary w-6" : s < step ? "bg-primary/40 w-1.5" : "bg-slate-700 w-1.5"
+              )}
+            />
+          ))}
+        </div>
 
-          {/* Progress dots */}
-          <div className="flex justify-center gap-2 mb-6">
-            {[0, 1, 2].map((s) => (
-              <div
-                key={s}
+        {/* ─── Step 0: Role Selection ─── */}
+        {step === 0 && (
+          <div className="space-y-5">
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setRole("talent")}
                 className={clsx(
-                  "w-2 h-2 rounded-full transition-colors",
-                  s === step ? "bg-primary" : s < step ? "bg-primary/40" : "bg-slate-700"
+                  "relative flex flex-col items-center gap-3 rounded-2xl p-5 ios-press transition-all",
+                  role === "talent"
+                    ? "bg-primary/15 ring-2 ring-primary"
+                    : "bg-bg-surface"
                 )}
-              />
-            ))}
-          </div>
-
-          {/* ─── Step 0: Role Selection ─── */}
-          {step === 0 && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setRole("talent")}
-                  className={clsx(
-                    "relative flex items-center gap-3 rounded-xl border-2 p-4 transition-all",
-                    role === "talent"
-                      ? "border-primary bg-primary/5"
-                      : "border-slate-700 bg-transparent hover:border-slate-600"
-                  )}
-                >
-                  <div className={clsx(
-                    "flex items-center justify-center w-10 h-10 rounded-lg",
-                    role === "talent" ? "bg-primary text-white" : "bg-slate-700 text-slate-400"
-                  )}>
-                    <Users className="w-5 h-5" />
+              >
+                <div className={clsx(
+                  "flex items-center justify-center w-12 h-12 rounded-2xl",
+                  role === "talent" ? "bg-primary text-white" : "bg-slate-700/60 text-slate-300"
+                )}>
+                  <Users className="w-6 h-6" strokeWidth={2} />
+                </div>
+                <div className="text-center">
+                  <p className="ios-headline text-white">Talent</p>
+                  <p className="ios-caption text-slate-400 mt-0.5">Looking for work</p>
+                </div>
+                {role === "talent" && (
+                  <div className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full bg-primary">
+                    <Check className="w-3 h-3 text-white" strokeWidth={3} />
                   </div>
-                  <div className="text-left">
-                    <p className="text-sm font-bold text-white">Talent</p>
-                    <p className="text-[11px] text-slate-400 leading-tight">Looking for work</p>
-                  </div>
-                  {role === "talent" && (
-                    <div className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full bg-primary">
-                      <Check className="w-3 h-3 text-white" />
-                    </div>
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setRole("employer")}
-                  className={clsx(
-                    "relative flex items-center gap-3 rounded-xl border-2 p-4 transition-all",
-                    role === "employer"
-                      ? "border-primary bg-primary/5"
-                      : "border-slate-700 bg-transparent hover:border-slate-600"
-                  )}
-                >
-                  <div className={clsx(
-                    "flex items-center justify-center w-10 h-10 rounded-lg",
-                    role === "employer" ? "bg-primary text-white" : "bg-slate-700 text-slate-400"
-                  )}>
-                    <Building2 className="w-5 h-5" />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-sm font-bold text-white">Scout</p>
-                    <p className="text-[11px] text-slate-400 leading-tight">Hiring for my shop</p>
-                  </div>
-                  {role === "employer" && (
-                    <div className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full bg-primary">
-                      <Check className="w-3 h-3 text-white" />
-                    </div>
-                  )}
-                </button>
-              </div>
+                )}
+              </button>
 
               <button
-                onClick={() => setStep(1)}
-                className="flex items-center justify-center gap-2 w-full rounded-lg bg-primary px-6 py-3.5 text-base font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 active:scale-[0.98]"
+                type="button"
+                onClick={() => setRole("employer")}
+                className={clsx(
+                  "relative flex flex-col items-center gap-3 rounded-2xl p-5 ios-press transition-all",
+                  role === "employer"
+                    ? "bg-primary/15 ring-2 ring-primary"
+                    : "bg-bg-surface"
+                )}
               >
-                Continue
-                <ArrowRight className="w-4 h-4" />
+                <div className={clsx(
+                  "flex items-center justify-center w-12 h-12 rounded-2xl",
+                  role === "employer" ? "bg-primary text-white" : "bg-slate-700/60 text-slate-300"
+                )}>
+                  <Building2 className="w-6 h-6" strokeWidth={2} />
+                </div>
+                <div className="text-center">
+                  <p className="ios-headline text-white">Scout</p>
+                  <p className="ios-caption text-slate-400 mt-0.5">Hiring for my shop</p>
+                </div>
+                {role === "employer" && (
+                  <div className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full bg-primary">
+                    <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                  </div>
+                )}
               </button>
             </div>
-          )}
 
-          {/* ─── Step 1: Industry & Specialty ─── */}
-          {step === 1 && (
-            <div className="space-y-6">
-              {/* Back button */}
-              <button
-                onClick={() => setStep(0)}
-                className="flex items-center gap-1 text-sm text-slate-400 hover:text-white transition-colors -mt-2 mb-2"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Back
-              </button>
+            <button
+              onClick={() => setStep(1)}
+              className="flex items-center justify-center gap-2 w-full rounded-full bg-primary px-6 h-12 text-[17px] font-semibold text-white ios-press active:bg-primary-dark transition-colors"
+            >
+              Continue
+              <ArrowRight className="w-[18px] h-[18px]" strokeWidth={2.5} />
+            </button>
+          </div>
+        )}
 
-              {/* Industry selection */}
+        {/* ─── Step 1: Industry & Specialty ─── */}
+        {step === 1 && (
+          <div className="space-y-5">
+            {/* Back */}
+            <button
+              onClick={() => setStep(0)}
+              className="flex items-center gap-0.5 text-primary ios-press -ml-2 -mt-2"
+            >
+              <ChevronLeft className="w-[22px] h-[22px]" strokeWidth={2.5} />
+              <span className="text-[17px] font-normal">Back</span>
+            </button>
+
+            {/* Industry */}
+            <div>
+              <h3 className="ios-section-header">What field are you in?</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {INDUSTRY_OPTIONS.map((opt) => {
+                  const selected = industry === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setIndustry(opt.value)}
+                      className={clsx(
+                        "relative flex flex-col items-center gap-3 rounded-2xl p-5 ios-press transition-all",
+                        selected ? "bg-primary/15 ring-2 ring-primary" : "bg-bg-surface"
+                      )}
+                    >
+                      <img src={opt.image} alt={opt.label} className="w-10 h-10 object-contain" />
+                      <div className="text-center">
+                        <p className="ios-headline text-white">{opt.label}</p>
+                        <p className="ios-caption text-slate-400 mt-0.5 leading-tight">{opt.desc}</p>
+                      </div>
+                      {selected && (
+                        <div className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full bg-primary">
+                          <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Licenses (talent only) */}
+            {industry && role === "talent" && (
               <div>
-                <p className="text-sm font-semibold text-slate-300 mb-3">
-                  What field are you in?
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  {INDUSTRY_OPTIONS.map((opt) => {
-                    const selected = industry === opt.value;
+                <h3 className="ios-section-header">
+                  What do you do? <span className="normal-case font-normal text-slate-500 tracking-normal">(select all)</span>
+                </h3>
+                <div className="ios-card">
+                  {LICENSE_OPTIONS[industry]?.map((opt) => {
+                    const selected = licenses.includes(opt.value);
                     return (
                       <button
                         key={opt.value}
                         type="button"
-                        onClick={() => setIndustry(opt.value)}
-                        className={clsx(
-                          "relative flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all",
-                          selected
-                            ? "border-primary bg-primary/5"
-                            : "border-slate-700 bg-transparent hover:border-slate-600"
-                        )}
+                        onClick={() => toggleLicense(opt.value)}
+                        className="ios-row gap-3 w-full active:bg-slate-800/60 transition-colors"
                       >
-                        <img src={opt.image} alt={opt.label} className="w-8 h-8 object-contain" />
-                        <div className="text-center">
-                          <p className="text-sm font-bold text-white">{opt.label}</p>
-                          <p className="text-[10px] text-slate-500 leading-tight">{opt.desc}</p>
+                        <div className={clsx(
+                          "w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors",
+                          selected ? "bg-primary" : "bg-slate-700/60"
+                        )}>
+                          {selected && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
                         </div>
-                        {selected && (
-                          <div className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full bg-primary">
-                            <Check className="w-3 h-3 text-white" />
-                          </div>
-                        )}
+                        <img src={opt.image} alt={opt.label} className="w-6 h-6 object-contain" />
+                        <span className="ios-body text-white">{opt.label}</span>
                       </button>
                     );
                   })}
                 </div>
               </div>
+            )}
 
-              {/* Specialty/shop type selection (shown after industry picked) */}
-              {industry && role === "talent" && (
-                <div>
-                  <p className="text-sm font-semibold text-slate-300 mb-3">
-                    What do you do?
-                    <span className="text-xs text-slate-500 font-normal ml-1">(select all that apply)</span>
-                  </p>
-                  <div className="space-y-2">
-                    {LICENSE_OPTIONS[industry]?.map((opt) => {
-                      const selected = licenses.includes(opt.value);
-                      return (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          onClick={() => toggleLicense(opt.value)}
-                          className={clsx(
-                            "flex items-center gap-3 w-full rounded-lg border-2 p-3.5 transition-all",
-                            selected
-                              ? "border-primary bg-primary/5"
-                              : "border-slate-700 hover:border-slate-600"
-                          )}
-                        >
-                          <div className={clsx(
-                            "w-5 h-5 rounded border-2 flex items-center justify-center shrink-0",
-                            selected ? "bg-primary border-primary" : "border-slate-600"
-                          )}>
-                            {selected && <Check className="w-3 h-3 text-white" />}
-                          </div>
-                          <img src={opt.image} alt={opt.label} className="w-5 h-5 object-contain" />
-                          <span className="text-sm font-medium text-white">{opt.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+            {industry && role === "employer" && (
+              <p className="ios-subheadline text-slate-400 px-1">
+                You&apos;ll be able to specify exactly who you&apos;re looking for when you post a listing.
+              </p>
+            )}
 
-              {industry && role === "employer" && (
-                <div>
-                  <p className="text-sm text-slate-400">
-                    You&apos;ll be able to specify exactly who you&apos;re looking for when you post a listing.
-                  </p>
-                </div>
-              )}
+            <button
+              onClick={() => canProceedStep1 && setStep(2)}
+              disabled={!canProceedStep1}
+              className="flex items-center justify-center gap-2 w-full rounded-full bg-primary px-6 h-12 text-[17px] font-semibold text-white ios-press active:bg-primary-dark disabled:opacity-40 disabled:active:transform-none transition-colors"
+            >
+              Continue
+              <ArrowRight className="w-[18px] h-[18px]" strokeWidth={2.5} />
+            </button>
+          </div>
+        )}
 
-              <button
-                onClick={() => canProceedStep1 && setStep(2)}
-                disabled={!canProceedStep1}
-                className="flex items-center justify-center gap-2 w-full rounded-lg bg-primary px-6 py-3.5 text-base font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                Continue
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+        {/* ─── Step 2: Credentials ─── */}
+        {step === 2 && (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Back */}
+            <button
+              type="button"
+              onClick={() => setStep(1)}
+              className="flex items-center gap-0.5 text-primary ios-press -ml-2 -mt-2 -mb-1"
+            >
+              <ChevronLeft className="w-[22px] h-[22px]" strokeWidth={2.5} />
+              <span className="text-[17px] font-normal">Back</span>
+            </button>
 
-          {/* ─── Step 2: Credentials ─── */}
-          {step === 2 && (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="flex items-center gap-1 text-sm text-slate-400 hover:text-white transition-colors -mt-2 mb-2"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Back
-              </button>
+            {error && (
+              <div className="rounded-2xl bg-red-500/12 border border-red-500/15 px-4 py-3">
+                <p className="ios-subheadline text-red-400">{error}</p>
+              </div>
+            )}
 
-              {error && (
-                <div className="px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-400">
-                  {error}
-                </div>
-              )}
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-300 mb-2">
-                  Full Name <span className="text-red-400">*</span>
-                </label>
+            {/* Grouped form */}
+            <div className="ios-card">
+              <div className="ios-row gap-3">
+                <label className="ios-body text-slate-400 w-20 shrink-0">Name</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Jane Doe"
                   required
-                  className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                  autoComplete="name"
+                  className="flex-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
                 />
               </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-300 mb-2">
-                  Email <span className="text-red-400">*</span>
-                </label>
+              <div className="ios-row gap-3">
+                <label className="ios-body text-slate-400 w-20 shrink-0">Email</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="jane@example.com"
                   required
-                  className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                  autoComplete="email"
+                  inputMode="email"
+                  className="flex-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
                 />
               </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-300 mb-2">
-                  Phone <span className="text-slate-500 font-normal">(optional)</span>
-                </label>
+              <div className="ios-row gap-3">
+                <label className="ios-body text-slate-400 w-20 shrink-0">Phone</label>
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(formatPhone(e.target.value))}
                   placeholder="(555) 123-4567"
-                  className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                  autoComplete="tel"
+                  inputMode="tel"
+                  className="flex-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
                 />
               </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-300 mb-2">
-                  Password <span className="text-red-400">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    required
-                    minLength={6}
-                    className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 pr-12 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
+              <div className="ios-row gap-3">
+                <label className="ios-body text-slate-400 w-20 shrink-0">Password</label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  minLength={6}
+                  autoComplete="new-password"
+                  className="flex-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-slate-500 active:text-slate-300 transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-[18px] h-[18px]" strokeWidth={2} />
+                  ) : (
+                    <Eye className="w-[18px] h-[18px]" strokeWidth={2} />
+                  )}
+                </button>
               </div>
+            </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-lg bg-primary px-6 py-3.5 text-base font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mt-2"
-              >
-                {loading ? "Creating Account..." : "Create Account"}
-              </button>
-            </form>
-          )}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-full bg-primary px-6 h-12 text-[17px] font-semibold text-white ios-press active:bg-primary-dark disabled:opacity-50 disabled:active:transform-none transition-colors mt-2"
+            >
+              {loading ? "Creating Account…" : "Create Account"}
+            </button>
+          </form>
+        )}
 
-          {/* Sign in link */}
-          <p className="mt-6 text-center text-sm text-slate-400">
-            Already have an account?{" "}
-            <Link href="/signin" className="font-semibold text-primary hover:text-primary-light transition-colors">
-              Sign in
-            </Link>
-          </p>
-        </div>
+        {/* Sign in link */}
+        <p className="mt-7 text-center ios-subheadline text-slate-400">
+          Already have an account?{" "}
+          <Link href="/signin" className="font-semibold text-primary ios-press">
+            Sign in
+          </Link>
+        </p>
       </div>
     </main>
   );

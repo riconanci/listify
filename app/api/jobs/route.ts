@@ -205,6 +205,7 @@ export async function POST(request: Request) {
         payMax: data.payMax,
         payUnit: data.payUnit,
         payVisible: data.payVisible,
+        addressVisible: data.addressVisible,
         employmentType: data.employmentType as any,
         schedule: data.schedule as any,
         experienceText: data.experienceText,

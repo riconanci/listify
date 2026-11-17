@@ -18,16 +18,27 @@ interface StatusBadgeProps {
   className?: string;
 }
 
+/**
+ * iOS-style status pill.
+ *
+ * Same API as before — variants and `dot` are unchanged so existing callers
+ * keep working. Visual changes:
+ *   - Sentence case instead of UPPERCASE
+ *   - Softer color saturation (lower opacity backgrounds)
+ *   - Thinner border, smaller dot, slightly larger padding
+ *   - 13px font matching iOS subheadline scale
+ */
+
 const variantStyles: Record<BadgeVariant, string> = {
-  active: "bg-green-500/10 text-green-400 border-green-500/20",
-  paused: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-  closed: "bg-slate-500/10 text-slate-400 border-slate-500/20",
-  expired: "bg-red-500/10 text-red-400 border-red-500/20",
-  expiring: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  sent: "bg-green-500/10 text-green-400 border-green-500/20",
-  primary: "bg-primary/10 text-primary border-primary/20",
-  default: "bg-slate-700/50 text-slate-300 border-slate-600/30",
-  danger: "bg-red-500/10 text-red-400 border-red-500/20",
+  active: "bg-green-500/12 text-green-400 border-green-500/15",
+  paused: "bg-yellow-500/12 text-yellow-400 border-yellow-500/15",
+  closed: "bg-slate-500/12 text-slate-400 border-slate-500/15",
+  expired: "bg-red-500/12 text-red-400 border-red-500/15",
+  expiring: "bg-amber-500/12 text-amber-400 border-amber-500/15",
+  sent: "bg-green-500/12 text-green-400 border-green-500/15",
+  primary: "bg-primary/12 text-primary border-primary/15",
+  default: "bg-slate-700/40 text-slate-300 border-slate-600/20",
+  danger: "bg-red-500/12 text-red-400 border-red-500/15",
 };
 
 const dotColors: Record<BadgeVariant, string> = {
@@ -51,7 +62,7 @@ export default function StatusBadge({
   return (
     <span
       className={clsx(
-        "inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-full border",
+        "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[12px] font-semibold rounded-full border",
         variantStyles[variant],
         className
       )}

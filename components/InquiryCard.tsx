@@ -41,9 +41,9 @@ function timeAgo(dateString: string): string {
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
   if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
   if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
   return `${Math.floor(diffDays / 7)}w ago`;
 }
 
@@ -84,19 +84,19 @@ export default function InquiryCard({
   onDelete,
 }: InquiryCardProps) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-bg-surface p-5 card-hover">
+    <div className="rounded-2xl bg-bg-surface p-4">
       {/* Avatar + Name */}
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-3">
         {/* Avatar */}
         <div className="shrink-0">
           {senderPhotoUrl ? (
             <img
               src={senderPhotoUrl}
               alt={senderName}
-              className="w-12 h-12 rounded-full object-cover border-2 border-primary/30"
+              className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/30"
             />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold">
+            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white ios-headline">
               {getInitials(senderName)}
             </div>
           )}
@@ -104,25 +104,30 @@ export default function InquiryCard({
 
         {/* Info */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-base font-bold text-white">{senderName}</h3>
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="ios-headline text-white">{senderName}</h3>
+            <span className="ios-caption text-slate-500 shrink-0">
+              {timeAgo(createdAt)}
+            </span>
+          </div>
 
           {/* Contact details */}
-          <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-slate-400">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 ios-footnote text-slate-400">
             {senderEmail && (
               <a
                 href={`mailto:${senderEmail}`}
-                className="flex items-center gap-1 hover:text-primary transition-colors"
+                className="flex items-center gap-1 active:text-primary transition-colors"
               >
-                <Mail className="w-3 h-3" />
-                {senderEmail}
+                <Mail className="w-3 h-3" strokeWidth={2.2} />
+                <span className="truncate max-w-[180px]">{senderEmail}</span>
               </a>
             )}
             {phone && (
               <a
                 href={`tel:${phone}`}
-                className="flex items-center gap-1 hover:text-primary transition-colors"
+                className="flex items-center gap-1 active:text-primary transition-colors"
               >
-                <Phone className="w-3 h-3" />
+                <Phone className="w-3 h-3" strokeWidth={2.2} />
                 {formatPhone(phone)}
               </a>
             )}
@@ -133,53 +138,44 @@ export default function InquiryCard({
               href={`https://instagram.com/${instagram.replace("@", "")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 mt-1 text-xs text-primary hover:text-primary-light transition-colors"
+              className="inline-flex items-center gap-1 mt-1 ios-footnote text-primary active:text-primary-light transition-colors"
             >
-              <Instagram className="w-3 h-3" />
+              <Instagram className="w-3 h-3" strokeWidth={2.2} />
               @{instagram.replace("@", "")}
             </a>
           )}
-
-          {/* Timestamp */}
-          <p className="text-[11px] text-slate-500 uppercase tracking-wider mt-2 font-medium">
-            {timeAgo(createdAt)}
-          </p>
         </div>
       </div>
 
       {/* Note */}
       {note && (
-        <div className="mt-4 pl-16">
-          <p className="text-sm text-slate-300 italic leading-relaxed">
+        <div className="mt-3 rounded-xl bg-slate-800/60 p-3">
+          <p className="ios-subheadline text-slate-300 italic">
             &ldquo;{note}&rdquo;
           </p>
         </div>
       )}
 
       {/* Inquiring About */}
-      <div className="mt-4 pl-16 flex items-center gap-3 text-xs">
-        <span className="text-slate-500 uppercase tracking-wider font-medium">
-          Inquiring About:
-        </span>
+      <div className="mt-3 flex items-center gap-2 flex-wrap ios-footnote">
+        <span className="text-slate-500">Inquiring about:</span>
         <Link
           href={`/jobs/${jobId}`}
-          className="text-primary hover:text-primary-light font-semibold transition-colors"
+          className="text-primary font-semibold ios-press"
         >
-          {jobTitle} - {businessName}
+          {jobTitle} — {businessName}
         </Link>
       </div>
 
       {/* Portfolio Thumbnails */}
       {portfolioPhotos && portfolioPhotos.length > 0 && (
-        <div className="mt-4 pl-16">
-          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-            Their Work
-          </p>
+        <div className="mt-3">
+          <p className="ios-section-header !pb-1.5 !px-0">Their Work</p>
           <div className="flex gap-2">
             {portfolioPhotos.slice(0, 4).map((photo, i) => (
               <div
                 key={i}
-                className="w-16 h-16 rounded-lg overflow-hidden bg-slate-800 shrink-0"
+                className="w-16 h-16 rounded-xl overflow-hidden bg-slate-800 shrink-0"
               >
                 <img
                   src={photo}
@@ -193,11 +189,11 @@ export default function InquiryCard({
       )}
 
       {/* Actions */}
-      <div className="mt-4 pl-16 flex items-center gap-2">
+      <div className="mt-4 flex items-center gap-2">
         {senderId && (
           <Link
             href={`/talent/${senderId}`}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold text-primary border border-primary/20 hover:bg-primary/10 transition-colors"
+            className="flex-1 rounded-full bg-primary/15 px-4 h-10 text-[15px] font-semibold text-primary ios-press active:bg-primary/25 transition-colors text-center flex items-center justify-center"
           >
             View Profile
           </Link>
@@ -205,30 +201,31 @@ export default function InquiryCard({
         <button
           onClick={() => onStar?.(id)}
           className={clsx(
-            "p-2 rounded-lg transition-colors",
+            "flex items-center justify-center w-10 h-10 rounded-full ios-press transition-colors shrink-0",
             isStarred
-              ? "text-yellow-400 bg-yellow-400/10"
-              : "text-slate-500 hover:text-yellow-400 hover:bg-slate-800"
+              ? "bg-yellow-400/15 text-yellow-400"
+              : "bg-slate-700/60 text-slate-400 active:bg-slate-700"
           )}
           aria-label={isStarred ? "Unstar inquiry" : "Star inquiry"}
         >
           <Star
-            className="w-4 h-4"
+            className="w-[18px] h-[18px]"
             fill={isStarred ? "currentColor" : "none"}
+            strokeWidth={2}
           />
         </button>
         <button
-          className="p-2 rounded-lg text-slate-500 hover:text-primary hover:bg-slate-800 transition-colors"
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-700/60 text-slate-400 ios-press active:bg-slate-700 transition-colors shrink-0"
           aria-label="Download contact"
         >
-          <Download className="w-4 h-4" />
+          <Download className="w-[18px] h-[18px]" strokeWidth={2} />
         </button>
         <button
           onClick={() => onDelete?.(id)}
-          className="p-2 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-700/60 text-red-400 ios-press active:bg-red-500/15 transition-colors shrink-0"
           aria-label="Delete inquiry"
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-[18px] h-[18px]" strokeWidth={2} />
         </button>
       </div>
     </div>
