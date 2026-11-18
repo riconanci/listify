@@ -42,7 +42,6 @@ function formatCompensation(
   payMax?: number | null,
   payUnit?: string | null
 ): string {
-  // Strip leading $ from unit (e.g. "$/wk" → "/wk")
   const unit = payUnit?.replace(/^\$/, "") || "";
 
   if (compModel === "commission") {
@@ -64,7 +63,6 @@ function formatCompensation(
     if (comm) return comm;
     return "Hourly + Comm";
   }
-  // Hourly
   if (payMin && payMax && payMin !== payMax)
     return `$${payMin}-$${payMax}/hr`;
   if (payMin) return `$${payMin}/hr`;
@@ -89,6 +87,7 @@ export default function JobCard({
   const formattedSchedule = formatSchedule(schedule);
   const isFullTime = schedule === "full_time";
   const specLabel = specialties.map(formatRole).join(" · ");
+  const payDisplay = formatCompensation(compModel, payMin, payMax, payUnit);
 
   const [saved, setSaved] = useState(false);
 
@@ -134,15 +133,11 @@ export default function JobCard({
   };
 
   return (
-    <Link
-      href={`/jobs/${id}`}
-      className="group block"
-    >
-      {/* Desktop Row View */}
+    <Link href={`/jobs/${id}`} className="group block">
+      {/* Desktop Row View — preserved */}
       <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-5 hover:bg-slate-800/40 transition-colors items-center border-b border-slate-800/50">
-        {/* Business & Title */}
         <div className="col-span-4 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-800 shrink-0">
+          <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-800 shrink-0">
             {photoUrl ? (
               <img
                 src={photoUrl}
@@ -162,9 +157,7 @@ export default function JobCard({
             <p className="text-xs text-slate-400 mt-0.5 truncate">{title}</p>
           </div>
         </div>
-        {/* Service */}
         <div className="col-span-1 text-sm text-slate-300">{specLabel}</div>
-        {/* Schedule */}
         <div className="col-span-2 text-center">
           {formattedSchedule && (
             <span
@@ -179,15 +172,12 @@ export default function JobCard({
             </span>
           )}
         </div>
-        {/* Experience */}
         <div className="col-span-1 text-sm text-slate-300">
           {experienceText || "—"}
         </div>
-        {/* Compensation */}
         <div className="col-span-2 text-sm text-slate-300 font-medium">
-          {formatCompensation(compModel, payMin, payMax, payUnit)}
+          {payDisplay}
         </div>
-        {/* Location + Save */}
         <div className="col-span-2 flex items-center justify-between">
           <span className="text-xs text-slate-400">
             {city && state ? `${city}, ${state}` : city || "—"}
@@ -205,63 +195,83 @@ export default function JobCard({
         </div>
       </div>
 
-      {/* Mobile Card View */}
-      <div className="md:hidden flex items-center gap-4 px-4 py-4 border-b border-slate-800/50 active:bg-slate-800/30 transition-colors">
-        <div className="w-14 h-14 rounded-lg overflow-hidden bg-slate-800 shrink-0">
-          {photoUrl ? (
-            <img
-              src={photoUrl}
-              alt={businessName}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-slate-600">
-              <ImageIcon className="w-5 h-5" />
-            </div>
-          )}
-        </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-bold text-white truncate">
-            {businessName}
-          </h3>
-          <p className="text-xs text-slate-400 mt-0.5 truncate">{title}</p>
-          <div className="flex flex-wrap items-center gap-1.5 mt-2 text-xs">
-            <span className="text-slate-400">{specLabel}</span>
-            <span className="text-slate-600">•</span>
-            {formattedSchedule && (
-              <>
-                <span
-                  className={clsx(
-                    "font-bold",
-                    isFullTime ? "text-primary" : "text-slate-300"
-                  )}
-                >
-                  {formattedSchedule}
-                </span>
-                <span className="text-slate-600">•</span>
-              </>
+      {/* Mobile iOS Card View — redesigned */}
+      <div className="md:hidden mx-4 mb-3 rounded-2xl bg-bg-surface overflow-hidden ios-press active:bg-slate-800/60 transition-colors">
+        <div className="flex gap-3 p-3.5">
+          <div className="w-[88px] h-[88px] rounded-xl overflow-hidden bg-slate-800 shrink-0">
+            {photoUrl ? (
+              <img
+                src={photoUrl}
+                alt={businessName}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-slate-600">
+                <ImageIcon className="w-7 h-7" />
+              </div>
             )}
-            <span className="text-slate-300 font-medium">
-              {formatCompensation(compModel, payMin, payMax, payUnit)}
-            </span>
           </div>
-          {city && (
-            <div className="flex items-center gap-1 mt-1.5">
-              <MapPin className="w-3 h-3 text-slate-500" />
-              <span className="text-[11px] text-slate-500">{city}, {state || "CA"}</span>
+
+          <div className="flex-1 min-w-0 flex flex-col">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <h3 className="ios-headline text-white truncate">
+                  {businessName}
+                </h3>
+                <p className="ios-footnote text-slate-400 mt-0.5 truncate">
+                  {title}
+                </p>
+              </div>
+              <button
+                onClick={toggleSave}
+                className="-mt-1 -mr-1 p-1.5 rounded-full text-slate-500 active:text-primary transition-colors shrink-0"
+                aria-label={saved ? "Remove from saved" : "Save listing"}
+              >
+                <Bookmark
+                  className="w-[18px] h-[18px]"
+                  fill={saved ? "currentColor" : "none"}
+                  strokeWidth={2}
+                />
+              </button>
             </div>
-          )}
+
+            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+              <span className="ios-subheadline font-semibold text-white">
+                {payDisplay}
+              </span>
+              {formattedSchedule && (
+                <>
+                  <span className="text-slate-600">·</span>
+                  <span
+                    className={clsx(
+                      "ios-footnote font-semibold",
+                      isFullTime ? "text-primary" : "text-slate-400"
+                    )}
+                  >
+                    {formattedSchedule}
+                  </span>
+                </>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1.5 mt-auto pt-1.5">
+              <span className="text-[11px] font-semibold text-primary truncate">
+                {specLabel}
+              </span>
+              {city && (
+                <>
+                  <span className="text-slate-600 text-[11px]">·</span>
+                  <div className="flex items-center gap-0.5 min-w-0">
+                    <MapPin className="w-3 h-3 text-slate-500 shrink-0" strokeWidth={2.2} />
+                    <span className="text-[11px] text-slate-500 truncate">
+                      {city}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
-        <button
-          onClick={toggleSave}
-          className="p-2 rounded-lg text-slate-500 hover:text-primary transition-colors shrink-0"
-          title={saved ? "Remove from saved" : "Save listing"}
-        >
-          <Bookmark
-            className="w-5 h-5"
-            fill={saved ? "currentColor" : "none"}
-          />
-        </button>
       </div>
     </Link>
   );

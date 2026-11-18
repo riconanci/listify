@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { X, Check, MapPin, Search } from "lucide-react";
+import { X, MapPin, Search } from "lucide-react";
 import { clsx } from "clsx";
+import Sheet from "./Sheet";
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -77,6 +78,31 @@ const DEFAULT_FILTERS: FilterModalState = {
   schedule: [],
 };
 
+// iOS-style chip button
+function Chip({
+  selected,
+  onClick,
+  children,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={clsx(
+        "px-4 py-2 rounded-full text-[14px] font-semibold ios-press transition-colors",
+        selected
+          ? "bg-primary text-white"
+          : "bg-slate-700/60 text-slate-200 active:bg-slate-700"
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function FilterModal({
   isOpen, onClose, onApply, onUseMyLocation, userCity, initialFilters, resultCount,
 }: FilterModalProps) {
@@ -93,12 +119,6 @@ export default function FilterModal({
     }
   }, [isOpen, initialFilters]);
 
-  useEffect(() => {
-    if (isOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
-  }, [isOpen]);
-
   const addCity = (city: string) => {
     if (!filters.cities.includes(city)) {
       setFilters((prev) => ({ ...prev, cities: [...prev.cities, city] }));
@@ -112,190 +132,236 @@ export default function FilterModal({
   };
 
   const toggleSpecialty = (s: string) => {
-    setFilters((prev) => ({ ...prev, specialties: prev.specialties.includes(s) ? prev.specialties.filter((x) => x !== s) : [...prev.specialties, s] }));
+    setFilters((prev) => ({
+      ...prev,
+      specialties: prev.specialties.includes(s)
+        ? prev.specialties.filter((x) => x !== s)
+        : [...prev.specialties, s],
+    }));
   };
   const toggleComp = (c: string) => {
-    setFilters((prev) => ({ ...prev, compTypes: prev.compTypes.includes(c) ? prev.compTypes.filter((x) => x !== c) : [...prev.compTypes, c] }));
+    setFilters((prev) => ({
+      ...prev,
+      compTypes: prev.compTypes.includes(c)
+        ? prev.compTypes.filter((x) => x !== c)
+        : [...prev.compTypes, c],
+    }));
   };
   const toggleSchedule = (s: string) => {
-    setFilters((prev) => ({ ...prev, schedule: prev.schedule.includes(s) ? prev.schedule.filter((x) => x !== s) : [...prev.schedule, s] }));
+    setFilters((prev) => ({
+      ...prev,
+      schedule: prev.schedule.includes(s)
+        ? prev.schedule.filter((x) => x !== s)
+        : [...prev.schedule, s],
+    }));
   };
   const setIndustry = (val: string) => {
     setFilters((prev) => ({
       ...prev,
       industry: prev.industry === val ? "" : val,
-      specialties: prev.industry === val ? [] : prev.specialties.filter((s) => (SPECIALTY_MAP[val] || []).some((opt) => opt.value === s)),
+      specialties:
+        prev.industry === val
+          ? []
+          : prev.specialties.filter((s) =>
+              (SPECIALTY_MAP[val] || []).some((opt) => opt.value === s)
+            ),
     }));
   };
 
-  // City suggestions — filter by query, exclude already selected
-  const citySuggestions = cityQuery.length > 0
-    ? CITIES.filter((c) =>
-        c.toLowerCase().startsWith(cityQuery.toLowerCase()) &&
-        !filters.cities.includes(c)
-      ).slice(0, 5)
-    : [];
+  const citySuggestions =
+    cityQuery.length > 0
+      ? CITIES.filter(
+          (c) =>
+            c.toLowerCase().startsWith(cityQuery.toLowerCase()) &&
+            !filters.cities.includes(c)
+        ).slice(0, 5)
+      : [];
 
-  const visibleSpecialties = filters.industry ? SPECIALTY_MAP[filters.industry] || [] : ALL_SPECIALTIES;
+  const visibleSpecialties = filters.industry
+    ? SPECIALTY_MAP[filters.industry] || []
+    : ALL_SPECIALTIES;
 
-  if (!isOpen) return null;
+  const handleApply = () => {
+    onApply(filters);
+    onClose();
+  };
+
+  const handleReset = () => {
+    setFilters(DEFAULT_FILTERS);
+    setCityQuery("");
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-bg-base">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
-        <button onClick={() => { setFilters(DEFAULT_FILTERS); setCityQuery(""); }} className="text-sm font-semibold text-primary hover:text-primary-light transition-colors">Reset</button>
-        <h2 className="text-base font-bold text-white">Filters</h2>
-        <button onClick={onClose} className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"><X className="w-5 h-5" /></button>
-      </div>
+    <Sheet
+      open={isOpen}
+      onClose={onClose}
+      title="Filters"
+      leadingAction={{ label: "Reset", onClick: handleReset }}
+      maxHeight="92vh"
+    >
+      <div className="flex flex-col h-full">
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
+          {/* Use my location */}
+          <button
+            onClick={onUseMyLocation}
+            className="flex items-center gap-2 w-full rounded-2xl bg-primary/15 px-4 py-3.5 text-[15px] font-semibold text-primary ios-press"
+          >
+            <MapPin className="w-[18px] h-[18px]" strokeWidth={2} />
+            {userCity ? `Using: ${userCity}` : "Use My Current Location"}
+          </button>
 
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5 pb-24">
+          {/* LOCATION */}
+          <section>
+            <h3 className="ios-section-header">Location</h3>
+            <div className="space-y-3">
+              {/* City search */}
+              <div className="relative">
+                <div className="ios-search-bar">
+                  <Search className="w-[18px] h-[18px] text-slate-400" strokeWidth={2} />
+                  <input
+                    ref={cityInputRef}
+                    type="text"
+                    value={cityQuery}
+                    onChange={(e) => {
+                      setCityQuery(e.target.value);
+                      setShowCitySuggestions(true);
+                    }}
+                    onFocus={() => setShowCitySuggestions(true)}
+                    placeholder="Search city"
+                  />
+                </div>
+                {/* Suggestions */}
+                {showCitySuggestions && citySuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl bg-slate-800 overflow-hidden z-10 shadow-xl">
+                    {citySuggestions.map((city, idx) => (
+                      <button
+                        key={city}
+                        onClick={() => addCity(city)}
+                        className={clsx(
+                          "w-full text-left px-4 py-3 text-[15px] text-white active:bg-slate-700 transition-colors",
+                          idx > 0 && "border-t border-slate-700/50"
+                        )}
+                      >
+                        {city}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-        {/* USE MY LOCATION */}
-        <button
-          onClick={onUseMyLocation}
-          className="flex items-center gap-2 w-full rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm font-semibold text-primary hover:bg-primary/10 transition-colors"
-        >
-          <MapPin className="w-4 h-4" />
-          {userCity ? `Using: ${userCity}` : "Use My Current Location"}
-        </button>
-
-        {/* LOCATION */}
-        <section>
-          <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Location</h3>
-          <div className="space-y-3">
-            {/* City search input */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-              <input
-                ref={cityInputRef}
-                type="text"
-                value={cityQuery}
-                onChange={(e) => {
-                  setCityQuery(e.target.value);
-                  setShowCitySuggestions(true);
-                }}
-                onFocus={() => setShowCitySuggestions(true)}
-                placeholder="Search city..."
-                className="w-full rounded-lg border border-slate-700 bg-bg-input pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary"
-              />
-              {/* Suggestions dropdown */}
-              {showCitySuggestions && citySuggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 rounded-lg border border-slate-700 bg-slate-800 overflow-hidden z-10">
-                  {citySuggestions.map((city) => (
+              {/* Selected cities */}
+              {filters.cities.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {filters.cities.map((city) => (
                     <button
                       key={city}
-                      onClick={() => addCity(city)}
-                      className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-primary/10 hover:text-white transition-colors"
+                      onClick={() => removeCity(city)}
+                      className="flex items-center gap-1 px-3 py-1 rounded-full bg-primary/15 text-[13px] font-semibold text-primary ios-press"
                     >
                       {city}
+                      <X className="w-3 h-3" strokeWidth={2.5} />
                     </button>
                   ))}
                 </div>
               )}
-            </div>
 
-            {/* Selected cities */}
-            {filters.cities.length > 0 && (
+              {/* Radius */}
+              <div className="rounded-2xl bg-bg-surface px-4 py-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[15px] font-medium text-white">Radius</span>
+                  <span className="text-[15px] font-semibold text-primary">{filters.radius} mi</span>
+                </div>
+                <input
+                  type="range"
+                  min="5"
+                  max="40"
+                  step="5"
+                  value={filters.radius}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, radius: parseInt(e.target.value) }))
+                  }
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* INDUSTRY + SPECIALTY */}
+          <section>
+            <h3 className="ios-section-header">Industry & Specialty</h3>
+            <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
-                {filters.cities.map((city) => (
-                  <button
-                    key={city}
-                    onClick={() => removeCity(city)}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
+                {INDUSTRY_OPTIONS.map((opt) => (
+                  <Chip
+                    key={opt.value}
+                    selected={filters.industry === opt.value}
+                    onClick={() => setIndustry(opt.value)}
                   >
-                    {city}
-                    <X className="w-3 h-3" />
-                  </button>
+                    {opt.label}
+                  </Chip>
                 ))}
               </div>
-            )}
-
-            {/* Radius */}
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-slate-400">Radius</span>
-                <span className="text-xs font-bold text-primary">{filters.radius} mi</span>
-              </div>
-              <input type="range" min="5" max="40" step="5" value={filters.radius} onChange={(e) => setFilters((prev) => ({ ...prev, radius: parseInt(e.target.value) }))} className="w-full" />
-            </div>
-          </div>
-        </section>
-
-        <div className="border-t border-slate-800" />
-
-        {/* INDUSTRY + SPECIALTY */}
-        <section>
-          <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Industry & Specialty</h3>
-          <div className="space-y-3">
-            <div className="flex gap-2">
-              {INDUSTRY_OPTIONS.map((opt) => {
-                const selected = filters.industry === opt.value;
-                return (
-                  <button key={opt.value} onClick={() => setIndustry(opt.value)} className={clsx("px-3 py-2 rounded-lg text-xs font-semibold transition-colors", selected ? "bg-primary text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700")}>
-                    {opt.label}
-                  </button>
-                );
-              })}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {visibleSpecialties.map((spec) => {
-                const selected = filters.specialties.includes(spec.value);
-                return (
-                  <button key={spec.value} onClick={() => toggleSpecialty(spec.value)} className={clsx("px-3 py-2 rounded-lg text-xs font-semibold transition-colors", selected ? "bg-primary text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700")}>
+              <div className="flex flex-wrap gap-2">
+                {visibleSpecialties.map((spec) => (
+                  <Chip
+                    key={spec.value}
+                    selected={filters.specialties.includes(spec.value)}
+                    onClick={() => toggleSpecialty(spec.value)}
+                  >
                     {spec.label}
-                  </button>
-                );
-              })}
+                  </Chip>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <div className="border-t border-slate-800" />
-
-        {/* COMPENSATION */}
-        <section>
-          <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Compensation</h3>
-          <div className="flex flex-wrap gap-2">
-            {COMP_TYPES.map((comp) => {
-              const selected = filters.compTypes.includes(comp.value);
-              return (
-                <button key={comp.value} onClick={() => toggleComp(comp.value)} className={clsx("px-3 py-2 rounded-lg text-xs font-semibold transition-colors", selected ? "bg-primary text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700")}>
+          {/* COMPENSATION */}
+          <section>
+            <h3 className="ios-section-header">Compensation</h3>
+            <div className="flex flex-wrap gap-2">
+              {COMP_TYPES.map((comp) => (
+                <Chip
+                  key={comp.value}
+                  selected={filters.compTypes.includes(comp.value)}
+                  onClick={() => toggleComp(comp.value)}
+                >
                   {comp.label}
-                </button>
-              );
-            })}
-          </div>
-        </section>
+                </Chip>
+              ))}
+            </div>
+          </section>
 
-        <div className="border-t border-slate-800" />
-
-        {/* SCHEDULE */}
-        <section>
-          <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Schedule</h3>
-          <div className="flex gap-2">
-            {SCHEDULE_TYPES.map((sched) => {
-              const selected = filters.schedule.includes(sched.value);
-              return (
-                <button key={sched.value} onClick={() => toggleSchedule(sched.value)} className={clsx("px-3 py-2 rounded-lg text-xs font-semibold transition-colors", selected ? "bg-primary text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700")}>
+          {/* SCHEDULE */}
+          <section>
+            <h3 className="ios-section-header">Schedule</h3>
+            <div className="flex flex-wrap gap-2">
+              {SCHEDULE_TYPES.map((sched) => (
+                <Chip
+                  key={sched.value}
+                  selected={filters.schedule.includes(sched.value)}
+                  onClick={() => toggleSchedule(sched.value)}
+                >
                   {sched.label}
-                </button>
-              );
-            })}
-          </div>
-        </section>
-      </div>
+                </Chip>
+              ))}
+            </div>
+          </section>
 
-      {/* Sticky Apply Button */}
-      <div className="border-t border-slate-800 bg-bg-base px-4 pt-3 pb-24">
-        <button
-          onClick={() => { onApply(filters); onClose(); }}
-          className="w-full rounded-xl bg-primary px-8 py-4 text-base font-bold text-white shadow-xl shadow-primary/25 transition-all hover:bg-primary/90 active:scale-[0.98]"
-        >
-          {resultCount !== undefined ? `Show ${resultCount} Results` : "Apply Filters"}
-        </button>
+          {/* Bottom padding so apply button doesn't cover content */}
+          <div className="h-4" />
+        </div>
+
+        {/* Sticky Apply Button */}
+        <div className="ios-hairline-top px-4 pt-3 pb-2 bg-bg-base">
+          <button
+            onClick={handleApply}
+            className="w-full rounded-full bg-primary px-6 py-3.5 text-[17px] font-semibold text-white ios-press active:bg-primary-dark"
+          >
+            {resultCount !== undefined ? `Show ${resultCount} Results` : "Apply Filters"}
+          </button>
+        </div>
       </div>
-    </div>
+    </Sheet>
   );
 }

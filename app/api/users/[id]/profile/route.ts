@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { formatRole } from "@/lib/utils";
 
 interface RouteContext {
   params: { id: string };
@@ -42,7 +43,10 @@ export async function GET(request: Request, { params }: RouteContext) {
       website: tp.website,
       instagram: tp.instagram,
       avatarUrl: tp.avatarUrl,
-      specialties: tp.specialties,
+      // Signup records licenses; the free-text specialties list was only ever
+      // filled in by the old onboarding flow, so fall back to licenses.
+      specialties:
+        tp.specialties.length > 0 ? tp.specialties : tp.licenses.map(formatRole),
       portfolio: tp.portfolio.map((p) => p.url),
     });
   } catch (error: any) {

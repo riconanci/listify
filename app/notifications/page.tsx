@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, Bell } from "lucide-react";
+import { Bell } from "lucide-react";
 import NotificationItem from "@/components/NotificationItem";
+import LargeTitle from "@/components/LargeTitle";
 
 interface Notification {
   id: string;
@@ -61,20 +62,16 @@ export default function NotificationsPage() {
   }, []);
 
   const markAllRead = async () => {
-    // Optimistic update
-    setNotifications((prev) =>
-      prev.map((n) => ({ ...n, isRead: true }))
-    );
+    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
     try {
       await fetch("/api/notifications", { method: "PATCH" });
     } catch {
-      // Revert on failure would go here
+      // revert on failure would go here
     }
   };
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-  // Group by time
   const groups: Record<string, Notification[]> = {};
   for (const n of notifications) {
     const group = getGroup(n.createdAt);
@@ -82,85 +79,76 @@ export default function NotificationsPage() {
     groups[group].push(n);
   }
 
-  // Maintain order: Today, Yesterday, Earlier
   const orderedGroups = ["Today", "Yesterday", "Earlier"].filter(
     (g) => groups[g]?.length > 0
   );
 
   if (loading) {
     return (
-      <main className="min-h-[calc(100dvh-4rem)] flex items-center justify-center">
+      <main className="min-h-[calc(100dvh-3.5rem)] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       </main>
     );
   }
 
-  return (
-    <main className="min-h-[calc(100dvh-4rem)] page-with-nav">
-      {/* Header */}
-      <div className="border-b border-slate-800 px-4 py-4">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.back()}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <h1 className="text-lg font-bold text-white">Notifications</h1>
-            {unreadCount > 0 && (
-              <span className="ml-1 px-2 py-0.5 rounded-full bg-primary text-[11px] font-bold text-white">
-                {unreadCount}
-              </span>
-            )}
-          </div>
-          {unreadCount > 0 && (
-            <button
-              onClick={markAllRead}
-              className="text-sm font-semibold text-primary hover:text-primary-light transition-colors"
-            >
-              Mark all as read
-            </button>
-          )}
-        </div>
-      </div>
+  const subtitle =
+    notifications.length === 0
+      ? "All caught up"
+      : unreadCount > 0
+      ? `${unreadCount} unread`
+      : `${notifications.length} ${notifications.length === 1 ? "notification" : "notifications"}`;
 
-      {/* Notification List */}
+  return (
+    <main className="min-h-[calc(100dvh-3.5rem)] page-with-nav">
+      <LargeTitle
+        title="Notifications"
+        subtitle={subtitle}
+        back
+        action={
+          unreadCount > 0
+            ? {
+                label: "Mark all read",
+                onClick: markAllRead,
+              }
+            : undefined
+        }
+      />
+
       <div className="max-w-2xl mx-auto">
         {orderedGroups.map((group) => (
-          <div key={group}>
-            <div className="px-4 py-3 bg-bg-base">
-              <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                {group}
-              </h2>
-            </div>
-            <div className="divide-y divide-slate-800/50">
-              {groups[group].map((notification) => (
-                <NotificationItem
+          <div key={group} className="mb-3">
+            <h2 className="ios-section-header">{group}</h2>
+            <div className="ios-card mx-4">
+              {groups[group].map((notification, idx) => (
+                <div
                   key={notification.id}
-                  type={notification.type}
-                  title={notification.title}
-                  body={notification.body}
-                  timeAgo={timeAgo(notification.createdAt)}
-                  isRead={notification.isRead}
-                  onClick={
-                    notification.linkUrl
-                      ? () => router.push(notification.linkUrl!)
-                      : undefined
-                  }
-                />
+                  className={idx > 0 ? "ios-hairline-top" : ""}
+                >
+                  <NotificationItem
+                    type={notification.type}
+                    title={notification.title}
+                    body={notification.body}
+                    timeAgo={timeAgo(notification.createdAt)}
+                    isRead={notification.isRead}
+                    onClick={
+                      notification.linkUrl
+                        ? () => router.push(notification.linkUrl!)
+                        : undefined
+                    }
+                  />
+                </div>
               ))}
             </div>
           </div>
         ))}
 
         {notifications.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mb-4">
-              <Bell className="w-8 h-8 text-slate-600" />
+          <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+            <div className="w-20 h-20 rounded-full bg-slate-800/60 flex items-center justify-center mb-5">
+              <Bell className="w-9 h-9 text-slate-600" strokeWidth={1.5} />
             </div>
-            <p className="text-lg font-semibold text-white">All caught up!</p>
-            <p className="text-sm text-slate-400 mt-2">
+            <p className="ios-title-2 text-white">All caught up!</p>
+            <p className="ios-subheadline text-slate-400 mt-2">
               No notifications to show.
             </p>
           </div>

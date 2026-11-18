@@ -1,10 +1,8 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import { prisma } from "./db";
+import { getSessionSecret } from "./session-secret";
 
-const SESSION_SECRET = new TextEncoder().encode(
-  process.env.SESSION_SECRET || "listify-dev-secret-change-in-production"
-);
 const COOKIE_NAME = "listify-session";
 const EXPIRY = "7d";
 
@@ -18,7 +16,7 @@ export async function createSession(userId: string, role: string) {
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime(EXPIRY)
     .setIssuedAt()
-    .sign(SESSION_SECRET);
+    .sign(getSessionSecret());
 
   const cookieStore = await cookies();
   cookieStore.set(COOKIE_NAME, token, {
@@ -37,8 +35,9 @@ export async function getSession(): Promise<SessionPayload | null> {
   const token = cookieStore.get(COOKIE_NAME)?.value;
   if (!token) return null;
 
+  const secret = getSessionSecret();
   try {
-    const { payload } = await jwtVerify(token, SESSION_SECRET);
+    const { payload } = await jwtVerify(token, secret);
     return payload as unknown as SessionPayload;
   } catch {
     return null;

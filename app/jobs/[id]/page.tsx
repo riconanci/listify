@@ -5,7 +5,6 @@ import {
   MapPin,
   CheckCircle2,
   ImageIcon,
-  Send,
 } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
@@ -86,51 +85,38 @@ export default async function JobDetailPage({ params }: PageProps) {
 
   if (!job) notFound();
 
-  // Get current user for inquiry auth
   const currentUser = await getCurrentUser();
   const userRole = currentUser?.role || null;
   const isOwner = currentUser?.id === job.employerProfile.userId;
 
-  // Increment view count (fire and forget)
-  prisma.job.update({
-    where: { id },
-    data: { viewsCount: { increment: 1 } },
-  }).catch(() => {});
+  prisma.job
+    .update({
+      where: { id },
+      data: { viewsCount: { increment: 1 } },
+    })
+    .catch(() => {});
 
   const photoUrl = job.photos?.[0]?.url || null;
   const location = job.location;
   const schedule = formatSchedule(job.schedule);
   const employmentType = job.employmentType?.toUpperCase();
 
-  // Parse requirements from description (split by newlines or bullet points)
-  const requirements = job.description
-    ?.split(/[\n•]/)
-    .map((r: string) => r.trim())
-    .filter((r: string) => r.length > 0) || [];
-
   return (
-    <main className="min-h-[calc(100dvh-4rem)] pb-40 md:pb-24">
-      {/* Header */}
-      <div className="sticky top-16 z-[999] border-b border-slate-800 bg-bg-base/95 glass-header px-4 py-3">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded bg-primary/20 flex items-center justify-center">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-primary">
-                <rect x="3" y="3" width="7" height="7" rx="1.5" fill="currentColor" />
-                <rect x="14" y="3" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6" />
-                <rect x="3" y="14" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6" />
-                <rect x="14" y="14" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.3" />
-              </svg>
-            </div>
-            <span className="text-sm font-bold text-white">Listify</span>
-          </div>
+    <main className="min-h-[calc(100dvh-3.5rem)] pb-40 md:pb-24">
+      {/* iOS-style nav bar with chevron back */}
+      <div className="sticky top-14 md:top-16 z-[999] ios-blur ios-hairline-bottom">
+        <div className="max-w-3xl mx-auto flex items-center justify-between px-2 h-11">
           <Link
             href="/jobs"
-            className="flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-light transition-colors"
+            className="flex items-center gap-0.5 text-primary ios-press px-2 py-1"
           >
-            <ChevronLeft className="w-4 h-4" />
-            Back to Listings
+            <ChevronLeft className="w-[22px] h-[22px]" strokeWidth={2.5} />
+            <span className="text-[17px] font-normal">Browse</span>
           </Link>
+          <h1 className="text-[17px] font-semibold text-white truncate max-w-[60%]">
+            Listing
+          </h1>
+          <div className="w-[80px]" /> {/* spacer to balance back button */}
         </div>
       </div>
 
@@ -150,78 +136,75 @@ export default async function JobDetailPage({ params }: PageProps) {
           </div>
         )}
 
-        {/* Content */}
-        <div className="px-4 py-6 space-y-6">
-          {/* Title */}
-          <div>
-            <h1 className="text-2xl font-black text-white">
-              {job.businessName || "Business"}
-            </h1>
-            <p className="text-base text-slate-400 mt-1">
-              {job.title} — Chair available
-            </p>
-          </div>
+        {/* Title block */}
+        <div className="px-4 pt-5 pb-3">
+          <h1 className="ios-title-1 text-white">
+            {job.businessName || "Business"}
+          </h1>
+          <p className="ios-callout text-slate-400 mt-1">{job.title}</p>
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-2">
-            {(job.specialties && job.specialties.length > 0
-              ? job.specialties
-              : []
-            ).filter(Boolean).map((spec: string) => (
-              <StatusBadge key={spec} variant="primary">{formatRole(spec)}</StatusBadge>
-            ))}
+          <div className="flex flex-wrap gap-2 mt-3">
+            {(job.specialties && job.specialties.length > 0 ? job.specialties : [])
+              .filter(Boolean)
+              .map((spec: string) => (
+                <StatusBadge key={spec} variant="primary">
+                  {formatRole(spec)}
+                </StatusBadge>
+              ))}
             {schedule && <StatusBadge variant="default">{schedule}</StatusBadge>}
             {employmentType && (
               <StatusBadge variant="default">{employmentType}</StatusBadge>
             )}
           </div>
+        </div>
 
-          {/* Description */}
-          {job.description && (
-            <section>
-              <h2 className="text-lg font-bold text-white mb-3">
-                About this position
-              </h2>
-              <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line">
+        {/* Compensation — prominent iOS card */}
+        <div className="px-4 pb-5">
+          <h3 className="ios-section-header">Compensation</h3>
+          <div className="ios-card px-5 py-4">
+            <p className="text-3xl font-bold text-white tracking-tight">
+              {formatCompensation(job)}
+            </p>
+            <p className="ios-subheadline text-slate-400 mt-1">
+              {formatCompModel(job.compModel)}
+            </p>
+          </div>
+        </div>
+
+        {/* Description */}
+        {job.description && (
+          <div className="px-4 pb-5">
+            <h3 className="ios-section-header">About this position</h3>
+            <div className="ios-card px-4 py-3.5">
+              <p className="ios-body text-slate-200 whitespace-pre-line">
                 {job.description}
               </p>
-            </section>
-          )}
+            </div>
+          </div>
+        )}
 
-          {/* Requirements */}
-          {job.experienceText && (
-            <section>
-              <h2 className="text-lg font-bold text-white mb-3">
-                Requirements
-              </h2>
-              <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                  <span className="text-sm text-slate-300">
-                    {job.experienceText} of professional experience
-                  </span>
-                </div>
+        {/* Requirements */}
+        {job.experienceText && (
+          <div className="px-4 pb-5">
+            <h3 className="ios-section-header">Requirements</h3>
+            <div className="ios-card">
+              <div className="ios-row gap-3">
+                <CheckCircle2 className="w-5 h-5 text-primary shrink-0" strokeWidth={2} />
+                <span className="ios-body text-slate-200">
+                  {job.experienceText} of professional experience
+                </span>
               </div>
-            </section>
-          )}
+            </div>
+          </div>
+        )}
 
-          {/* Compensation Card */}
-          <section className="rounded-xl border border-slate-800 bg-bg-surface p-5">
-            <p className="text-xs font-bold text-primary uppercase tracking-wider mb-2">
-              Compensation
-            </p>
-            <p className="text-3xl font-black text-white">
-              {formatCompensation(job)}{" "}
-              <span className="text-base font-medium text-slate-400">
-                {formatCompModel(job.compModel)}
-              </span>
-            </p>
-          </section>
-
-          {/* Location Card */}
-          {location && (
-            <section className="rounded-xl border border-slate-800 bg-bg-surface overflow-hidden">
-              {location.lat && location.lng ? (
+        {/* Location */}
+        {location && (
+          <div className="px-4 pb-5">
+            <h3 className="ios-section-header">Location</h3>
+            <div className="ios-card overflow-hidden">
+              {location.lat && location.lng && (job as any).addressVisible !== false ? (
                 <LocationMap
                   lat={location.lat}
                   lng={location.lng}
@@ -232,23 +215,30 @@ export default async function JobDetailPage({ params }: PageProps) {
                   <MapPin className="w-8 h-8 text-primary" />
                 </div>
               )}
-              <div className="p-4">
-                <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">
-                  Location
-                </p>
-                <p className="text-sm text-slate-300">
-                  {[location.addressLine1, location.city, location.state]
-                    .filter(Boolean)
-                    .join(", ")}
-                </p>
+              <div className="ios-row gap-3">
+                <MapPin className="w-5 h-5 text-primary shrink-0" strokeWidth={2} />
+                <div className="flex-1 min-w-0">
+                  <span className="ios-body text-slate-200">
+                    {(job as any).addressVisible !== false
+                      ? [location.addressLine1, location.city, location.state]
+                          .filter(Boolean)
+                          .join(", ")
+                      : [location.city, location.state].filter(Boolean).join(", ")}
+                  </span>
+                  {(job as any).addressVisible === false && (
+                    <p className="ios-caption text-slate-500 mt-0.5">
+                      Approximate location · exact address shared after inquiry
+                    </p>
+                  )}
+                </div>
               </div>
-            </section>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Sticky Inquiry Button — above BottomNav on mobile */}
-      <div className="fixed bottom-16 left-0 right-0 z-[999] border-t border-slate-800 bg-bg-base/95 glass-header p-4 pb-safe md:bottom-0">
+      {/* Sticky Inquiry Button */}
+      <div className="fixed bottom-16 left-0 right-0 z-[999] ios-hairline-top ios-blur-strong p-4 pb-safe md:bottom-0">
         <div className="max-w-3xl mx-auto">
           <InquiryForm jobId={id} userRole={userRole} isOwner={isOwner} />
         </div>

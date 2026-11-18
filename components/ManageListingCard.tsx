@@ -19,7 +19,7 @@ interface ManageListingCardProps {
   id: string;
   title: string;
   businessName: string;
-  role: string;  // kept for backward compat, but prefer specialties
+  role: string;
   specialties?: string[];
   status: string;
   viewsCount: number;
@@ -104,20 +104,17 @@ export default function ManageListingCard({
   return (
     <div
       className={clsx(
-        "rounded-xl border bg-bg-surface relative transition-opacity",
-        isExpired
-          ? "border-slate-800/50 opacity-60"
-          : "border-slate-800 card-hover"
+        "rounded-2xl bg-bg-surface relative transition-opacity",
+        isExpired && "opacity-60"
       )}
     >
-      {/* Main content */}
       <div className="px-4 py-4">
         {/* Row 1: Title + menu */}
         <div className="flex items-start justify-between gap-2">
           <Link href={`/jobs/${id}`} className="flex-1 min-w-0">
             <h3
               className={clsx(
-                "text-[15px] font-bold leading-snug line-clamp-2",
+                "ios-headline leading-snug line-clamp-2",
                 isExpired ? "text-slate-400" : "text-white"
               )}
             >
@@ -129,9 +126,10 @@ export default function ManageListingCard({
           <div className="relative shrink-0">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="p-1.5 -mr-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="flex items-center justify-center w-8 h-8 -mr-1 -mt-1 rounded-full text-slate-400 active:bg-slate-800 ios-press transition-colors"
+              aria-label="More options"
             >
-              <MoreVertical className="w-4 h-4" />
+              <MoreVertical className="w-[18px] h-[18px]" strokeWidth={2} />
             </button>
 
             {menuOpen && (
@@ -140,12 +138,12 @@ export default function ManageListingCard({
                   className="fixed inset-0 z-10"
                   onClick={() => setMenuOpen(false)}
                 />
-                <div className="absolute right-0 top-full mt-1 z-20 w-44 rounded-lg border border-slate-700 bg-slate-800 shadow-xl py-1">
+                <div className="absolute right-0 top-full mt-1 z-20 w-48 rounded-2xl bg-slate-800 shadow-xl py-1 overflow-hidden">
                   <Link
                     href={`/jobs/${id}`}
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                    className="flex items-center gap-3 px-4 py-3 ios-body text-white active:bg-slate-700 transition-colors"
                   >
-                    <Eye className="w-4 h-4" />
+                    <Eye className="w-[18px] h-[18px]" strokeWidth={2} />
                     View Listing
                   </Link>
 
@@ -155,9 +153,9 @@ export default function ManageListingCard({
                         onToggleStatus?.(id, "paused");
                         setMenuOpen(false);
                       }}
-                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                      className="flex items-center gap-3 w-full px-4 py-3 ios-body text-white active:bg-slate-700 transition-colors"
                     >
-                      <Pause className="w-4 h-4" />
+                      <Pause className="w-[18px] h-[18px]" strokeWidth={2} />
                       Pause Listing
                     </button>
                   )}
@@ -168,9 +166,9 @@ export default function ManageListingCard({
                         onToggleStatus?.(id, "active");
                         setMenuOpen(false);
                       }}
-                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                      className="flex items-center gap-3 w-full px-4 py-3 ios-body text-white active:bg-slate-700 transition-colors"
                     >
-                      <Play className="w-4 h-4" />
+                      <Play className="w-[18px] h-[18px]" strokeWidth={2} />
                       Reactivate
                     </button>
                   )}
@@ -180,9 +178,9 @@ export default function ManageListingCard({
                       onDelete?.(id);
                       setMenuOpen(false);
                     }}
-                    className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                    className="flex items-center gap-3 w-full px-4 py-3 ios-body text-red-400 active:bg-red-500/10 transition-colors"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-[18px] h-[18px]" strokeWidth={2} />
                     Delete Listing
                   </button>
                 </div>
@@ -193,13 +191,13 @@ export default function ManageListingCard({
 
         {/* Row 2: Business · Role */}
         <div className="flex items-center gap-2 mt-1.5">
-          <span className="text-sm text-slate-400 truncate">
+          <span className="ios-subheadline text-slate-400 truncate">
             {businessName}
           </span>
-          <span className="text-slate-600">&middot;</span>
+          <span className="text-slate-600">·</span>
           <span
             className={clsx(
-              "text-[10px] font-bold uppercase tracking-wider shrink-0",
+              "text-[12px] font-semibold shrink-0",
               isExpired ? "text-slate-500" : "text-primary"
             )}
           >
@@ -209,51 +207,48 @@ export default function ManageListingCard({
           </span>
         </div>
 
-        {/* Row 3: Status + countdown + stats — all one line */}
+        {/* Row 3: Status + countdown + stats */}
         <div className="flex items-center gap-3 mt-3">
           <StatusBadge variant={statusVariant} dot>
             {statusLabel}
           </StatusBadge>
 
-          {/* Countdown */}
           {!isExpired && expiration.label && effectiveStatus === "active" && (
             <div
               className={clsx(
-                "flex items-center gap-1 text-[11px] font-semibold",
+                "flex items-center gap-1 text-[12px] font-semibold",
                 expiration.isExpiringSoon ? "text-amber-400" : "text-slate-500"
               )}
             >
-              <Clock className="w-3 h-3" />
+              <Clock className="w-3 h-3" strokeWidth={2.2} />
               {expiration.label}
             </div>
           )}
 
-          {/* Spacer */}
           <div className="flex-1" />
 
-          {/* Stats */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 text-xs text-slate-500">
-              <Eye className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-1 ios-footnote text-slate-500">
+              <Eye className="w-3.5 h-3.5" strokeWidth={2} />
               <span>{viewsCount}</span>
             </div>
-            <div className="flex items-center gap-1 text-xs text-slate-500">
-              <MessageSquare className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-1 ios-footnote text-slate-500">
+              <MessageSquare className="w-3.5 h-3.5" strokeWidth={2} />
               <span>{inquiriesCount}</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Renew bar for expired listings */}
+      {/* Renew bar */}
       {isExpired && onRenew && (
-        <div className="border-t border-slate-800/50 px-4 py-3">
+        <div className="border-t border-slate-700/40 px-4 py-3">
           <button
             onClick={() => onRenew(id)}
-            className="flex items-center justify-center gap-2 w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition-colors active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 w-full rounded-full bg-primary px-4 h-10 text-[15px] font-semibold text-white ios-press active:bg-primary-dark transition-colors"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
-            Renew Listing &mdash; 14 Days
+            <RefreshCw className="w-3.5 h-3.5" strokeWidth={2.5} />
+            Renew Listing — 14 Days
           </button>
         </div>
       )}

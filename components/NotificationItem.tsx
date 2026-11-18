@@ -4,6 +4,7 @@ import {
   UserPlus,
   AlertTriangle,
   Shield,
+  type LucideIcon,
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -25,7 +26,7 @@ interface NotificationItemProps {
 
 const iconMap: Record<
   NotificationType,
-  { icon: React.ComponentType<{ className?: string }>; color: string }
+  { icon: LucideIcon; color: string }
 > = {
   inquiry: { icon: Eye, color: "bg-primary/20 text-primary" },
   message: { icon: MessageSquare, color: "bg-primary/20 text-primary" },
@@ -48,10 +49,8 @@ export default function NotificationItem({
     <button
       onClick={onClick}
       className={clsx(
-        "flex items-start gap-4 w-full px-4 py-4 text-left transition-colors",
-        isRead
-          ? "hover:bg-slate-800/30"
-          : "bg-slate-800/20 hover:bg-slate-800/40"
+        "flex items-start gap-3 w-full px-4 py-3.5 text-left active:bg-slate-800/60 ios-press transition-colors",
+        !isRead && "bg-primary/[0.04]"
       )}
     >
       {/* Icon */}
@@ -61,7 +60,7 @@ export default function NotificationItem({
           color
         )}
       >
-        <Icon className="w-5 h-5" />
+        <Icon className="w-5 h-5" strokeWidth={2} />
       </div>
 
       {/* Content */}
@@ -69,22 +68,20 @@ export default function NotificationItem({
         <div className="flex items-start justify-between gap-2">
           <h4
             className={clsx(
-              "text-sm font-semibold",
+              "ios-subheadline font-semibold",
               isRead ? "text-slate-300" : "text-white"
             )}
           >
             {title}
           </h4>
           <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs text-slate-500">{timeAgo}</span>
+            <span className="ios-caption text-slate-500">{timeAgo}</span>
             {!isRead && (
               <span className="w-2 h-2 rounded-full bg-primary pulse-dot" />
             )}
           </div>
         </div>
-        <p className="text-sm text-slate-400 mt-1 leading-relaxed">
-          {body}
-        </p>
+        <p className="ios-subheadline text-slate-400 mt-0.5">{body}</p>
       </div>
     </button>
   );

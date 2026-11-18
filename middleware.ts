@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
+import { getSessionSecret } from "@/lib/session-secret";
 
-const SESSION_SECRET = new TextEncoder().encode(
-  process.env.SESSION_SECRET || "listify-dev-secret-change-in-production"
-);
 const COOKIE_NAME = "listify-session";
 
 // Routes that require authentication
@@ -13,7 +11,6 @@ const PROTECTED_ROUTES = [
   "/post",
   "/inbox",
   "/profile",
-  "/onboarding",
   "/notifications",
   "/saved",
 ];
@@ -24,8 +21,9 @@ async function getSessionFromRequest(request: NextRequest) {
   const token = request.cookies.get(COOKIE_NAME)?.value;
   if (!token) return null;
 
+  const secret = getSessionSecret();
   try {
-    const { payload } = await jwtVerify(token, SESSION_SECRET);
+    const { payload } = await jwtVerify(token, secret);
     return payload as { userId: string; role: string };
   } catch {
     return null;
@@ -71,7 +69,6 @@ export const config = {
     "/post/:path*",
     "/inbox/:path*",
     "/profile/:path*",
-    "/onboarding/:path*",
     "/notifications/:path*",
     "/saved/:path*",
   ],

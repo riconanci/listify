@@ -4,16 +4,19 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ChevronLeft, Camera, Check } from "lucide-react";
+import { Camera, Check } from "lucide-react";
 import { TRADE_IMAGES } from "@/components/icons/TradeIcons";
 import { clsx } from "clsx";
 import { useToast } from "@/components/Toast";
+import LargeTitle from "@/components/LargeTitle";
+import SelectRow from "@/components/SelectRow";
+import ChipSelect from "@/components/ChipSelect";
 
 const MapPicker = dynamic(() => import("@/components/MapPicker"), {
   ssr: false,
   loading: () => (
-    <div className="rounded-xl border border-slate-700 overflow-hidden h-48 bg-slate-800 flex items-center justify-center text-slate-500 text-sm">
-      Loading map...
+    <div className="rounded-2xl overflow-hidden h-48 bg-slate-800 flex items-center justify-center text-slate-500 ios-subheadline">
+      Loading map…
     </div>
   ),
 });
@@ -36,7 +39,6 @@ const SCHEDULE_OPTIONS = [
 ];
 
 const EMPLOYMENT_OPTIONS = [
-  { value: "", label: "—" },
   { value: "w2", label: "W-2" },
   { value: "c1099", label: "1099" },
 ];
@@ -62,11 +64,41 @@ const UNIT_MAP: Record<string, { value: string; label: string }[]> = {
   ],
 };
 
+// Helper: label-on-top input row, full width — used for fields with long content
+function StackedInputRow({
+  label,
+  required,
+  optional,
+  hint,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  optional?: boolean;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="px-4 py-3">
+      <div className="flex items-center justify-between">
+        <label className="ios-footnote text-slate-400">
+          {label}
+          {required && <span className="text-red-400"> *</span>}
+        </label>
+        {optional && (
+          <span className="ios-caption text-slate-500">Optional</span>
+        )}
+      </div>
+      <div className="mt-1">{children}</div>
+      {hint && <p className="ios-caption text-slate-500 mt-1">{hint}</p>}
+    </div>
+  );
+}
+
 export default function PostListingPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  // Form state
   const [businessName, setBusinessName] = useState("");
   const [title, setTitle] = useState("");
   const [industry, setIndustry] = useState<string>("");
@@ -85,6 +117,7 @@ export default function PostListingPage() {
   const [city, setCity] = useState("");
   const [lat, setLat] = useState<number | undefined>();
   const [lng, setLng] = useState<number | undefined>();
+  const [addressVisible, setAddressVisible] = useState(true);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
@@ -92,14 +125,12 @@ export default function PostListingPage() {
   const [hasActiveListing, setHasActiveListing] = useState(false);
   const [checkingLimit, setCheckingLimit] = useState(true);
 
-  // Auto-detect industry from employer profile + check listing limit
   useEffect(() => {
     const init = async () => {
       try {
         const meRes = await fetch("/api/auth/me");
         const meData = await meRes.json();
         if (meData.user) {
-          // Fetch employer profile
           const profileRes = await fetch(`/api/shops/${meData.user.id}/profile`);
           if (profileRes.ok) {
             const profile = await profileRes.json();
@@ -107,7 +138,6 @@ export default function PostListingPage() {
             if (profile.shopName) setBusinessName(profile.shopName);
           }
 
-          // Check for active listings
           const jobsRes = await fetch("/api/jobs?manage=true");
           const jobs = await jobsRes.json();
           if (Array.isArray(jobs)) {
@@ -124,7 +154,6 @@ export default function PostListingPage() {
     init();
   }, []);
 
-  // Update pay unit when comp model changes
   useEffect(() => {
     const units = UNIT_MAP[compModel];
     if (units && units.length > 0) {
@@ -132,7 +161,6 @@ export default function PostListingPage() {
     }
   }, [compModel]);
 
-  // Reset specialties when industry changes
   useEffect(() => {
     setSpecialties([]);
   }, [industry]);
@@ -197,6 +225,7 @@ export default function PostListingPage() {
           city: city || null,
           lat: lat ?? null,
           lng: lng ?? null,
+          addressVisible,
           photo: photoPreview || null,
         }),
       });
@@ -220,22 +249,19 @@ export default function PostListingPage() {
 
   const currentSpecOptions = industry ? SPECIALTY_OPTIONS[industry] || [] : [];
 
-  return (
-    <main className="min-h-[calc(100dvh-4rem)] page-with-nav">
-      {/* Sub-header */}
-      <div className="border-b border-slate-800 px-4 py-3">
-        <div className="max-w-2xl mx-auto flex items-center gap-3">
-          <button
-            onClick={() => router.back()}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <span className="text-sm font-bold text-white">Listify</span>
-        </div>
-      </div>
+  // Pay placeholder per comp model
+  const payPlaceholder =
+    compModel === "commission"
+      ? "%"
+      : compModel === "booth_rent"
+      ? "200 or 150-250"
+      : "25 or 20-30";
 
-      <div className="max-w-2xl mx-auto px-4 py-8">
+  return (
+    <main className="min-h-[calc(100dvh-3.5rem)] page-with-nav">
+      <LargeTitle title="Post a Listing" back />
+
+      <div className="max-w-2xl mx-auto pb-8">
         {/* Loading check */}
         {checkingLimit && (
           <div className="flex items-center justify-center py-20">
@@ -243,316 +269,383 @@ export default function PostListingPage() {
           </div>
         )}
 
-        {/* Limit reached — show gate */}
+        {/* Limit reached */}
         {!checkingLimit && hasActiveListing && (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-20 h-20 rounded-full bg-slate-800 flex items-center justify-center mb-6">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+          <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+            <div className="w-20 h-20 rounded-3xl bg-primary/15 flex items-center justify-center mb-5">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
                 <rect x="3" y="3" width="18" height="18" rx="3" />
                 <path d="M12 8v4M12 16h.01" />
               </svg>
             </div>
-            <h2 className="text-xl font-black text-white">
+            <h2 className="ios-title-2 text-white">
               You already have an active listing
             </h2>
-            <p className="mt-3 text-sm text-slate-400 max-w-sm leading-relaxed">
+            <p className="mt-2 ios-subheadline text-slate-400 max-w-sm">
               Free accounts are limited to 1 active listing at a time. Delete or let your current listing expire to post a new one.
             </p>
-            <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
-              <Link
-                href="/jobs/manage"
-                className="flex items-center justify-center gap-2 w-full rounded-xl bg-primary px-6 py-3.5 text-base font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 active:scale-[0.98]"
-              >
-                Manage My Listing
-              </Link>
-            </div>
+            <Link
+              href="/jobs/manage"
+              className="mt-7 flex items-center justify-center w-full max-w-xs rounded-full bg-primary px-6 h-12 text-[17px] font-semibold text-white ios-press active:bg-primary-dark transition-colors"
+            >
+              Manage My Listing
+            </Link>
           </div>
         )}
 
         {/* Normal form */}
         {!checkingLimit && !hasActiveListing && (
-        <>
-        <h1 className="text-2xl font-black text-white mb-2">Post a Listing</h1>
-        <p className="text-xs text-slate-500 mb-8">
-          Fields marked with <span className="text-red-400">*</span> are required
-        </p>
+          <form onSubmit={handleSubmit} className="space-y-1">
+            {error && (
+              <div className="mx-4 rounded-2xl bg-red-500/12 border border-red-500/15 px-4 py-3 mb-4">
+                <p className="ios-subheadline text-red-400">{error}</p>
+              </div>
+            )}
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {error && (
-            <div className="px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-400">
-              {error}
+            <p className="px-5 ios-footnote text-slate-500 mb-2">
+              Fields marked with <span className="text-red-400">*</span> are required
+            </p>
+
+            {/* ─── BASICS ─── stacked because both fields can be long */}
+            <h3 className="ios-section-header">Basics</h3>
+            <div className="ios-card mx-4 mb-6">
+              <StackedInputRow label="Business" required>
+                <input
+                  type="text"
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  placeholder="Your shop name"
+                  required
+                  className="w-full bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                />
+              </StackedInputRow>
+              <div className="ios-hairline-top" />
+              <StackedInputRow label="Title" required hint="Max 60 characters">
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value.slice(0, 60))}
+                  placeholder="e.g. Senior Barber — Chair Available"
+                  required
+                  maxLength={60}
+                  className="w-full bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                />
+              </StackedInputRow>
             </div>
-          )}
 
-          {/* Basic Information */}
-          <section className="space-y-4">
-            <h2 className="text-base font-bold text-white">Basic Information</h2>
+            {/* ─── WHO ARE YOU LOOKING FOR ─── */}
+            <h3 className="ios-section-header">
+              Who Are You Looking For <span className="text-red-400">*</span>
+            </h3>
 
-            <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-2">
-                Business <span className="text-red-400">*</span>
-              </label>
-              <input
-                type="text"
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                placeholder="Your shop name"
-                required
-                className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-2">
-                Short Title <span className="text-red-400">*</span>
-              </label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value.slice(0, 60))}
-                placeholder="e.g. Senior Barber — Chair Available"
-                required
-                maxLength={60}
-                className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary"
-              />
-              <p className="text-xs text-slate-500 mt-1">Max 60 chars</p>
-            </div>
-          </section>
-
-          {/* Who Are You Looking For */}
-          <section className="space-y-4">
-            <h2 className="text-base font-bold text-white">
-              Who Are You Looking For? <span className="text-red-400">*</span>
-            </h2>
-
-            {/* Industry selector (if not auto-detected) */}
             {!industry && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 mx-4 mb-6">
                 <button
                   type="button"
                   onClick={() => setIndustry("hair")}
-                  className="flex items-center gap-3 rounded-lg border-2 border-slate-700 p-4 hover:border-slate-600 transition-all"
+                  className="flex flex-col items-center gap-2 rounded-2xl bg-bg-surface p-5 ios-press active:bg-bg-elevated transition-colors"
                 >
-                  <img src={TRADE_IMAGES.cosmetologist} alt="Hair" className="w-5 h-5 object-contain" />
-                  <span className="text-sm font-bold text-white">Hair</span>
+                  <img src={TRADE_IMAGES.cosmetologist} alt="Hair" className="w-9 h-9 object-contain" />
+                  <span className="ios-headline text-white">Hair</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setIndustry("tattoo")}
-                  className="flex items-center gap-3 rounded-lg border-2 border-slate-700 p-4 hover:border-slate-600 transition-all"
+                  className="flex flex-col items-center gap-2 rounded-2xl bg-bg-surface p-5 ios-press active:bg-bg-elevated transition-colors"
                 >
-                  <img src={TRADE_IMAGES.tattoo_artist} alt="Tattoo" className="w-5 h-5 object-contain" />
-                  <span className="text-sm font-bold text-white">Tattoo</span>
+                  <img src={TRADE_IMAGES.tattoo_artist} alt="Tattoo" className="w-9 h-9 object-contain" />
+                  <span className="ios-headline text-white">Tattoo</span>
                 </button>
               </div>
             )}
 
-            {/* Specialty multi-select */}
             {industry && (
-              <div>
-                <p className="text-xs text-slate-500 mb-3">
-                  Select all that apply — this controls who sees your listing
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  {currentSpecOptions.map(({ value, label, image }) => {
-                    const selected = specialties.includes(value);
-                    return (
-                      <button
-                        key={value}
-                        type="button"
-                        onClick={() => toggleSpecialty(value)}
+              <div className="ios-card mx-4 mb-6">
+                {currentSpecOptions.map(({ value, label, image }, idx) => {
+                  const selected = specialties.includes(value);
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => toggleSpecialty(value)}
+                      className="ios-row gap-3 w-full active:bg-slate-800/60 transition-colors"
+                    >
+                      <div
                         className={clsx(
-                          "flex items-center gap-2 rounded-lg border-2 px-4 py-3 transition-all",
-                          selected
-                            ? "border-primary bg-primary/10 text-white"
-                            : "border-slate-700 text-slate-300 hover:border-slate-600"
+                          "w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors",
+                          selected ? "bg-primary" : "bg-slate-700/60"
                         )}
                       >
-                        <div className={clsx(
-                          "w-5 h-5 rounded border-2 flex items-center justify-center shrink-0",
-                          selected ? "bg-primary border-primary" : "border-slate-600"
-                        )}>
-                          {selected && <Check className="w-3 h-3 text-white" />}
-                        </div>
-                        <img src={image} alt={label} className="w-4 h-4 object-contain" />
-                        <span className="text-sm font-semibold">{label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
+                        {selected && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
+                      </div>
+                      <img src={image} alt={label} className="w-6 h-6 object-contain" />
+                      <span className="ios-body text-white">{label}</span>
+                    </button>
+                  );
+                })}
               </div>
             )}
-          </section>
 
-          {/* Job Details */}
-          <section className="space-y-4">
-            <h2 className="text-base font-bold text-white">Job Details</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-slate-300 mb-2">Schedule</label>
-                <select
-                  value={schedule}
-                  onChange={(e) => setSchedule(e.target.value)}
-                  className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white appearance-none focus:border-primary focus:ring-1 focus:ring-primary cursor-pointer"
-                >
-                  {SCHEDULE_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-300 mb-2">Employment</label>
-                <select
-                  value={employmentType}
-                  onChange={(e) => setEmploymentType(e.target.value)}
-                  className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white appearance-none focus:border-primary focus:ring-1 focus:ring-primary cursor-pointer"
-                >
-                  {EMPLOYMENT_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-              </div>
+            {/* ─── JOB DETAILS ─── inline chips: few options, one tap */}
+            <h3 className="ios-section-header">Job Details</h3>
+            <div className="ios-card mx-4 mb-6">
+              <ChipSelect
+                label="Schedule"
+                value={schedule}
+                options={SCHEDULE_OPTIONS}
+                onChange={setSchedule}
+              />
+              <div className="ios-hairline-top" />
+              {/* Optional: tap the selected chip again to clear it */}
+              <ChipSelect
+                label="Employment"
+                value={employmentType}
+                options={EMPLOYMENT_OPTIONS}
+                onChange={setEmploymentType}
+                clearable
+              />
             </div>
-          </section>
 
-          {/* Compensation */}
-          <section className="rounded-xl border border-slate-700 bg-bg-surface p-5 space-y-4">
-            <h2 className="text-base font-bold text-white">Compensation</h2>
-
-            <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-2">Type</label>
-              <select
+            {/* ─── COMPENSATION ─── */}
+            <h3 className="ios-section-header">Compensation</h3>
+            <div className="ios-card mx-4 mb-2">
+              <ChipSelect
+                label="Type"
                 value={compModel}
-                onChange={(e) => setCompModel(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white appearance-none focus:border-primary focus:ring-1 focus:ring-primary cursor-pointer"
+                options={COMP_MODEL_OPTIONS}
+                onChange={setCompModel}
+              />
+              <div className="ios-hairline-top" />
+
+              {compModel === "hybrid" ? (
+                <>
+                  <div className="ios-row gap-3">
+                    <label className="ios-body text-slate-400 w-24 shrink-0">Base Wage</label>
+                    <span className="ios-body text-slate-500">$</span>
+                    <input
+                      type="text"
+                      value={hybridWage}
+                      onChange={(e) => setHybridWage(e.target.value.replace(/[^0-9.]/g, ""))}
+                      placeholder="15"
+                      inputMode="decimal"
+                      className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                    />
+                    <span className="ios-body text-slate-400 shrink-0">/hr</span>
+                  </div>
+                  <div className="ios-hairline-top" />
+                  <div className="ios-row gap-3">
+                    <label className="ios-body text-slate-400 w-24 shrink-0">Take Home</label>
+                    <input
+                      type="text"
+                      value={hybridCommission}
+                      onChange={(e) => setHybridCommission(e.target.value.replace(/[^0-9.]/g, ""))}
+                      placeholder="%"
+                      inputMode="decimal"
+                      className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                    />
+                    <span className="ios-body text-slate-400 shrink-0">%</span>
+                  </div>
+                  <div className="ios-hairline-top" />
+                </>
+              ) : (
+                <>
+                  <div className="ios-row gap-3">
+                    <label className="ios-body text-slate-400 w-24 shrink-0">
+                      {compModel === "hourly" ? "Base Wage" : compModel === "commission" ? "Take Home" : "Rent"}
+                    </label>
+                    <input
+                      type="text"
+                      value={payValue}
+                      onChange={(e) => setPayValue(e.target.value)}
+                      placeholder={payPlaceholder}
+                      inputMode="decimal"
+                      className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                    />
+                  </div>
+                  <div className="ios-hairline-top" />
+                  {/* Unit: static for Hourly/Commission (single option), picker for Booth Rent */}
+                  {compModel === "booth_rent" ? (
+                    <ChipSelect
+                      label="Unit"
+                      value={payUnit}
+                      options={UNIT_MAP[compModel] || []}
+                      onChange={setPayUnit}
+                    />
+                  ) : (
+                    <SelectRow
+                      label="Unit"
+                      value={payUnit}
+                      options={UNIT_MAP[compModel] || []}
+                      onChange={setPayUnit}
+                      staticMode
+                    />
+                  )}
+                  <div className="ios-hairline-top" />
+                </>
+              )}
+
+              {/* Public toggle */}
+              <div className="ios-row gap-3 justify-between">
+                <span className="ios-body text-white">Show compensation publicly</span>
+                <button
+                  type="button"
+                  onClick={() => setPayVisible(!payVisible)}
+                  className={clsx(
+                    "relative w-[51px] h-[31px] rounded-full transition-colors shrink-0",
+                    payVisible ? "bg-green-500" : "bg-slate-700"
+                  )}
+                  role="switch"
+                  aria-checked={payVisible}
+                >
+                  <span
+                    className={clsx(
+                      "absolute top-[2px] w-[27px] h-[27px] rounded-full bg-white shadow-md transition-transform",
+                      payVisible ? "translate-x-[22px] left-[2px]" : "left-[2px]"
+                    )}
+                  />
+                </button>
+              </div>
+            </div>
+            <div className="mb-6" />
+
+            {/* ─── DESCRIPTION ─── stacked */}
+            <h3 className="ios-section-header">Description &amp; Requirements</h3>
+            <div className="ios-card mx-4 mb-6">
+              <StackedInputRow label="Experience" optional>
+                <input
+                  type="text"
+                  value={experienceText}
+                  onChange={(e) => setExperienceText(e.target.value.slice(0, 20))}
+                  placeholder="e.g. 2+ years"
+                  maxLength={20}
+                  className="w-full bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                />
+              </StackedInputRow>
+              <div className="ios-hairline-top" />
+              <StackedInputRow label="Short Description" optional>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value.slice(0, 200))}
+                  placeholder="Tell talent what makes your shop great."
+                  rows={3}
+                  maxLength={200}
+                  className="w-full bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500 resize-none"
+                />
+                <p className="ios-caption text-slate-500 text-right">
+                  {description.length}/200
+                </p>
+              </StackedInputRow>
+            </div>
+
+            {/* ─── LOCATION ─── stacked for address */}
+            <h3 className="ios-section-header">Location</h3>
+            <div className="ios-card mx-4 mb-3">
+              <StackedInputRow label="Address" hint="Type address and press Enter to find on map, or click the map">
+                <input
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Start typing…"
+                  data-map-address="true"
+                  className="w-full bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                />
+              </StackedInputRow>
+              <div className="ios-hairline-top" />
+              <StackedInputRow label="City">
+                <input
+                  type="text"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="e.g. Encinitas"
+                  className="w-full bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                />
+              </StackedInputRow>
+              <div className="ios-hairline-top" />
+              {/* Address visibility toggle */}
+              <div className="px-4 py-3">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="ios-body text-white">Show exact address</span>
+                  <button
+                    type="button"
+                    onClick={() => setAddressVisible(!addressVisible)}
+                    className={clsx(
+                      "relative w-[51px] h-[31px] rounded-full transition-colors shrink-0",
+                      addressVisible ? "bg-green-500" : "bg-slate-700"
+                    )}
+                    role="switch"
+                    aria-checked={addressVisible}
+                  >
+                    <span
+                      className={clsx(
+                        "absolute top-[2px] w-[27px] h-[27px] rounded-full bg-white shadow-md transition-transform",
+                        addressVisible ? "translate-x-[22px] left-[2px]" : "left-[2px]"
+                      )}
+                    />
+                  </button>
+                </div>
+                <p className="ios-caption text-slate-500 mt-1.5">
+                  When off, your listing shows just the city.
+                </p>
+              </div>
+            </div>
+            <div className="mx-4 mb-6 rounded-2xl overflow-hidden">
+              <MapPicker
+                lat={lat}
+                lng={lng}
+                address={address}
+                onLocationChange={(data) => {
+                  setLat(data.lat);
+                  setLng(data.lng);
+                  if (data.city) setCity(data.city);
+                  if (data.address) setAddress(data.address);
+                }}
+              />
+            </div>
+
+            {/* ─── MEDIA ─── */}
+            <h3 className="ios-section-header">Photo (Optional)</h3>
+            <label className="block cursor-pointer mx-4 mb-7">
+              <div
+                className={clsx(
+                  "rounded-2xl overflow-hidden flex flex-col items-center gap-3 transition-colors p-8",
+                  photoPreview ? "bg-primary/10" : "bg-bg-surface"
+                )}
               >
-                {COMP_MODEL_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
-
-            {compModel === "hybrid" ? (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">Base Wage</label>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-500">$</span>
-                    <input type="text" value={hybridWage} onChange={(e) => setHybridWage(e.target.value.replace(/[^0-9.]/g, ""))} placeholder="e.g. 15" className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary" />
-                    <span className="text-sm font-semibold text-slate-400 shrink-0">/hr</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">Take Home</label>
-                  <div className="flex items-center gap-2">
-                    <input type="text" value={hybridCommission} onChange={(e) => setHybridCommission(e.target.value.replace(/[^0-9.]/g, ""))} placeholder="e.g. 60" className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary" />
-                    <span className="text-sm font-semibold text-slate-400">%</span>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    {compModel === "hourly" ? "Base Wage" : compModel === "commission" ? "Take Home" : "Rent"}
-                  </label>
-                  <input type="text" value={payValue} onChange={(e) => setPayValue(e.target.value)} placeholder={compModel === "commission" ? "e.g. 65 or 60-70" : compModel === "booth_rent" ? "e.g. 200 or 150-250" : "e.g. 25 or 20-30"} className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary" />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">Unit</label>
-                  <select value={payUnit} onChange={(e) => setPayUnit(e.target.value)} className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white appearance-none focus:border-primary focus:ring-1 focus:ring-primary cursor-pointer">
-                    {(UNIT_MAP[compModel] || []).map((opt) => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            )}
-
-            <label className="flex items-center gap-2 cursor-pointer">
-              <button type="button" onClick={() => setPayVisible(!payVisible)} className={clsx("w-5 h-5 rounded border-2 flex items-center justify-center transition-colors", payVisible ? "bg-primary border-primary" : "border-slate-600 bg-transparent")}>
-                {payVisible && <Check className="w-3 h-3 text-white" />}
-              </button>
-              <span className="text-sm text-slate-300">Show compensation publicly</span>
-            </label>
-          </section>
-
-          {/* Description */}
-          <section className="space-y-4">
-            <h2 className="text-base font-bold text-white">Description & Requirements</h2>
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-semibold text-slate-300">Experience</label>
-                <span className="text-xs text-slate-500">Optional</span>
-              </div>
-              <input type="text" value={experienceText} onChange={(e) => setExperienceText(e.target.value.slice(0, 20))} placeholder="e.g. 2+ years" maxLength={20} className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary" />
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-semibold text-slate-300">Short Description</label>
-                <span className="text-xs text-slate-500">Optional</span>
-              </div>
-              <textarea value={description} onChange={(e) => setDescription(e.target.value.slice(0, 200))} placeholder="Tell talent what makes your shop great. Max 200 chars" rows={3} maxLength={200} className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary resize-none" />
-              <p className="text-xs text-slate-500 mt-1 text-right">{description.length}/200</p>
-            </div>
-          </section>
-
-          {/* Location */}
-          <section className="space-y-4">
-            <h2 className="text-base font-bold text-white">Location</h2>
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-semibold text-slate-300">Address</label>
-                <span className="text-xs text-slate-500">Optional</span>
-              </div>
-              <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Start typing address..." data-map-address="true" className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary" />
-              <p className="text-xs text-slate-500 mt-1">Type address and press Enter to find on map, or click the map</p>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-2">City</label>
-              <input type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="e.g. Encinitas" className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary" />
-            </div>
-            <MapPicker lat={lat} lng={lng} address={address} onLocationChange={(data) => { setLat(data.lat); setLng(data.lng); if (data.city) setCity(data.city); if (data.address) setAddress(data.address); }} />
-          </section>
-
-          {/* Media */}
-          <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-white">Media</h2>
-              <span className="text-xs text-slate-500">Optional</span>
-            </div>
-            <label className="block cursor-pointer">
-              <div className={clsx("rounded-xl border-2 border-dashed p-8 flex flex-col items-center gap-3 transition-colors", photoPreview ? "border-primary/30 bg-primary/5" : "border-slate-700 hover:border-slate-600")}>
                 {photoPreview ? (
-                  <img src={photoPreview} alt="Preview" className="w-full max-h-48 object-cover rounded-lg" />
+                  <img src={photoPreview} alt="Preview" className="w-full max-h-48 object-cover rounded-xl" />
                 ) : (
                   <>
-                    <Camera className="w-8 h-8 text-slate-500" />
-                    <span className="text-sm text-slate-400">Add a Photo</span>
+                    <Camera className="w-9 h-9 text-slate-500" strokeWidth={1.8} />
+                    <span className="ios-subheadline text-slate-400">Tap to add a photo</span>
                   </>
                 )}
               </div>
-              <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="hidden"
+              />
             </label>
-          </section>
 
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={loading || !businessName || !title || !industry || specialties.length === 0}
-            className="w-full rounded-xl bg-primary px-8 py-4 text-base font-bold text-white shadow-xl shadow-primary/25 transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Posting...
-              </span>
-            ) : (
-              "Post Listing"
-            )}
-          </button>
-        </form>
-        </>
+            {/* Submit */}
+            <div className="px-4">
+              <button
+                type="submit"
+                disabled={loading || !businessName || !title || !industry || specialties.length === 0}
+                className="w-full rounded-full bg-primary px-6 h-12 text-[17px] font-semibold text-white ios-press active:bg-primary-dark disabled:opacity-50 disabled:active:transform-none flex items-center justify-center gap-2 transition-colors"
+              >
+                {loading ? (
+                  <>
+                    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Posting…
+                  </>
+                ) : (
+                  "Post Listing"
+                )}
+              </button>
+            </div>
+          </form>
         )}
       </div>
     </main>

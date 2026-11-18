@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 /* ============================================
-   LISTIFY v3.0 — Design System Tokens
-   Unified Blue theme with Scout terminology
+   LISTIFY — iOS-tuned Design System
+   Dark theme, iOS HIG-aligned spacing & motion
    ============================================ */
 
 @theme {
-  /* Primary Blue */
+  /* Primary Blue (kept for brand) */
   --color-primary: #3b82f6;
   --color-primary-light: #60a5fa;
   --color-primary-dark: #2563eb;
@@ -14,16 +14,17 @@
   --color-primary-100: #dbeafe;
   --color-primary-900: #1e3a5f;
 
-  /* Backgrounds */
+  /* Backgrounds — iOS-layered dark mode feel, kept on-brand navy */
   --color-bg-base: #0f172a;
   --color-bg-surface: #1e293b;
   --color-bg-elevated: #334155;
-  --color-bg-input: #0f172a;
+  --color-bg-input: #1e293b;
   --color-bg-card: #1e293b;
+  --color-bg-grouped: #0f172a;
 
-  /* Borders */
+  /* Borders / separators — iOS uses very subtle hairlines */
   --color-border: #334155;
-  --color-border-subtle: #1e293b;
+  --color-border-subtle: rgba(148, 163, 184, 0.12);
   --color-border-focus: #3b82f6;
 
   /* Text */
@@ -38,8 +39,9 @@
   --color-danger: #ef4444;
   --color-info: #3b82f6;
 
-  /* Font */
-  --font-display: "Inter", system-ui, -apple-system, sans-serif;
+  /* Font — system stack gets SF Pro on iOS for free */
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Helvetica Neue", Inter, system-ui, sans-serif;
 }
 
 /* ============================================
@@ -54,6 +56,7 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
@@ -61,17 +64,169 @@ body {
   background-color: var(--color-bg-base);
   color: var(--color-text-primary);
   min-height: 100dvh;
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, .ios-large-title {
+  letter-spacing: -0.02em;
 }
 
 /* ============================================
-   Utility Classes
+   iOS-style Utility Classes
    ============================================ */
 
-.glass-header {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+/* Strong iOS-style blur for nav bars and tab bars */
+.ios-blur {
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background-color: rgba(15, 23, 42, 0.72);
 }
 
+.ios-blur-strong {
+  backdrop-filter: saturate(180%) blur(30px);
+  -webkit-backdrop-filter: saturate(180%) blur(30px);
+  background-color: rgba(15, 23, 42, 0.65);
+}
+
+/* iOS nav bar hairline separator (very subtle) */
+.ios-hairline-bottom {
+  border-bottom: 0.5px solid rgba(148, 163, 184, 0.18);
+}
+
+.ios-hairline-top {
+  border-top: 0.5px solid rgba(148, 163, 184, 0.18);
+}
+
+/* iOS type scale */
+.ios-large-title {
+  font-size: 34px;
+  line-height: 41px;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+}
+
+.ios-title-1 {
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.ios-title-2 {
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: -0.018em;
+}
+
+.ios-title-3 {
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 600;
+  letter-spacing: -0.016em;
+}
+
+.ios-headline {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 600;
+}
+
+.ios-body {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 400;
+}
+
+.ios-callout {
+  font-size: 16px;
+  line-height: 21px;
+  font-weight: 400;
+}
+
+.ios-subheadline {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.ios-footnote {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+}
+
+.ios-caption {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+/* iOS section header — uppercase gray text above grouped lists */
+.ios-section-header {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  padding: 0 16px 6px;
+}
+
+/* iOS grouped card — used for forms and grouped content */
+.ios-card {
+  background-color: var(--color-bg-surface);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* iOS list row inside a grouped card */
+.ios-row {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 12px 16px;
+  background-color: var(--color-bg-surface);
+  position: relative;
+}
+
+.ios-row + .ios-row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 0;
+  height: 0.5px;
+  background-color: rgba(148, 163, 184, 0.18);
+}
+
+/* iOS search bar — rounded gray, no border */
+.ios-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  background-color: rgba(118, 118, 128, 0.18);
+  border-radius: 10px;
+  color: var(--color-text-primary);
+}
+
+.ios-search-bar input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 17px;
+  color: var(--color-text-primary);
+}
+
+.ios-search-bar input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* iOS-style text gradients */
 .text-gradient {
   background: linear-gradient(135deg, #60a5fa, #3b82f6);
   -webkit-background-clip: text;
@@ -86,20 +241,21 @@ body {
   background-clip: text;
 }
 
-/* Hide scrollbar utility */
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* Legacy alias — keep working for any code that still uses it */
+.glass-header {
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
-/* Custom range slider */
+/* Hide scrollbar utility */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Custom range slider — iOS-style thumb */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  height: 6px;
+  height: 4px;
   border-radius: 9999px;
   background: var(--color-bg-elevated);
   outline: none;
@@ -107,21 +263,20 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 28px;
+  height: 28px;
   border-radius: 9999px;
-  background: var(--color-primary);
+  background: #ffffff;
   cursor: pointer;
-  border: 2px solid var(--color-bg-base);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
 }
 input[type="range"]::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 28px;
+  height: 28px;
   border-radius: 9999px;
-  background: var(--color-primary);
+  background: #ffffff;
   cursor: pointer;
-  border: 2px solid var(--color-bg-base);
+  border: none;
 }
 
 /* Safe area padding for iOS */
@@ -129,18 +284,31 @@ input[type="range"]::-moz-range-thumb {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
 /* Bottom nav spacing for pages */
 .page-with-nav {
   padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
 }
 
-/* Card hover */
+/* Card hover — kept for desktop */
 .card-hover {
   transition: all 0.2s ease;
 }
 .card-hover:hover {
   border-color: rgba(59, 130, 246, 0.3);
   background-color: rgba(30, 41, 59, 0.8);
+}
+
+/* iOS-style press animation — slight scale + opacity */
+.ios-press {
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+.ios-press:active {
+  transform: scale(0.97);
+  opacity: 0.85;
 }
 
 /* Status badge animations */
@@ -152,26 +320,39 @@ input[type="range"]::-moz-range-thumb {
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
-/* Focus styles */
+/* iOS focus ring */
 *:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
-/* Staggered fade-in animation */
+/* iOS-style sheet slide-up animation */
+/* These two animate *from* a start state only and do not use `forwards`.
+   An explicit end keyframe held with `forwards` outranks inline styles, which
+   pinned the backdrop at full black and stopped the sheet following a drag. */
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+}
+.animate-slide-up {
+  animation: slideUp 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Backdrop fade-in for sheets: ends at the opacity the sheet sets inline */
+@keyframes backdropFadeIn {
+  from { opacity: 0; }
+}
+.animate-backdrop-in {
+  animation: backdropFadeIn 0.25s ease-out;
+}
+
+/* Staggered fade-in */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-in-up {
-  animation: fadeInUp 0.4s ease-out forwards;
+  animation: fadeInUp 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
 }
 
 @keyframes fadeIn {
@@ -179,7 +360,7 @@ input[type="range"]::-moz-range-thumb {
   to { opacity: 1; }
 }
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn 0.2s ease-out forwards;
 }
 
 /* Shimmer loading placeholder */
@@ -191,4 +372,18 @@ input[type="range"]::-moz-range-thumb {
   background: linear-gradient(90deg, var(--color-bg-surface) 25%, var(--color-bg-elevated) 50%, var(--color-bg-surface) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
+}
+
+/* Map credit line. Leaflet's default is a white box; match the dark maps.
+   Three classes so this wins over Leaflet's own stylesheet whatever the order. */
+.leaflet-container .leaflet-control-attribution.leaflet-control {
+  background: rgba(15, 23, 42, 0.72);
+  color: #94a3b8;
+  font-size: 10px;
+  line-height: 1.4;
+  padding: 1px 6px;
+  border-top-left-radius: 6px;
+}
+.leaflet-container .leaflet-control-attribution.leaflet-control a {
+  color: #cbd5e1;
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap, AttributionControl } from "react-leaflet";
+import { TILE_URL, TILE_ATTRIBUTION } from "@/lib/mapTiles";
 import L from "leaflet";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
@@ -15,6 +16,20 @@ const markerIcon = new L.Icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
+});
+
+// Distinct icon for approximate (city-centroid) markers — lower opacity to signal vagueness
+const approxIcon = L.divIcon({
+  className: "",
+  html: `<div style="
+    width: 22px; height: 22px;
+    background: rgba(59,130,246,0.55);
+    border: 2px solid rgba(255,255,255,0.85);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.18), 0 2px 6px rgba(0,0,0,0.4);
+  "></div>`,
+  iconSize: [22, 22],
+  iconAnchor: [11, 11],
 });
 
 const userIcon = L.divIcon({
@@ -42,6 +57,8 @@ interface MapJob {
   lat: number;
   lng: number;
   city?: string | null;
+  /** When true, the lat/lng is a city centroid (not the exact location). */
+  isApproximate?: boolean;
 }
 
 interface BrowseMapProps {
@@ -163,10 +180,9 @@ export default function BrowseMap({ jobs, userLat, userLng, radiusMiles = 15 }: 
         scrollWheelZoom={true}
         attributionControl={false}
       >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://carto.com">CARTO</a>'
-        />
+        <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} />
+        {/* Credit line required by the map data and tile providers */}
+        <AttributionControl position="bottomright" prefix={false} />
 
         {/* Map controller — always present, handles centering + radius fitting */}
         <MapController
@@ -204,7 +220,11 @@ export default function BrowseMap({ jobs, userLat, userLng, radiusMiles = 15 }: 
 
         {/* Listing markers */}
         {jobs.map((job) => (
-          <Marker key={job.id} position={[job.lat, job.lng]} icon={markerIcon}>
+          <Marker
+            key={job.id}
+            position={[job.lat, job.lng]}
+            icon={job.isApproximate ? approxIcon : markerIcon}
+          >
             <Popup>
               <div className="min-w-[200px] p-1">
                 <Link
@@ -226,6 +246,12 @@ export default function BrowseMap({ jobs, userLat, userLng, radiusMiles = 15 }: 
                   {job.city && (
                     <p className="text-[11px] text-slate-500 mt-1.5">
                       {job.city}
+                      {job.isApproximate && " · approximate"}
+                    </p>
+                  )}
+                  {job.isApproximate && (
+                    <p className="text-[10px] text-slate-400 mt-1 italic">
+                      Exact address shared after inquiry
                     </p>
                   )}
                 </Link>

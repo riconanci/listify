@@ -6,15 +6,15 @@ import {
   User,
   Building2,
   Settings,
-  ChevronLeft,
   Camera,
   Shield,
   ImageIcon,
   X,
   Plus,
+  LogOut,
 } from "lucide-react";
-import { clsx } from "clsx";
 import { useToast } from "@/components/Toast";
+import LargeTitle from "@/components/LargeTitle";
 
 const MAX_PORTFOLIO = 6;
 
@@ -27,7 +27,6 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Form fields
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -37,7 +36,6 @@ export default function ProfilePage() {
   const [shopName, setShopName] = useState("");
   const [shopAddress, setShopAddress] = useState("");
   const [website, setWebsite] = useState("");
-  const [emailNotifications, setEmailNotifications] = useState(true);
 
   useEffect(() => {
     fetch("/api/auth/me", { cache: "no-store" })
@@ -47,11 +45,9 @@ export default function ProfilePage() {
           setUser(data.user);
           setName(data.user.name || "");
           setPhone(data.user.phone || "");
-          // Load avatar
           if (data.user.talentProfile?.avatarUrl) {
             setAvatarUrl(data.user.talentProfile.avatarUrl);
           }
-          // Load portfolio
           if (data.user.talentProfile?.portfolio) {
             setPortfolioPhotos(
               data.user.talentProfile.portfolio.map((p: any) => p.url)
@@ -83,7 +79,6 @@ export default function ProfilePage() {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = (ev) => {
       const img = new Image();
@@ -112,10 +107,8 @@ export default function ProfilePage() {
   const handlePortfolioAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
-
     const remaining = MAX_PORTFOLIO - portfolioPhotos.length;
     const toProcess = files.slice(0, remaining);
-
     toProcess.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (ev) => {
@@ -142,8 +135,6 @@ export default function ProfilePage() {
       };
       reader.readAsDataURL(file);
     });
-
-    // Reset input so same file can be selected again
     if (portfolioInputRef.current) portfolioInputRef.current.value = "";
   };
 
@@ -161,16 +152,9 @@ export default function ProfilePage() {
         shopName,
         shopAddress,
         website,
-        emailNotifications,
       };
-
-      if (avatarPreview) {
-        payload.avatarUrl = avatarPreview;
-      }
-
-      if (portfolioChanged) {
-        payload.portfolioPhotos = portfolioPhotos;
-      }
+      if (avatarPreview) payload.avatarUrl = avatarPreview;
+      if (portfolioChanged) payload.portfolioPhotos = portfolioPhotos;
 
       const res = await fetch("/api/profile", {
         method: "PUT",
@@ -188,7 +172,7 @@ export default function ProfilePage() {
         router.refresh();
       }
     } catch {
-      // handle error
+      // handle
     } finally {
       setSaving(false);
     }
@@ -210,35 +194,23 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-[calc(100dvh-4rem)] flex items-center justify-center">
+      <div className="min-h-[calc(100dvh-3.5rem)] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <main className="min-h-[calc(100dvh-4rem)] page-with-nav">
-      {/* Header */}
-      <div className="border-b border-slate-800 px-4 py-4">
-        <div className="max-w-2xl mx-auto flex items-center gap-3">
-          <button
-            onClick={() => router.back()}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <h1 className="text-lg font-bold text-white">Profile Settings</h1>
-        </div>
-      </div>
+    <main className="min-h-[calc(100dvh-3.5rem)] page-with-nav">
+      <LargeTitle title="Profile" />
 
-      <div className="max-w-2xl mx-auto px-4 py-8 space-y-8">
-        {/* Avatar Section */}
-        <div className="flex flex-col items-center text-center border-b border-slate-800 pb-8">
+      <div className="max-w-2xl mx-auto px-0 pb-8">
+        {/* Avatar Section — centered hero */}
+        <div className="flex flex-col items-center text-center px-4 pb-7">
           <div className="relative">
-            {/* Avatar circle — tap to change */}
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="relative w-24 h-24 rounded-full overflow-hidden bg-primary group"
+              className="relative w-24 h-24 rounded-full overflow-hidden bg-primary ios-press"
             >
               {displayAvatar ? (
                 <img
@@ -251,14 +223,9 @@ export default function ProfilePage() {
                   {getInitials()}
                 </span>
               )}
-              {/* Hover/tap overlay */}
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity">
-                <Camera className="w-6 h-6 text-white" />
-              </div>
             </button>
-            {/* Camera badge */}
-            <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white shadow-lg pointer-events-none">
-              <Camera className="w-3.5 h-3.5" />
+            <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white shadow-lg pointer-events-none border-2 border-bg-base">
+              <Camera className="w-3.5 h-3.5" strokeWidth={2.2} />
             </div>
             <input
               ref={fileInputRef}
@@ -269,100 +236,95 @@ export default function ProfilePage() {
             />
           </div>
           {avatarPreview && (
-            <p className="text-xs text-primary mt-2 font-medium">New photo — save to apply</p>
+            <p className="ios-footnote text-primary mt-2 font-semibold">
+              New photo — save to apply
+            </p>
           )}
-          <h2 className="mt-4 text-xl font-bold text-white">
-            {name || "User"}
-          </h2>
-          <p className="text-sm text-slate-400">{user?.email}</p>
+          <h2 className="mt-4 ios-title-2 text-white">{name || "User"}</h2>
+          <p className="ios-subheadline text-slate-400">{user?.email}</p>
 
-          {/* Role Badge */}
-          <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary">
-            <Shield className="w-3 h-3" />
+          <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 ios-footnote font-semibold text-primary">
+            <Shield className="w-3 h-3" strokeWidth={2.5} />
             {isScout ? "Scout" : "Talent"}
           </div>
         </div>
 
         {/* Basic Info */}
-        <section>
-          <div className="flex items-center gap-2 mb-5">
-            <User className="w-5 h-5 text-primary" />
-            <h3 className="text-base font-bold text-white">Basic Info</h3>
+        <h3 className="ios-section-header">Basic Info</h3>
+        <div className="ios-card mx-4 mb-6">
+          <div className="ios-row gap-3">
+            <label className="ios-body text-slate-400 w-24 shrink-0">Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+              placeholder="Your name"
+            />
           </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                Full Name
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(formatPhone(e.target.value))}
-                placeholder="(555) 123-4567"
-                className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-              />
-            </div>
+          <div className="ios-row gap-3">
+            <label className="ios-body text-slate-400 w-24 shrink-0">Phone</label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(formatPhone(e.target.value))}
+              placeholder="(555) 123-4567"
+              inputMode="tel"
+              className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+            />
           </div>
-        </section>
+        </div>
 
         {/* My Work — Talent only */}
         {!isScout && (
-          <section>
-            <div className="flex items-center gap-2 mb-5">
-              <ImageIcon className="w-5 h-5 text-primary" />
-              <h3 className="text-base font-bold text-white">My Work</h3>
-              <span className="text-xs text-slate-500 ml-auto">
+          <>
+            <div className="flex items-center justify-between px-4 mb-1.5">
+              <h3 className="ios-section-header !pb-0 !px-0">My Work</h3>
+              <span className="ios-footnote text-slate-500">
                 {portfolioPhotos.length}/{MAX_PORTFOLIO}
               </span>
             </div>
-
-            <div className="grid grid-cols-3 gap-2">
-              {portfolioPhotos.map((photo, i) => (
-                <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-slate-800 group">
-                  <img
-                    src={photo}
-                    alt={`Work ${i + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    onClick={() => removePortfolioPhoto(i)}
-                    className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/60 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity"
+            <div className="ios-card mx-4 mb-2 p-3">
+              <div className="grid grid-cols-3 gap-2">
+                {portfolioPhotos.map((photo, i) => (
+                  <div
+                    key={i}
+                    className="relative aspect-square rounded-xl overflow-hidden bg-slate-800 group"
                   >
-                    <X className="w-3 h-3" />
+                    <img
+                      src={photo}
+                      alt={`Work ${i + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      onClick={() => removePortfolioPhoto(i)}
+                      className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/70 flex items-center justify-center text-white ios-press"
+                    >
+                      <X className="w-3 h-3" strokeWidth={2.5} />
+                    </button>
+                  </div>
+                ))}
+
+                {portfolioPhotos.length < MAX_PORTFOLIO && (
+                  <button
+                    onClick={() => portfolioInputRef.current?.click()}
+                    className="aspect-square rounded-xl bg-slate-700/40 flex flex-col items-center justify-center gap-1 text-slate-400 active:bg-slate-700/60 ios-press transition-colors"
+                  >
+                    <Plus className="w-5 h-5" strokeWidth={2} />
+                    <span className="text-[10px] font-semibold">Add</span>
                   </button>
-                </div>
-              ))}
-
-              {/* Add slot */}
-              {portfolioPhotos.length < MAX_PORTFOLIO && (
-                <button
-                  onClick={() => portfolioInputRef.current?.click()}
-                  className="aspect-square rounded-lg border-2 border-dashed border-slate-700 flex flex-col items-center justify-center gap-1.5 text-slate-500 hover:border-primary/30 hover:text-primary transition-colors"
-                >
-                  <Plus className="w-5 h-5" />
-                  <span className="text-[10px] font-semibold">Add</span>
-                </button>
-              )}
+                )}
+              </div>
             </div>
-
+            <p className="px-5 ios-footnote text-slate-500 mb-1">
+              Add photos of your work. Scouts see these when you send an inquiry.
+            </p>
             {portfolioChanged && (
-              <p className="text-xs text-primary mt-2 font-medium">
+              <p className="px-5 ios-footnote text-primary font-semibold mb-6">
                 Photos changed — save to apply
               </p>
             )}
+            {!portfolioChanged && <div className="mb-6" />}
 
             <input
               ref={portfolioInputRef}
@@ -372,120 +334,80 @@ export default function ProfilePage() {
               onChange={handlePortfolioAdd}
               className="hidden"
             />
-
-            <p className="text-xs text-slate-500 mt-3">
-              Add photos of your work. Scouts see these when you send an inquiry.
-            </p>
-          </section>
+          </>
         )}
 
         {/* Scout Details */}
         {isScout && (
-          <section>
-            <div className="flex items-center gap-2 mb-5">
-              <Building2 className="w-5 h-5 text-primary" />
-              <h3 className="text-base font-bold text-white">Shop Details</h3>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                  Shop Name
-                </label>
+          <>
+            <h3 className="ios-section-header">Shop Details</h3>
+            <div className="ios-card mx-4 mb-6">
+              <div className="px-4 py-3">
+                <label className="ios-footnote text-slate-400">Name</label>
                 <input
                   type="text"
                   value={shopName}
                   onChange={(e) => setShopName(e.target.value)}
-                  className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                  placeholder="Shop name"
+                  className="w-full mt-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
                 />
               </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                  Shop Address
-                </label>
+              <div className="ios-hairline-top" />
+              <div className="px-4 py-3">
+                <label className="ios-footnote text-slate-400">Address</label>
                 <input
                   type="text"
                   value={shopAddress}
                   onChange={(e) => setShopAddress(e.target.value)}
-                  className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                  placeholder="Shop address"
+                  className="w-full mt-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
                 />
               </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                  Website
-                </label>
+              <div className="ios-hairline-top" />
+              <div className="px-4 py-3">
+                <label className="ios-footnote text-slate-400">Website</label>
                 <input
                   type="url"
                   value={website}
                   onChange={(e) => setWebsite(e.target.value)}
                   placeholder="www.yourshop.com"
-                  className="w-full rounded-lg border border-slate-700 bg-bg-input px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                  inputMode="url"
+                  className="w-full mt-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
                 />
               </div>
             </div>
-          </section>
+          </>
         )}
 
-        {/* Preferences */}
-        <section>
-          <div className="flex items-center gap-2 mb-5">
-            <Settings className="w-5 h-5 text-primary" />
-            <h3 className="text-base font-bold text-white">Preferences</h3>
-          </div>
-
-          <div className="rounded-xl border border-slate-800 bg-bg-surface p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-white">Email Notifications</p>
-                <p className="text-xs text-slate-400 mt-0.5">Receive weekly updates</p>
-              </div>
-              <button
-                onClick={() => setEmailNotifications(!emailNotifications)}
-                className={clsx(
-                  "relative w-12 h-7 rounded-full transition-colors",
-                  emailNotifications ? "bg-primary" : "bg-slate-700"
-                )}
-              >
-                <span
-                  className={clsx(
-                    "absolute top-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform",
-                    emailNotifications ? "left-[22px]" : "left-0.5"
-                  )}
-                />
-              </button>
-            </div>
-          </div>
-        </section>
-
         {/* Save Button */}
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="w-full rounded-xl bg-primary px-8 py-4 text-base font-bold text-white shadow-xl shadow-primary/25 transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
-        >
-          {saving ? (
-            <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          ) : (
-            <>
-              <Settings className="w-4 h-4" />
-              Save Changes
-            </>
-          )}
-        </button>
+        <div className="px-4">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full rounded-full bg-primary px-6 h-12 text-[17px] font-semibold text-white ios-press active:bg-primary-dark disabled:opacity-50 disabled:active:transform-none flex items-center justify-center gap-2 transition-colors"
+          >
+            {saving ? (
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              "Save Changes"
+            )}
+          </button>
+        </div>
 
         {/* Sign Out */}
-        <button
-          onClick={async () => {
-            await fetch("/api/auth/logout", { method: "POST" });
-            router.push("/");
-            router.refresh();
-          }}
-          className="w-full rounded-xl border-2 border-slate-700 px-8 py-4 text-base font-bold text-slate-400 transition-all hover:border-red-500/50 hover:text-red-400 active:scale-[0.98]"
-        >
-          Sign Out
-        </button>
+        <div className="px-4 mt-3">
+          <button
+            onClick={async () => {
+              await fetch("/api/auth/logout", { method: "POST" });
+              router.push("/");
+              router.refresh();
+            }}
+            className="w-full rounded-full bg-slate-700/60 px-6 h-12 text-[17px] font-semibold text-red-400 ios-press active:bg-slate-700 flex items-center justify-center gap-2 transition-colors"
+          >
+            <LogOut className="w-[18px] h-[18px]" strokeWidth={2} />
+            Sign Out
+          </button>
+        </div>
       </div>
     </main>
   );

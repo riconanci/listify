@@ -2,12 +2,15 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { updateJobStatusSchema } from "@/lib/validation";
+import { FREE_LISTING_LIMIT, countLiveListings, publicLocation } from "@/lib/listings";
 
 interface RouteContext {
   params: { id: string };
 }
 
-// GET /api/jobs/[id] — Get single job
+// GET /api/jobs/[id] — Get single job. Public: no login required, so it returns
+// only what the listing page shows. The owner's account name and email are not
+// part of a listing; talent reaches the shop by sending an inquiry.
 export async function GET(request: Request, { params }: RouteContext) {
   try {
     const { id } = await params;
@@ -18,7 +21,7 @@ export async function GET(request: Request, { params }: RouteContext) {
         location: true,
         photos: { orderBy: { sortOrder: "asc" } },
         employerProfile: {
-          include: { user: { select: { name: true, email: true } } },
+          select: { id: true, shopName: true, verified: true, logoUrl: true },
         },
       },
     });
@@ -33,7 +36,10 @@ export async function GET(request: Request, { params }: RouteContext) {
       data: { viewsCount: { increment: 1 } },
     }).catch(() => {});
 
-    return NextResponse.json(job);
+    return NextResponse.json({
+      ...job,
+      location: publicLocation(job.location, job.addressVisible),
+    });
   } catch (error: any) {
     return NextResponse.json(
       { error: error.message || "Failed to fetch listing" },
@@ -112,6 +118,24 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 
     if (job.employerProfile.userId !== user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // Renewing or reactivating makes this listing live again, so the free-tier
+    // limit applies here too, not only when a listing is first posted.
+    const goesLive =
+      parsed.data.action === "renew" || parsed.data.status === "active";
+
+    if (goesLive) {
+      const otherLive = await countLiveListings(user.id, id);
+      if (otherLive >= FREE_LISTING_LIMIT) {
+        return NextResponse.json(
+          {
+            error:
+              "Free accounts are limited to 1 active listing. Pause or delete your other listing first.",
+          },
+          { status: 403 }
+        );
+      }
     }
 
     // Handle renew action — reset expiry and reactivate
