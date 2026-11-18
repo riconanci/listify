@@ -75,3 +75,17 @@ export function slugify(str: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 }
+
+/**
+ * Which navigation link is the current page under? Returns the link that
+ * matches the most of the address, so "/jobs/manage" selects Manage and not
+ * Browse ("/jobs") as well. Null when the page is under none of them.
+ */
+export function activeNavHref(pathname: string, hrefs: string[]): string | null {
+  let best: string | null = null;
+  for (const href of hrefs) {
+    const under = pathname === href || pathname.startsWith(href + "/");
+    if (under && (best === null || href.length > best.length)) best = href;
+  }
+  return best;
+}

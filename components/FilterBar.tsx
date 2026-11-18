@@ -111,12 +111,12 @@ export default function FilterBar({
   };
 
   return (
-    <section className="rounded-xl border border-slate-800 bg-bg-surface p-4 space-y-4">
+    <section className="rounded-xl border border-line-subtle bg-surface p-4 space-y-4">
       {/* Toggle */}
       <div className="flex items-center justify-between">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 text-sm font-semibold text-slate-300 hover:text-white transition-colors"
+          className="flex items-center gap-2 text-sm font-semibold text-fg hover:text-fg-strong transition-colors"
         >
           {isOpen ? (
             <X className="w-4 h-4" />
@@ -133,13 +133,13 @@ export default function FilterBar({
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-secondary w-4 h-4" />
               <input
                 type="text"
                 value={filters.search}
                 onChange={(e) => updateFilter("search", e.target.value)}
                 placeholder="Search title or business"
-                className="w-full bg-bg-input border-none rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:ring-1 focus:ring-primary"
+                className="w-full bg-field border-none rounded-lg pl-10 pr-4 py-2.5 text-sm text-fg-strong placeholder-fg-muted focus:ring-1 focus:ring-primary"
               />
             </div>
 
@@ -147,7 +147,7 @@ export default function FilterBar({
             <select
               value={filters.service}
               onChange={(e) => updateFilter("service", e.target.value)}
-              className="w-full bg-bg-input border-none rounded-lg px-4 py-2.5 text-sm text-slate-300 appearance-none focus:ring-1 focus:ring-primary cursor-pointer"
+              className="w-full bg-field border-none rounded-lg px-4 py-2.5 text-sm text-fg appearance-none focus:ring-1 focus:ring-primary cursor-pointer"
             >
               {SERVICE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -160,7 +160,7 @@ export default function FilterBar({
             <select
               value={filters.schedule}
               onChange={(e) => updateFilter("schedule", e.target.value)}
-              className="w-full bg-bg-input border-none rounded-lg px-4 py-2.5 text-sm text-slate-300 appearance-none focus:ring-1 focus:ring-primary cursor-pointer"
+              className="w-full bg-field border-none rounded-lg px-4 py-2.5 text-sm text-fg appearance-none focus:ring-1 focus:ring-primary cursor-pointer"
             >
               {SCHEDULE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -173,7 +173,7 @@ export default function FilterBar({
             <select
               value={filters.compModel}
               onChange={(e) => updateFilter("compModel", e.target.value)}
-              className="w-full bg-bg-input border-none rounded-lg px-4 py-2.5 text-sm text-slate-300 appearance-none focus:ring-1 focus:ring-primary cursor-pointer"
+              className="w-full bg-field border-none rounded-lg px-4 py-2.5 text-sm text-fg appearance-none focus:ring-1 focus:ring-primary cursor-pointer"
             >
               {COMP_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -184,37 +184,37 @@ export default function FilterBar({
           </div>
 
           {/* Location Row */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-3 border-t border-slate-800/50">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-3 border-t border-line-subtle/50">
             <div className="flex flex-wrap items-center gap-3">
               {/* City input */}
-              <div className="flex items-center bg-bg-input rounded-lg px-3 py-2 border border-slate-800/30">
-                <MapPin className="w-4 h-4 text-slate-400 mr-2" />
+              <div className="flex items-center bg-field rounded-lg px-3 py-2 border border-line-subtle/30">
+                <MapPin className="w-4 h-4 text-fg-secondary mr-2" />
                 <input
                   type="text"
                   value={filters.city}
                   onChange={(e) => updateFilter("city", e.target.value)}
                   placeholder="City (optional)"
-                  className="bg-transparent border-none p-0 text-sm text-white placeholder-slate-500 focus:ring-0 w-32"
+                  className="bg-transparent border-none p-0 text-sm text-fg-strong placeholder-fg-muted focus:ring-0 w-32"
                 />
               </div>
 
               {/* Current location display */}
               {locationName && (
-                <div className="flex items-center gap-2 text-sm text-slate-300">
+                <div className="flex items-center gap-2 text-sm text-fg">
                   <MapPin className="w-4 h-4 text-primary" />
                   {locationName}
                 </div>
               )}
 
               {/* View Toggle */}
-              <div className="flex items-center gap-1 bg-bg-input rounded-lg p-1 border border-slate-800/30">
+              <div className="flex items-center gap-1 bg-field rounded-lg p-1 border border-line-subtle/30">
                 <button
                   onClick={() => onViewChange?.("list")}
                   className={clsx(
                     "p-1.5 rounded transition-colors",
                     currentView === "list"
-                      ? "bg-slate-700 text-white"
-                      : "text-slate-500 hover:text-slate-300"
+                      ? "bg-elevated text-fg-strong"
+                      : "text-fg-muted hover:text-fg"
                   )}
                 >
                   <List className="w-4 h-4" />
@@ -224,8 +224,8 @@ export default function FilterBar({
                   className={clsx(
                     "p-1.5 rounded transition-colors",
                     currentView === "map"
-                      ? "bg-slate-700 text-white"
-                      : "text-slate-500 hover:text-slate-300"
+                      ? "bg-elevated text-fg-strong"
+                      : "text-fg-muted hover:text-fg"
                   )}
                 >
                   <Map className="w-4 h-4" />
@@ -244,8 +244,8 @@ export default function FilterBar({
 
             {/* Radius + Actions */}
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3 bg-bg-input/50 px-4 py-2 rounded-lg border border-slate-800/30">
-                <span className="text-xs font-medium text-slate-400 uppercase">
+              <div className="flex items-center gap-3 bg-field/50 px-4 py-2 rounded-lg border border-line-subtle/30">
+                <span className="text-xs font-medium text-fg-secondary uppercase">
                   Radius
                 </span>
                 <input
@@ -259,14 +259,14 @@ export default function FilterBar({
                   }
                   className="w-24 accent-primary"
                 />
-                <span className="text-sm font-bold text-white min-w-[40px]">
+                <span className="text-sm font-bold text-fg-strong min-w-[40px]">
                   {filters.radius} mi
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={resetFilters}
-                  className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-fg-secondary hover:text-fg-strong transition-colors"
                 >
                   Reset
                 </button>

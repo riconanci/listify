@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   UserPlus, Users, Building2, Eye, EyeOff, Check, ArrowRight, ChevronLeft,
 } from "lucide-react";
-import { TRADE_IMAGES } from "@/components/icons/TradeIcons";
+import { TRADE_IMAGES, TradeIcon } from "@/components/icons/TradeIcons";
 import { clsx } from "clsx";
 
 const INDUSTRY_OPTIONS = [
@@ -117,8 +117,8 @@ function SignUpForm() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/15 mb-5">
             <UserPlus className="w-7 h-7 text-primary" strokeWidth={2} />
           </div>
-          <h1 className="ios-title-1 text-white">Join Listify</h1>
-          <p className="mt-2 ios-subheadline text-slate-400">
+          <h1 className="ios-title-1 text-fg-strong">Join Listify</h1>
+          <p className="mt-2 ios-subheadline text-fg-secondary">
             {step === 0 && "How do you want to use Listify?"}
             {step === 1 && "Tell us about your field"}
             {step === 2 && "Create your account"}
@@ -132,7 +132,7 @@ function SignUpForm() {
               key={s}
               className={clsx(
                 "h-1.5 rounded-full transition-all",
-                s === step ? "bg-primary w-6" : s < step ? "bg-primary/40 w-1.5" : "bg-slate-700 w-1.5"
+                s === step ? "bg-primary w-6" : s < step ? "bg-primary/40 w-1.5" : "bg-elevated w-1.5"
               )}
             />
           ))}
@@ -149,18 +149,18 @@ function SignUpForm() {
                   "relative flex flex-col items-center gap-3 rounded-2xl p-5 ios-press transition-all",
                   role === "talent"
                     ? "bg-primary/15 ring-2 ring-primary"
-                    : "bg-bg-surface"
+                    : "bg-surface"
                 )}
               >
                 <div className={clsx(
                   "flex items-center justify-center w-12 h-12 rounded-2xl",
-                  role === "talent" ? "bg-primary text-white" : "bg-slate-700/60 text-slate-300"
+                  role === "talent" ? "bg-primary text-white" : "bg-elevated/60 text-fg"
                 )}>
                   <Users className="w-6 h-6" strokeWidth={2} />
                 </div>
                 <div className="text-center">
-                  <p className="ios-headline text-white">Talent</p>
-                  <p className="ios-caption text-slate-400 mt-0.5">Looking for work</p>
+                  <p className="ios-headline text-fg-strong">Talent</p>
+                  <p className="ios-caption text-fg-secondary mt-0.5">Looking for work</p>
                 </div>
                 {role === "talent" && (
                   <div className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full bg-primary">
@@ -176,18 +176,18 @@ function SignUpForm() {
                   "relative flex flex-col items-center gap-3 rounded-2xl p-5 ios-press transition-all",
                   role === "employer"
                     ? "bg-primary/15 ring-2 ring-primary"
-                    : "bg-bg-surface"
+                    : "bg-surface"
                 )}
               >
                 <div className={clsx(
                   "flex items-center justify-center w-12 h-12 rounded-2xl",
-                  role === "employer" ? "bg-primary text-white" : "bg-slate-700/60 text-slate-300"
+                  role === "employer" ? "bg-primary text-white" : "bg-elevated/60 text-fg"
                 )}>
                   <Building2 className="w-6 h-6" strokeWidth={2} />
                 </div>
                 <div className="text-center">
-                  <p className="ios-headline text-white">Scout</p>
-                  <p className="ios-caption text-slate-400 mt-0.5">Hiring for my shop</p>
+                  <p className="ios-headline text-fg-strong">Scout</p>
+                  <p className="ios-caption text-fg-secondary mt-0.5">Hiring for my shop</p>
                 </div>
                 {role === "employer" && (
                   <div className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full bg-primary">
@@ -232,13 +232,13 @@ function SignUpForm() {
                       onClick={() => setIndustry(opt.value)}
                       className={clsx(
                         "relative flex flex-col items-center gap-3 rounded-2xl p-5 ios-press transition-all",
-                        selected ? "bg-primary/15 ring-2 ring-primary" : "bg-bg-surface"
+                        selected ? "bg-primary/15 ring-2 ring-primary" : "bg-surface"
                       )}
                     >
-                      <img src={opt.image} alt={opt.label} className="w-10 h-10 object-contain" />
+                      <TradeIcon src={opt.image} className="w-10 h-10" />
                       <div className="text-center">
-                        <p className="ios-headline text-white">{opt.label}</p>
-                        <p className="ios-caption text-slate-400 mt-0.5 leading-tight">{opt.desc}</p>
+                        <p className="ios-headline text-fg-strong">{opt.label}</p>
+                        <p className="ios-caption text-fg-secondary mt-0.5 leading-tight">{opt.desc}</p>
                       </div>
                       {selected && (
                         <div className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full bg-primary">
@@ -255,7 +255,7 @@ function SignUpForm() {
             {industry && role === "talent" && (
               <div>
                 <h3 className="ios-section-header">
-                  What do you do? <span className="normal-case font-normal text-slate-500 tracking-normal">(select all)</span>
+                  What do you do? <span className="normal-case font-normal text-fg-muted tracking-normal">(select all)</span>
                 </h3>
                 <div className="ios-card">
                   {LICENSE_OPTIONS[industry]?.map((opt) => {
@@ -265,16 +265,16 @@ function SignUpForm() {
                         key={opt.value}
                         type="button"
                         onClick={() => toggleLicense(opt.value)}
-                        className="ios-row gap-3 w-full active:bg-slate-800/60 transition-colors"
+                        className="ios-row gap-3 w-full active:bg-surface/60 transition-colors"
                       >
                         <div className={clsx(
                           "w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors",
-                          selected ? "bg-primary" : "bg-slate-700/60"
+                          selected ? "bg-primary" : "bg-elevated/60"
                         )}>
                           {selected && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
                         </div>
-                        <img src={opt.image} alt={opt.label} className="w-6 h-6 object-contain" />
-                        <span className="ios-body text-white">{opt.label}</span>
+                        <TradeIcon src={opt.image} className="w-6 h-6" />
+                        <span className="ios-body text-fg-strong">{opt.label}</span>
                       </button>
                     );
                   })}
@@ -283,7 +283,7 @@ function SignUpForm() {
             )}
 
             {industry && role === "employer" && (
-              <p className="ios-subheadline text-slate-400 px-1">
+              <p className="ios-subheadline text-fg-secondary px-1">
                 You&apos;ll be able to specify exactly who you&apos;re looking for when you post a listing.
               </p>
             )}
@@ -313,15 +313,15 @@ function SignUpForm() {
             </button>
 
             {error && (
-              <div className="rounded-2xl bg-red-500/12 border border-red-500/15 px-4 py-3">
-                <p className="ios-subheadline text-red-400">{error}</p>
+              <div className="rounded-2xl bg-danger/12 border border-danger/15 px-4 py-3">
+                <p className="ios-subheadline text-danger-fg">{error}</p>
               </div>
             )}
 
             {/* Grouped form */}
             <div className="ios-card">
               <div className="ios-row gap-3">
-                <label className="ios-body text-slate-400 w-20 shrink-0">Name</label>
+                <label className="ios-body text-fg-secondary w-20 shrink-0">Name</label>
                 <input
                   type="text"
                   value={name}
@@ -329,11 +329,11 @@ function SignUpForm() {
                   placeholder="Jane Doe"
                   required
                   autoComplete="name"
-                  className="flex-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                  className="flex-1 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                 />
               </div>
               <div className="ios-row gap-3">
-                <label className="ios-body text-slate-400 w-20 shrink-0">Email</label>
+                <label className="ios-body text-fg-secondary w-20 shrink-0">Email</label>
                 <input
                   type="email"
                   value={email}
@@ -342,11 +342,11 @@ function SignUpForm() {
                   required
                   autoComplete="email"
                   inputMode="email"
-                  className="flex-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                  className="flex-1 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                 />
               </div>
               <div className="ios-row gap-3">
-                <label className="ios-body text-slate-400 w-20 shrink-0">Phone</label>
+                <label className="ios-body text-fg-secondary w-20 shrink-0">Phone</label>
                 <input
                   type="tel"
                   value={phone}
@@ -354,11 +354,11 @@ function SignUpForm() {
                   placeholder="(555) 123-4567"
                   autoComplete="tel"
                   inputMode="tel"
-                  className="flex-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                  className="flex-1 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                 />
               </div>
               <div className="ios-row gap-3">
-                <label className="ios-body text-slate-400 w-20 shrink-0">Password</label>
+                <label className="ios-body text-fg-secondary w-20 shrink-0">Password</label>
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -367,12 +367,12 @@ function SignUpForm() {
                   required
                   minLength={6}
                   autoComplete="new-password"
-                  className="flex-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                  className="flex-1 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-slate-500 active:text-slate-300 transition-colors"
+                  className="text-fg-muted active:text-fg transition-colors"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
@@ -395,7 +395,7 @@ function SignUpForm() {
         )}
 
         {/* Sign in link */}
-        <p className="mt-7 text-center ios-subheadline text-slate-400">
+        <p className="mt-7 text-center ios-subheadline text-fg-secondary">
           Already have an account?{" "}
           <Link href="/signin" className="font-semibold text-primary ios-press">
             Sign in

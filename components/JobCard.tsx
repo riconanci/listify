@@ -135,9 +135,9 @@ export default function JobCard({
   return (
     <Link href={`/jobs/${id}`} className="group block">
       {/* Desktop Row View — preserved */}
-      <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-5 hover:bg-slate-800/40 transition-colors items-center border-b border-slate-800/50">
+      <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-5 hover:bg-surface/40 transition-colors items-center border-b border-line-subtle/50">
         <div className="col-span-4 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-800 shrink-0">
+          <div className="w-12 h-12 rounded-xl overflow-hidden bg-surface shrink-0">
             {photoUrl ? (
               <img
                 src={photoUrl}
@@ -145,19 +145,19 @@ export default function JobCard({
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-slate-600">
+              <div className="w-full h-full flex items-center justify-center text-fg-faint">
                 <ImageIcon className="w-5 h-5" />
               </div>
             )}
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-bold text-white truncate">
+            <h3 className="text-sm font-bold text-fg-strong truncate">
               {businessName}
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5 truncate">{title}</p>
+            <p className="text-xs text-fg-secondary mt-0.5 truncate">{title}</p>
           </div>
         </div>
-        <div className="col-span-1 text-sm text-slate-300">{specLabel}</div>
+        <div className="col-span-1 text-sm text-fg">{specLabel}</div>
         <div className="col-span-2 text-center">
           {formattedSchedule && (
             <span
@@ -165,26 +165,26 @@ export default function JobCard({
                 "px-2 py-1 text-[10px] font-bold rounded uppercase tracking-wider",
                 isFullTime
                   ? "bg-primary/10 text-primary"
-                  : "bg-slate-700/50 text-slate-300"
+                  : "bg-elevated/50 text-fg"
               )}
             >
               {formattedSchedule}
             </span>
           )}
         </div>
-        <div className="col-span-1 text-sm text-slate-300">
+        <div className="col-span-1 text-sm text-fg">
           {experienceText || "—"}
         </div>
-        <div className="col-span-2 text-sm text-slate-300 font-medium">
+        <div className="col-span-2 text-sm text-fg font-medium">
           {payDisplay}
         </div>
         <div className="col-span-2 flex items-center justify-between">
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-fg-secondary">
             {city && state ? `${city}, ${state}` : city || "—"}
           </span>
           <button
             onClick={toggleSave}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-primary transition-colors"
+            className="p-1.5 rounded-lg text-fg-muted hover:text-primary transition-colors"
             title={saved ? "Remove from saved" : "Save listing"}
           >
             <Bookmark
@@ -196,9 +196,9 @@ export default function JobCard({
       </div>
 
       {/* Mobile iOS Card View — redesigned */}
-      <div className="md:hidden mx-4 mb-3 rounded-2xl bg-bg-surface overflow-hidden ios-press active:bg-slate-800/60 transition-colors">
+      <div className="md:hidden mx-4 mb-3 rounded-2xl bg-surface overflow-hidden ios-press active:bg-surface/60 transition-colors">
         <div className="flex gap-3 p-3.5">
-          <div className="w-[88px] h-[88px] rounded-xl overflow-hidden bg-slate-800 shrink-0">
+          <div className="w-[88px] h-[88px] rounded-xl overflow-hidden bg-surface shrink-0">
             {photoUrl ? (
               <img
                 src={photoUrl}
@@ -206,7 +206,7 @@ export default function JobCard({
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-slate-600">
+              <div className="w-full h-full flex items-center justify-center text-fg-faint">
                 <ImageIcon className="w-7 h-7" />
               </div>
             )}
@@ -215,16 +215,16 @@ export default function JobCard({
           <div className="flex-1 min-w-0 flex flex-col">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0 flex-1">
-                <h3 className="ios-headline text-white truncate">
+                <h3 className="ios-headline text-fg-strong truncate">
                   {businessName}
                 </h3>
-                <p className="ios-footnote text-slate-400 mt-0.5 truncate">
+                <p className="ios-footnote text-fg-secondary mt-0.5 truncate">
                   {title}
                 </p>
               </div>
               <button
                 onClick={toggleSave}
-                className="-mt-1 -mr-1 p-1.5 rounded-full text-slate-500 active:text-primary transition-colors shrink-0"
+                className="-mt-1 -mr-1 p-1.5 rounded-full text-fg-muted active:text-primary transition-colors shrink-0"
                 aria-label={saved ? "Remove from saved" : "Save listing"}
               >
                 <Bookmark
@@ -236,16 +236,16 @@ export default function JobCard({
             </div>
 
             <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-              <span className="ios-subheadline font-semibold text-white">
+              <span className="ios-subheadline font-semibold text-fg-strong">
                 {payDisplay}
               </span>
               {formattedSchedule && (
                 <>
-                  <span className="text-slate-600">·</span>
+                  <span className="text-fg-faint">·</span>
                   <span
                     className={clsx(
                       "ios-footnote font-semibold",
-                      isFullTime ? "text-primary" : "text-slate-400"
+                      isFullTime ? "text-primary" : "text-fg-secondary"
                     )}
                   >
                     {formattedSchedule}
@@ -260,10 +260,10 @@ export default function JobCard({
               </span>
               {city && (
                 <>
-                  <span className="text-slate-600 text-[11px]">·</span>
+                  <span className="text-fg-faint text-[11px]">·</span>
                   <div className="flex items-center gap-0.5 min-w-0">
-                    <MapPin className="w-3 h-3 text-slate-500 shrink-0" strokeWidth={2.2} />
-                    <span className="text-[11px] text-slate-500 truncate">
+                    <MapPin className="w-3 h-3 text-fg-muted shrink-0" strokeWidth={2.2} />
+                    <span className="text-[11px] text-fg-muted truncate">
                       {city}
                     </span>
                   </div>

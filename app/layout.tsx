@@ -29,8 +29,12 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  themeColor: "#0f172a",
+  // Follows the device's appearance setting; the colours match --color-canvas.
+  colorScheme: "dark light",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
+    { media: "(prefers-color-scheme: light)", color: "#f1f5f9" },
+  ],
 };
 
 export default async function RootLayout({
@@ -55,7 +59,11 @@ export default async function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body className="font-display antialiased bg-bg-base text-text-primary min-h-dvh">
+      <body
+        className={`font-display antialiased bg-canvas text-fg-default min-h-dvh${
+          user ? " has-tabbar" : ""
+        }`}
+      >
         <ToastProvider>
           <Header user={user} />
           {children}

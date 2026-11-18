@@ -88,7 +88,7 @@ export default function SavedPage() {
         {savedJobs.length > 0 ? (
           <>
             {/* Desktop */}
-            <div className="hidden md:block rounded-xl border border-slate-800 overflow-hidden">
+            <div className="hidden md:block rounded-xl border border-line-subtle overflow-hidden">
               {savedJobs.map((job) => (
                 <div key={job.id} className="relative group">
                   <JobCard
@@ -112,7 +112,7 @@ export default function SavedPage() {
                       e.stopPropagation();
                       removeSaved(job.id);
                     }}
-                    className="absolute top-3 right-3 flex items-center justify-center w-9 h-9 rounded-full bg-slate-800/80 text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors opacity-0 group-hover:opacity-100"
+                    className="absolute top-3 right-3 flex items-center justify-center w-9 h-9 rounded-full bg-surface/80 text-fg-secondary hover:text-danger-fg hover:bg-danger/10 transition-colors opacity-0 group-hover:opacity-100"
                     title="Remove from saved"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -145,11 +145,11 @@ export default function SavedPage() {
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-            <div className="w-20 h-20 rounded-full bg-slate-800/60 flex items-center justify-center mb-5">
-              <Bookmark className="w-9 h-9 text-slate-600" strokeWidth={1.5} />
+            <div className="w-20 h-20 rounded-full bg-surface/60 flex items-center justify-center mb-5">
+              <Bookmark className="w-9 h-9 text-fg-faint" strokeWidth={1.5} />
             </div>
-            <h2 className="ios-title-2 text-white">No saved listings</h2>
-            <p className="ios-subheadline text-slate-400 mt-2 max-w-xs">
+            <h2 className="ios-title-2 text-fg-strong">No saved listings</h2>
+            <p className="ios-subheadline text-fg-secondary mt-2 max-w-xs">
               Tap the bookmark icon on any listing to save it here for later.
             </p>
             <button

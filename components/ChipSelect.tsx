@@ -46,7 +46,7 @@ export default function ChipSelect({
         className
       )}
     >
-      <span id={labelId} className="ios-body text-white">
+      <span id={labelId} className="ios-body text-fg-strong">
         {label}
       </span>
       <div role="group" aria-labelledby={labelId} className="flex flex-wrap gap-2">
@@ -62,7 +62,7 @@ export default function ChipSelect({
                 "px-4 py-2 rounded-full text-[14px] font-semibold ios-press transition-colors",
                 selected
                   ? "bg-primary text-white"
-                  : "bg-slate-700/60 text-slate-200 active:bg-slate-700"
+                  : "bg-elevated/60 text-fg-bright active:bg-elevated"
               )}
             >
               {opt.label}

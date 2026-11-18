@@ -86,9 +86,9 @@ export default function LargeTitle({
       {/* Title + optional action */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <h1 className="ios-large-title text-white">{title}</h1>
+          <h1 className="ios-large-title text-fg-strong">{title}</h1>
           {subtitle && (
-            <p className="ios-subheadline text-slate-400 mt-1">{subtitle}</p>
+            <p className="ios-subheadline text-fg-secondary mt-1">{subtitle}</p>
           )}
         </div>
 
@@ -101,7 +101,7 @@ export default function LargeTitle({
               "shrink-0 ios-press",
               action.label
                 ? "h-9 px-4 rounded-full bg-primary/15 text-primary text-[15px] font-semibold"
-                : "flex items-center justify-center w-9 h-9 rounded-full bg-slate-700/60 text-slate-200"
+                : "flex items-center justify-center w-9 h-9 rounded-full bg-elevated/60 text-fg-bright"
             )}
           >
             {action.icon}
@@ -113,7 +113,7 @@ export default function LargeTitle({
       {/* Optional search bar */}
       {search && (
         <div className="ios-search-bar mt-4">
-          <SearchIcon className="w-[18px] h-[18px] text-slate-400" strokeWidth={2} />
+          <SearchIcon className="w-[18px] h-[18px] text-fg-secondary" strokeWidth={2} />
           <input
             type="text"
             value={search.value}

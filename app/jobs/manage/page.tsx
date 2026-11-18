@@ -6,6 +6,7 @@ import { Plus } from "lucide-react";
 import ManageListingCard from "@/components/ManageListingCard";
 import LargeTitle from "@/components/LargeTitle";
 import { useToast } from "@/components/Toast";
+import Logo from "@/components/Logo";
 
 interface ManagedJob {
   id: string;
@@ -133,11 +134,11 @@ export default function ManageListingsPage() {
 
         {/* At limit notice */}
         {!canPost && !loading && (
-          <div className="flex items-center gap-3 rounded-2xl bg-bg-surface px-4 py-3 mb-5">
+          <div className="flex items-center gap-3 rounded-2xl bg-surface px-4 py-3 mb-5">
             <div className="w-9 h-9 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
               <span className="text-[11px] font-bold text-primary">1/1</span>
             </div>
-            <p className="ios-footnote text-slate-400">
+            <p className="ios-footnote text-fg-secondary">
               Free accounts are limited to 1 active listing. Delete or let it expire to post a new one.
             </p>
           </div>
@@ -184,16 +185,9 @@ export default function ManageListingsPage() {
         {/* Empty — First Time Scout */}
         {!loading && jobs.length === 0 && (
           <div className="flex flex-col items-center justify-center py-10 text-center">
-            <div className="w-20 h-20 rounded-3xl bg-primary/15 flex items-center justify-center mb-5">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" className="text-primary">
-                <rect x="3" y="3" width="7" height="7" rx="1.5" fill="currentColor" />
-                <rect x="14" y="3" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6" />
-                <rect x="3" y="14" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6" />
-                <rect x="14" y="14" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.3" />
-              </svg>
-            </div>
-            <h3 className="ios-title-2 text-white">Ready to find talent?</h3>
-            <p className="ios-subheadline text-slate-400 mt-2 max-w-sm">
+            <Logo size={80} className="mb-5" />
+            <h3 className="ios-title-2 text-fg-strong">Ready to find talent?</h3>
+            <p className="ios-subheadline text-fg-secondary mt-2 max-w-sm">
               Post your first listing and start connecting with barbers, cosmetologists, tattoo artists, and piercers in San Diego County.
             </p>
 
@@ -217,7 +211,7 @@ export default function ManageListingsPage() {
                     <div className="w-9 h-9 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-2">
                       <span className="ios-footnote font-bold text-primary">{s.num}</span>
                     </div>
-                    <p className="ios-caption text-slate-400 leading-tight">
+                    <p className="ios-caption text-fg-secondary leading-tight">
                       {s.text}
                     </p>
                   </div>

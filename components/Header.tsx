@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { Bell } from "lucide-react";
 import { clsx } from "clsx";
 import { useState, useEffect } from "react";
+import Logo from "@/components/Logo";
+import { activeNavHref } from "@/lib/utils";
 
 interface HeaderProps {
   user?: {
@@ -42,6 +44,7 @@ export default function Header({ user }: HeaderProps) {
   }, [user, pathname]);
 
   const filteredLinks = navLinks.filter((link) => !link.scoutOnly || isScout);
+  const activeHref = activeNavHref(pathname, filteredLinks.map((link) => link.href));
 
   const getInitials = (name?: string | null, email?: string | null) => {
     if (name) {
@@ -66,21 +69,8 @@ export default function Header({ user }: HeaderProps) {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 ios-press">
-          <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-primary/20 sm:w-8 sm:h-8">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              className="text-primary sm:w-[18px] sm:h-[18px]"
-            >
-              <rect x="3" y="3" width="7" height="7" rx="1.5" fill="currentColor" />
-              <rect x="14" y="3" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6" />
-              <rect x="3" y="14" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6" />
-              <rect x="14" y="14" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.3" />
-            </svg>
-          </div>
-          <span className="text-[17px] font-bold tracking-tight text-white sm:text-xl">
+          <Logo size={28} className="sm:w-8 sm:h-8" />
+          <span className="text-[17px] font-bold tracking-tight text-fg-strong sm:text-xl">
             Listify
           </span>
         </Link>
@@ -88,7 +78,7 @@ export default function Header({ user }: HeaderProps) {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-1">
           {filteredLinks.map((link) => {
-            const isActive = pathname.startsWith(link.href);
+            const isActive = link.href === activeHref;
             return (
               <Link
                 key={link.href}
@@ -97,7 +87,7 @@ export default function Header({ user }: HeaderProps) {
                   "px-4 py-2 text-sm font-medium rounded-lg transition-colors",
                   isActive
                     ? "text-primary bg-primary/10"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800/60"
+                    : "text-fg-secondary hover:text-fg-strong hover:bg-surface/60"
                 )}
               >
                 {link.label}
@@ -113,7 +103,7 @@ export default function Header({ user }: HeaderProps) {
               {/* Notification Bell */}
               <Link
                 href="/notifications"
-                className="relative flex items-center justify-center w-9 h-9 rounded-full text-slate-300 ios-press hover:bg-slate-800/60 transition-colors"
+                className="relative flex items-center justify-center w-9 h-9 rounded-full text-fg ios-press hover:bg-surface/60 transition-colors"
                 aria-label="Notifications"
               >
                 <Bell className="w-[22px] h-[22px]" strokeWidth={2} />
@@ -145,13 +135,13 @@ export default function Header({ user }: HeaderProps) {
                   Hidden under 360px, where the three items would not fit. */}
               <Link
                 href="/jobs"
-                className="md:hidden max-[359px]:hidden whitespace-nowrap px-1 py-2 text-[15px] font-medium text-slate-300 ios-press"
+                className="md:hidden max-[359px]:hidden whitespace-nowrap px-1 py-2 text-[15px] font-medium text-fg ios-press"
               >
                 Browse
               </Link>
               <Link
                 href="/signin"
-                className="whitespace-nowrap px-1 py-2 text-[15px] font-medium text-slate-300 hover:text-white transition-colors sm:px-3 sm:py-1.5"
+                className="whitespace-nowrap px-1 py-2 text-[15px] font-medium text-fg hover:text-fg-strong transition-colors sm:px-3 sm:py-1.5"
               >
                 Sign In
               </Link>

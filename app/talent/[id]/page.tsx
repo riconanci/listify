@@ -81,14 +81,14 @@ export default function TalentProfilePage() {
   if (!loading && !profile) {
     return (
       <main className="min-h-[calc(100dvh-4rem)] flex flex-col items-center justify-center px-4">
-        <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mb-4">
-          <User className="w-8 h-8 text-slate-600" />
+        <div className="w-16 h-16 rounded-full bg-surface flex items-center justify-center mb-4">
+          <User className="w-8 h-8 text-fg-faint" />
         </div>
-        <h2 className="text-lg font-bold text-white">Profile not found</h2>
-        <p className="text-sm text-slate-400 mt-2">This talent profile doesn&apos;t exist or has been removed.</p>
+        <h2 className="text-lg font-bold text-fg-strong">Profile not found</h2>
+        <p className="text-sm text-fg-secondary mt-2">This talent profile doesn&apos;t exist or has been removed.</p>
         <button
           onClick={() => router.back()}
-          className="mt-6 rounded-lg border border-slate-700 px-6 py-2.5 text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+          className="mt-6 rounded-lg border border-line px-6 py-2.5 text-sm font-semibold text-fg hover:text-fg-strong hover:bg-surface transition-colors"
         >
           Go Back
         </button>
@@ -101,16 +101,16 @@ export default function TalentProfilePage() {
   return (
     <main className="min-h-[calc(100dvh-4rem)] page-with-nav">
       {/* Header */}
-      <div className="sticky top-16 z-40 border-b border-slate-800 bg-bg-base/95 glass-header px-4 py-3">
+      <div className="sticky top-14 sm:top-16 z-40 ios-blur ios-hairline-bottom px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <button
             onClick={() => router.back()}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-fg-secondary hover:text-fg-strong hover:bg-surface transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-base font-bold text-white">Talent Profile</h1>
-          <button className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+          <h1 className="text-base font-bold text-fg-strong">Talent Profile</h1>
+          <button className="p-1.5 rounded-lg text-fg-secondary hover:text-fg-strong hover:bg-surface transition-colors">
             <Share2 className="w-5 h-5" />
           </button>
         </div>
@@ -124,21 +124,21 @@ export default function TalentProfilePage() {
               <img
                 src={data.avatarUrl}
                 alt={data.name}
-                className="w-28 h-28 rounded-full object-cover border-4 border-slate-800"
+                className="w-28 h-28 rounded-full object-cover border-4 border-line-subtle"
               />
             ) : (
-              <div className="w-28 h-28 rounded-full bg-primary flex items-center justify-center text-white text-3xl font-bold border-4 border-slate-800">
+              <div className="w-28 h-28 rounded-full bg-primary flex items-center justify-center text-white text-3xl font-bold border-4 border-line-subtle">
                 {getInitials(data.name)}
               </div>
             )}
             {data.verified && (
-              <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-primary flex items-center justify-center border-2 border-bg-base">
+              <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-primary flex items-center justify-center border-2 border-canvas">
                 <Shield className="w-4 h-4 text-white" />
               </div>
             )}
           </div>
 
-          <h2 className="mt-4 text-2xl font-black text-white">{data.name}</h2>
+          <h2 className="mt-4 text-2xl font-black text-fg-strong">{data.name}</h2>
           {data.headline && (
             <p className="text-sm text-primary mt-1">{data.headline}</p>
           )}
@@ -154,30 +154,30 @@ export default function TalentProfilePage() {
 
         {/* Stats Row */}
         <div className="grid grid-cols-3 gap-3 mb-8">
-          <div className="flex flex-col items-center gap-1 rounded-xl border border-slate-800 bg-bg-surface p-4">
+          <div className="flex flex-col items-center gap-1 rounded-xl border border-line-subtle bg-surface p-4">
             <Briefcase className="w-5 h-5 text-primary mb-1" />
-            <span className="text-xl font-black text-white">
+            <span className="text-xl font-black text-fg-strong">
               {data.yearsExperience || "—"}+
             </span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="text-[10px] font-bold text-fg-secondary uppercase tracking-wider">
               Years Exp
             </span>
           </div>
-          <div className="flex flex-col items-center gap-1 rounded-xl border border-slate-800 bg-bg-surface p-4">
+          <div className="flex flex-col items-center gap-1 rounded-xl border border-line-subtle bg-surface p-4">
             <MapPin className="w-5 h-5 text-primary mb-1" />
-            <span className="text-base font-bold text-white">
+            <span className="text-base font-bold text-fg-strong">
               {data.city || "—"}
             </span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="text-[10px] font-bold text-fg-secondary uppercase tracking-wider">
               {data.state || "CA"}
             </span>
           </div>
-          <div className="flex flex-col items-center gap-1 rounded-xl border border-slate-800 bg-bg-surface p-4">
+          <div className="flex flex-col items-center gap-1 rounded-xl border border-line-subtle bg-surface p-4">
             <Star className="w-5 h-5 text-primary mb-1" />
-            <span className="text-xl font-black text-white">
+            <span className="text-xl font-black text-fg-strong">
               {data.rating || "—"}
             </span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="text-[10px] font-bold text-fg-secondary uppercase tracking-wider">
               Rating
             </span>
           </div>
@@ -186,7 +186,7 @@ export default function TalentProfilePage() {
         {/* Specialized Services */}
         {data.specialties && data.specialties.length > 0 && (
           <section className="mb-8">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-bold text-fg-secondary uppercase tracking-wider mb-3">
               Specialized Services
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -205,10 +205,10 @@ export default function TalentProfilePage() {
         {/* Professional Bio */}
         {data.bio && (
           <section className="mb-8">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-bold text-fg-secondary uppercase tracking-wider mb-3">
               Professional Bio
             </h3>
-            <p className="text-sm text-slate-300 leading-relaxed">
+            <p className="text-sm text-fg leading-relaxed">
               {data.bio}
             </p>
           </section>
@@ -217,7 +217,7 @@ export default function TalentProfilePage() {
         {/* Portfolio */}
         <section className="mb-8">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+            <h3 className="text-xs font-bold text-fg-secondary uppercase tracking-wider">
               Portfolio
             </h3>
             {data.portfolio && data.portfolio.length > 6 && (
@@ -231,7 +231,7 @@ export default function TalentProfilePage() {
               {data.portfolio.slice(0, 6).map((photo, i) => (
                 <div
                   key={i}
-                  className="aspect-square rounded-lg overflow-hidden bg-slate-800"
+                  className="aspect-square rounded-lg overflow-hidden bg-surface"
                 >
                   <img
                     src={photo}
@@ -246,9 +246,9 @@ export default function TalentProfilePage() {
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className="aspect-square rounded-lg bg-slate-800 flex items-center justify-center"
+                  className="aspect-square rounded-lg bg-surface flex items-center justify-center"
                 >
-                  <ImageIcon className="w-6 h-6 text-slate-700" />
+                  <ImageIcon className="w-6 h-6 text-line" />
                 </div>
               ))}
             </div>
@@ -257,7 +257,7 @@ export default function TalentProfilePage() {
 
         {/* Links & Social */}
         <section className="mb-8">
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+          <h3 className="text-xs font-bold text-fg-secondary uppercase tracking-wider mb-3">
             Links & Social
           </h3>
           <div className="space-y-2">
@@ -266,13 +266,13 @@ export default function TalentProfilePage() {
                 href={`https://${data.website}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-xl border border-slate-800 bg-bg-surface px-4 py-3.5 hover:border-primary/30 transition-colors group"
+                className="flex items-center gap-3 rounded-xl border border-line-subtle bg-surface px-4 py-3.5 hover:border-primary/30 transition-colors group"
               >
                 <Globe className="w-5 h-5 text-primary" />
-                <span className="flex-1 text-sm text-slate-300 group-hover:text-white transition-colors">
+                <span className="flex-1 text-sm text-fg group-hover:text-fg-strong transition-colors">
                   {data.website}
                 </span>
-                <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-primary transition-colors" />
+                <ExternalLink className="w-4 h-4 text-fg-muted group-hover:text-primary transition-colors" />
               </a>
             )}
             {data.instagram && (
@@ -280,13 +280,13 @@ export default function TalentProfilePage() {
                 href={`https://instagram.com/${data.instagram}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-xl border border-slate-800 bg-bg-surface px-4 py-3.5 hover:border-primary/30 transition-colors group"
+                className="flex items-center gap-3 rounded-xl border border-line-subtle bg-surface px-4 py-3.5 hover:border-primary/30 transition-colors group"
               >
                 <Instagram className="w-5 h-5 text-primary" />
-                <span className="flex-1 text-sm text-slate-300 group-hover:text-white transition-colors">
+                <span className="flex-1 text-sm text-fg group-hover:text-fg-strong transition-colors">
                   @{data.instagram}
                 </span>
-                <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-primary transition-colors" />
+                <ExternalLink className="w-4 h-4 text-fg-muted group-hover:text-primary transition-colors" />
               </a>
             )}
           </div>
@@ -294,7 +294,7 @@ export default function TalentProfilePage() {
       </div>
 
       {/* Sticky Bottom Actions */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-800 bg-bg-base/95 glass-header p-4 pb-safe">
+      <div className="action-bar z-40 ios-hairline-top ios-blur-strong">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <button
             onClick={() => setSaved(!saved)}
@@ -302,7 +302,7 @@ export default function TalentProfilePage() {
               "flex items-center justify-center gap-2 rounded-xl border-2 px-5 py-3.5 text-sm font-bold transition-all",
               saved
                 ? "border-primary bg-primary/10 text-primary"
-                : "border-slate-700 text-slate-300 hover:border-slate-600"
+                : "border-line text-fg hover:border-line-strong"
             )}
           >
             <Bookmark

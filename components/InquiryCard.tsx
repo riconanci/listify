@@ -84,7 +84,7 @@ export default function InquiryCard({
   onDelete,
 }: InquiryCardProps) {
   return (
-    <div className="rounded-2xl bg-bg-surface p-4">
+    <div className="rounded-2xl bg-surface p-4">
       {/* Avatar + Name */}
       <div className="flex items-start gap-3">
         {/* Avatar */}
@@ -105,14 +105,14 @@ export default function InquiryCard({
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="ios-headline text-white">{senderName}</h3>
-            <span className="ios-caption text-slate-500 shrink-0">
+            <h3 className="ios-headline text-fg-strong">{senderName}</h3>
+            <span className="ios-caption text-fg-muted shrink-0">
               {timeAgo(createdAt)}
             </span>
           </div>
 
           {/* Contact details */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 ios-footnote text-slate-400">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 ios-footnote text-fg-secondary">
             {senderEmail && (
               <a
                 href={`mailto:${senderEmail}`}
@@ -149,8 +149,8 @@ export default function InquiryCard({
 
       {/* Note */}
       {note && (
-        <div className="mt-3 rounded-xl bg-slate-800/60 p-3">
-          <p className="ios-subheadline text-slate-300 italic">
+        <div className="mt-3 rounded-xl bg-surface/60 p-3">
+          <p className="ios-subheadline text-fg italic">
             &ldquo;{note}&rdquo;
           </p>
         </div>
@@ -158,7 +158,7 @@ export default function InquiryCard({
 
       {/* Inquiring About */}
       <div className="mt-3 flex items-center gap-2 flex-wrap ios-footnote">
-        <span className="text-slate-500">Inquiring about:</span>
+        <span className="text-fg-muted">Inquiring about:</span>
         <Link
           href={`/jobs/${jobId}`}
           className="text-primary font-semibold ios-press"
@@ -175,7 +175,7 @@ export default function InquiryCard({
             {portfolioPhotos.slice(0, 4).map((photo, i) => (
               <div
                 key={i}
-                className="w-16 h-16 rounded-xl overflow-hidden bg-slate-800 shrink-0"
+                className="w-16 h-16 rounded-xl overflow-hidden bg-surface shrink-0"
               >
                 <img
                   src={photo}
@@ -203,8 +203,8 @@ export default function InquiryCard({
           className={clsx(
             "flex items-center justify-center w-10 h-10 rounded-full ios-press transition-colors shrink-0",
             isStarred
-              ? "bg-yellow-400/15 text-yellow-400"
-              : "bg-slate-700/60 text-slate-400 active:bg-slate-700"
+              ? "bg-warning-fg/15 text-warning-fg"
+              : "bg-elevated/60 text-fg-secondary active:bg-elevated"
           )}
           aria-label={isStarred ? "Unstar inquiry" : "Star inquiry"}
         >
@@ -215,14 +215,14 @@ export default function InquiryCard({
           />
         </button>
         <button
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-700/60 text-slate-400 ios-press active:bg-slate-700 transition-colors shrink-0"
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-elevated/60 text-fg-secondary ios-press active:bg-elevated transition-colors shrink-0"
           aria-label="Download contact"
         >
           <Download className="w-[18px] h-[18px]" strokeWidth={2} />
         </button>
         <button
           onClick={() => onDelete?.(id)}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-700/60 text-red-400 ios-press active:bg-red-500/15 transition-colors shrink-0"
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-elevated/60 text-danger-fg ios-press active:bg-danger/15 transition-colors shrink-0"
           aria-label="Delete inquiry"
         >
           <Trash2 className="w-[18px] h-[18px]" strokeWidth={2} />

@@ -48,8 +48,8 @@ export default function SelectRow({
   if (staticMode) {
     return (
       <div className={clsx("ios-row gap-3 justify-between", className)}>
-        <span className="ios-body text-slate-400">{label}</span>
-        <span className="ios-body text-slate-400">{currentLabel}</span>
+        <span className="ios-body text-fg-secondary">{label}</span>
+        <span className="ios-body text-fg-secondary">{currentLabel}</span>
       </div>
     );
   }
@@ -60,11 +60,11 @@ export default function SelectRow({
         type="button"
         onClick={() => setOpen(true)}
         className={clsx(
-          "ios-row gap-3 justify-between w-full text-left active:bg-slate-800/60 transition-colors",
+          "ios-row gap-3 justify-between w-full text-left active:bg-surface/60 transition-colors",
           className
         )}
       >
-        <span className="ios-body text-white">{label}</span>
+        <span className="ios-body text-fg-strong">{label}</span>
         <span className="flex items-center gap-1 text-primary">
           <span className="ios-body">{currentLabel}</span>
           <ChevronDown className="w-4 h-4" strokeWidth={2.5} />
@@ -87,9 +87,9 @@ export default function SelectRow({
                   onChange(opt.value);
                   setOpen(false);
                 }}
-                className="ios-row gap-3 w-full justify-between active:bg-slate-800/60 transition-colors"
+                className="ios-row gap-3 w-full justify-between active:bg-surface/60 transition-colors"
               >
-                <span className="ios-body text-white">{opt.label}</span>
+                <span className="ios-body text-fg-strong">{opt.label}</span>
                 {selected && (
                   <Check className="w-5 h-5 text-primary" strokeWidth={2.5} />
                 )}

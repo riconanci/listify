@@ -224,7 +224,7 @@ export default function ProfilePage() {
                 </span>
               )}
             </button>
-            <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white shadow-lg pointer-events-none border-2 border-bg-base">
+            <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white shadow-lg pointer-events-none border-2 border-canvas">
               <Camera className="w-3.5 h-3.5" strokeWidth={2.2} />
             </div>
             <input
@@ -240,8 +240,8 @@ export default function ProfilePage() {
               New photo — save to apply
             </p>
           )}
-          <h2 className="mt-4 ios-title-2 text-white">{name || "User"}</h2>
-          <p className="ios-subheadline text-slate-400">{user?.email}</p>
+          <h2 className="mt-4 ios-title-2 text-fg-strong">{name || "User"}</h2>
+          <p className="ios-subheadline text-fg-secondary">{user?.email}</p>
 
           <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 ios-footnote font-semibold text-primary">
             <Shield className="w-3 h-3" strokeWidth={2.5} />
@@ -253,24 +253,24 @@ export default function ProfilePage() {
         <h3 className="ios-section-header">Basic Info</h3>
         <div className="ios-card mx-4 mb-6">
           <div className="ios-row gap-3">
-            <label className="ios-body text-slate-400 w-24 shrink-0">Name</label>
+            <label className="ios-body text-fg-secondary w-24 shrink-0">Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+              className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
               placeholder="Your name"
             />
           </div>
           <div className="ios-row gap-3">
-            <label className="ios-body text-slate-400 w-24 shrink-0">Phone</label>
+            <label className="ios-body text-fg-secondary w-24 shrink-0">Phone</label>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(formatPhone(e.target.value))}
               placeholder="(555) 123-4567"
               inputMode="tel"
-              className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+              className="flex-1 min-w-0 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
             />
           </div>
         </div>
@@ -280,7 +280,7 @@ export default function ProfilePage() {
           <>
             <div className="flex items-center justify-between px-4 mb-1.5">
               <h3 className="ios-section-header !pb-0 !px-0">My Work</h3>
-              <span className="ios-footnote text-slate-500">
+              <span className="ios-footnote text-fg-muted">
                 {portfolioPhotos.length}/{MAX_PORTFOLIO}
               </span>
             </div>
@@ -289,7 +289,7 @@ export default function ProfilePage() {
                 {portfolioPhotos.map((photo, i) => (
                   <div
                     key={i}
-                    className="relative aspect-square rounded-xl overflow-hidden bg-slate-800 group"
+                    className="relative aspect-square rounded-xl overflow-hidden bg-surface group"
                   >
                     <img
                       src={photo}
@@ -308,7 +308,7 @@ export default function ProfilePage() {
                 {portfolioPhotos.length < MAX_PORTFOLIO && (
                   <button
                     onClick={() => portfolioInputRef.current?.click()}
-                    className="aspect-square rounded-xl bg-slate-700/40 flex flex-col items-center justify-center gap-1 text-slate-400 active:bg-slate-700/60 ios-press transition-colors"
+                    className="aspect-square rounded-xl bg-elevated/40 flex flex-col items-center justify-center gap-1 text-fg-secondary active:bg-elevated/60 ios-press transition-colors"
                   >
                     <Plus className="w-5 h-5" strokeWidth={2} />
                     <span className="text-[10px] font-semibold">Add</span>
@@ -316,7 +316,7 @@ export default function ProfilePage() {
                 )}
               </div>
             </div>
-            <p className="px-5 ios-footnote text-slate-500 mb-1">
+            <p className="px-5 ios-footnote text-fg-muted mb-1">
               Add photos of your work. Scouts see these when you send an inquiry.
             </p>
             {portfolioChanged && (
@@ -343,36 +343,36 @@ export default function ProfilePage() {
             <h3 className="ios-section-header">Shop Details</h3>
             <div className="ios-card mx-4 mb-6">
               <div className="px-4 py-3">
-                <label className="ios-footnote text-slate-400">Name</label>
+                <label className="ios-footnote text-fg-secondary">Name</label>
                 <input
                   type="text"
                   value={shopName}
                   onChange={(e) => setShopName(e.target.value)}
                   placeholder="Shop name"
-                  className="w-full mt-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                  className="w-full mt-1 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                 />
               </div>
               <div className="ios-hairline-top" />
               <div className="px-4 py-3">
-                <label className="ios-footnote text-slate-400">Address</label>
+                <label className="ios-footnote text-fg-secondary">Address</label>
                 <input
                   type="text"
                   value={shopAddress}
                   onChange={(e) => setShopAddress(e.target.value)}
                   placeholder="Shop address"
-                  className="w-full mt-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                  className="w-full mt-1 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                 />
               </div>
               <div className="ios-hairline-top" />
               <div className="px-4 py-3">
-                <label className="ios-footnote text-slate-400">Website</label>
+                <label className="ios-footnote text-fg-secondary">Website</label>
                 <input
                   type="url"
                   value={website}
                   onChange={(e) => setWebsite(e.target.value)}
                   placeholder="www.yourshop.com"
                   inputMode="url"
-                  className="w-full mt-1 bg-transparent border-0 outline-none ios-body text-white placeholder-slate-500"
+                  className="w-full mt-1 bg-transparent border-0 outline-none ios-body text-fg-strong placeholder-fg-muted"
                 />
               </div>
             </div>
@@ -402,7 +402,7 @@ export default function ProfilePage() {
               router.push("/");
               router.refresh();
             }}
-            className="w-full rounded-full bg-slate-700/60 px-6 h-12 text-[17px] font-semibold text-red-400 ios-press active:bg-slate-700 flex items-center justify-center gap-2 transition-colors"
+            className="w-full rounded-full bg-elevated/60 px-6 h-12 text-[17px] font-semibold text-danger-fg ios-press active:bg-elevated flex items-center justify-center gap-2 transition-colors"
           >
             <LogOut className="w-[18px] h-[18px]" strokeWidth={2} />
             Sign Out

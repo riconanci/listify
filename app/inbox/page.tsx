@@ -151,8 +151,8 @@ export default function InboxPage() {
       <div className="max-w-3xl mx-auto px-4 md:px-6 pb-8">
         {/* Error */}
         {error && (
-          <div className="rounded-2xl bg-red-500/12 border border-red-500/15 px-4 py-3 mb-4">
-            <p className="ios-subheadline text-red-400">{error}</p>
+          <div className="rounded-2xl bg-danger/12 border border-danger/15 px-4 py-3 mb-4">
+            <p className="ios-subheadline text-danger-fg">{error}</p>
           </div>
         )}
 
@@ -228,7 +228,7 @@ export default function InboxPage() {
             ))}
 
             <div className="text-center pt-4">
-              <button className="rounded-full bg-slate-700/60 px-6 h-10 text-[15px] font-semibold text-white ios-press active:bg-slate-700 transition-colors">
+              <button className="rounded-full bg-elevated/60 px-6 h-10 text-[15px] font-semibold text-fg-strong ios-press active:bg-elevated transition-colors">
                 View Past Inquiries
               </button>
             </div>
@@ -238,13 +238,13 @@ export default function InboxPage() {
         {/* Empty */}
         {!loading && inquiries.length === 0 && !error && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-20 h-20 rounded-full bg-slate-800/60 flex items-center justify-center mb-5">
-              <InboxIcon className="w-9 h-9 text-slate-600" strokeWidth={1.5} />
+            <div className="w-20 h-20 rounded-full bg-surface/60 flex items-center justify-center mb-5">
+              <InboxIcon className="w-9 h-9 text-fg-faint" strokeWidth={1.5} />
             </div>
-            <h3 className="ios-title-2 text-white">
+            <h3 className="ios-title-2 text-fg-strong">
               {isScout ? "No inquiries yet" : "No sent inquiries"}
             </h3>
-            <p className="ios-subheadline text-slate-400 mt-2 max-w-xs">
+            <p className="ios-subheadline text-fg-secondary mt-2 max-w-xs">
               {isScout
                 ? "When talent sends an inquiry about your listings, it will appear here."
                 : "Browse listings and send inquiries to connect with shops in San Diego."}
